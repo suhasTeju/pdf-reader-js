@@ -1,0 +1,317 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* PDF Reader CSS Custom Properties */
+:root {
+  /* Layout */
+  --pdf-toolbar-height: 48px;
+  --pdf-mobile-toolbar-height: 56px;
+  --pdf-sidebar-width: 280px;
+  --pdf-mobile-sidebar-width: 85vw;
+
+  /* Colors */
+  --pdf-primary: #3b82f6;
+  --pdf-primary-hover: #2563eb;
+  --pdf-bg: #ffffff;
+  --pdf-text: #1f2937;
+  --pdf-text-muted: #6b7280;
+  --pdf-border: #e5e7eb;
+  --pdf-surface: #f9fafb;
+
+  /* Highlights */
+  --pdf-highlight-yellow: rgba(254, 240, 138, 0.5);
+  --pdf-highlight-green: rgba(134, 239, 172, 0.5);
+  --pdf-highlight-blue: rgba(147, 197, 253, 0.5);
+  --pdf-highlight-pink: rgba(249, 168, 212, 0.5);
+  --pdf-highlight-orange: rgba(253, 186, 116, 0.5);
+
+  /* Shadows */
+  --pdf-page-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --pdf-dropdown-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+  /* Touch targets */
+  --pdf-touch-target-min: 44px;
+
+  /* Transitions */
+  --pdf-transition-fast: 150ms ease;
+  --pdf-transition-normal: 200ms ease;
+}
+
+.dark {
+  --pdf-primary: #60a5fa;
+  --pdf-primary-hover: #3b82f6;
+  --pdf-bg: #1f2937;
+  --pdf-text: #f9fafb;
+  --pdf-text-muted: #9ca3af;
+  --pdf-border: #374151;
+  --pdf-surface: #111827;
+  --pdf-page-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+}
+
+/* PDF Viewer Container */
+.pdf-viewer {
+  position: relative;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* PDF Page */
+.pdf-page {
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Canvas Layer */
+.pdf-canvas-layer {
+  display: block;
+}
+
+/* Text Layer */
+.pdf-text-layer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  opacity: 0.2;
+  line-height: 1;
+}
+
+.pdf-text-layer span {
+  position: absolute;
+  white-space: pre;
+  color: transparent;
+  pointer-events: all;
+}
+
+.pdf-text-layer span::selection {
+  background: var(--pdf-highlight-blue);
+}
+
+.pdf-text-layer span::-moz-selection {
+  background: var(--pdf-highlight-blue);
+}
+
+/* Highlight Layer */
+.pdf-highlight-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.pdf-highlight-layer .highlight-group {
+  pointer-events: auto;
+}
+
+/* Toolbar */
+.pdf-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: var(--pdf-bg);
+  border-bottom: 1px solid var(--pdf-border);
+}
+
+/* Sidebar */
+.pdf-sidebar {
+  display: flex;
+  background: var(--pdf-bg);
+  border-right: 1px solid var(--pdf-border);
+}
+
+/* Thumbnail Panel */
+.thumbnail-panel {
+  overflow-y: auto;
+}
+
+.thumbnail-item {
+  transition: all 0.15s ease;
+}
+
+.thumbnail-item:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.thumbnail-item.active {
+  background: rgba(59, 130, 246, 0.1);
+}
+
+/* Search Panel */
+.search-panel input:focus {
+  outline: none;
+  ring: 2px;
+  ring-color: var(--pdf-primary);
+}
+
+/* Document Container */
+.document-container {
+  flex: 1;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+  gap: 1rem;
+}
+
+/* Loading spinner */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Dark mode adjustments */
+.dark .pdf-page {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+}
+
+/* Sepia mode */
+.sepia .document-container {
+  background: #f4ecd8;
+}
+
+.sepia .pdf-page {
+  filter: sepia(20%);
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .pdf-toolbar {
+    padding: 0.5rem;
+    height: var(--pdf-mobile-toolbar-height);
+  }
+
+  .pdf-sidebar {
+    width: 100% !important;
+    position: absolute;
+    z-index: 100;
+  }
+
+  .document-container {
+    padding: 0.5rem;
+    gap: 0.5rem;
+    padding-bottom: calc(var(--pdf-mobile-toolbar-height) + 1rem);
+  }
+
+  /* Larger touch targets */
+  .pdf-toolbar button,
+  .mobile-toolbar button {
+    min-width: var(--pdf-touch-target-min);
+    min-height: var(--pdf-touch-target-min);
+  }
+
+  /* Bottom sheet style for popovers */
+  .selection-toolbar,
+  .highlight-popover {
+    position: fixed !important;
+    bottom: calc(var(--pdf-mobile-toolbar-height) + 0.5rem);
+    left: 50% !important;
+    right: auto !important;
+    top: auto !important;
+    transform: translateX(-50%) !important;
+    max-width: calc(100vw - 1rem);
+    width: auto;
+    border-radius: 1rem;
+    box-shadow: var(--pdf-dropdown-shadow);
+  }
+
+  /* Annotation toolbar mobile adjustments */
+  .annotation-toolbar {
+    bottom: calc(var(--pdf-mobile-toolbar-height) + 0.5rem) !important;
+  }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+  /* Remove hover effects */
+  .pdf-toolbar button:hover,
+  .mobile-toolbar button:hover {
+    background: transparent;
+  }
+
+  .pdf-toolbar button:active,
+  .mobile-toolbar button:active {
+    background: rgba(0, 0, 0, 0.1);
+  }
+
+  .dark .pdf-toolbar button:active,
+  .dark .mobile-toolbar button:active {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  /* Ensure touch-friendly spacing */
+  .thumbnail-item {
+    padding: 0.75rem;
+  }
+
+  /* Improve text selection */
+  .pdf-text-layer {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    user-select: text;
+  }
+}
+
+/* Safe area insets for notched devices */
+.safe-area-inset {
+  padding-left: env(safe-area-inset-left, 0);
+  padding-right: env(safe-area-inset-right, 0);
+}
+
+.mobile-toolbar {
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+.mobile-sidebar {
+  padding-top: env(safe-area-inset-top, 0);
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+/* Annotation layer styles */
+.pdf-annotation-layer {
+  pointer-events: none;
+}
+
+.pdf-annotation-layer.cursor-crosshair {
+  pointer-events: auto;
+  cursor: crosshair;
+}
+
+/* Drawing canvas styles */
+.drawing-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* Print styles */
+@media print {
+  .pdf-toolbar,
+  .pdf-sidebar,
+  .mobile-toolbar,
+  .mobile-sidebar,
+  .selection-toolbar,
+  .highlight-popover,
+  .annotation-toolbar {
+    display: none !important;
+  }
+
+  .document-container {
+    padding: 0;
+    overflow: visible;
+  }
+
+  .pdf-page {
+    box-shadow: none;
+    page-break-after: always;
+  }
+
+  .pdf-annotation-layer {
+    display: none !important;
+  }
+}
