@@ -1,9 +1,17 @@
 {
-  "name": "@pdf-reader/core",
-  "version": "0.1.0",
+  "name": "pdfjs-reader-core",
+  "version": "0.1.1",
   "description": "A Next.js-compatible PDF renderer with canvas rendering, annotations, and search",
-  "author": "",
+  "author": "suhas <suhasrdev@gmail.com>",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/suhasTeju/pdf-reader-js.git"
+  },
+  "homepage": "https://github.com/suhasTeju/pdf-reader-js#readme",
+  "bugs": {
+    "url": "https://github.com/suhasTeju/pdf-reader-js/issues"
+  },
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
