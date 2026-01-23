@@ -154,6 +154,8 @@ export interface Highlight {
   comment?: string;
   createdAt: Date;
   updatedAt: Date;
+  /** Source of the highlight: user-created or agent-created */
+  source?: 'user' | 'agent';
 }
 
 export interface HighlightRect {
@@ -293,3 +295,25 @@ export interface PDFViewerEventMap {
   textselect: TextSelection;
   error: Error;
 }
+
+// ============================================================================
+// Agent & Student Learning Types (re-exported from agent-context)
+// ============================================================================
+
+export type {
+  AgentContext,
+  AskAboutContext,
+  PDFRegion,
+  FocusedRegion,
+  Bookmark,
+  QuickNote,
+  Takeaway,
+  AgentHighlightParams,
+  AgentAPI,
+  StudentState,
+  StudentActions,
+  AgentState,
+  AgentActions,
+  StudentModeCallbacks,
+  StudentModeProps,
+} from './agent-context';

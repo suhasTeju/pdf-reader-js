@@ -28,6 +28,16 @@ interface PageInfo {
 const DEFAULT_PAGE_WIDTH = 612;
 const DEFAULT_PAGE_HEIGHT = 792;
 
+/**
+ * VirtualizedDocumentContainer efficiently renders only visible pages.
+ *
+ * Mobile optimizations:
+ * - Only pages in/near viewport are rendered (virtualization)
+ * - Smooth scrolling with -webkit-overflow-scrolling
+ * - Touch gestures for pinch-zoom and swipe navigation
+ * - Passive event listeners for scroll performance
+ * - Smart page caching to avoid re-fetching
+ */
 export const VirtualizedDocumentContainer = memo(function VirtualizedDocumentContainer({
   overscan = 2,
   pageGap = 16,
@@ -171,7 +181,7 @@ export const VirtualizedDocumentContainer = memo(function VirtualizedDocumentCon
     }
   }, [pageInfos, overscan, currentPage, goToPage]);
 
-  // Set up scroll listener
+  // Set up scroll listener with passive option for better performance
   useEffect(() => {
     const container = scrollContainerRef.current;
     if (!container) return;
@@ -346,6 +356,10 @@ export const VirtualizedDocumentContainer = memo(function VirtualizedDocumentCon
       <div
         ref={setContainerRef}
         className="absolute inset-0 overflow-auto"
+        style={{
+          // Smooth scrolling on iOS
+          WebkitOverflowScrolling: 'touch',
+        }}
       >
         {/* Scroll container with total height */}
         <div

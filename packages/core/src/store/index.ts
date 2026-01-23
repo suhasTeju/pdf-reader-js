@@ -20,3 +20,15 @@ export {
   type SearchStoreApi,
   type SearchActions,
 } from './search-store';
+
+export {
+  createAgentStore,
+  type AgentStore,
+  type AgentStoreApi,
+} from './agent-store';
+
+export {
+  createStudentStore,
+  type StudentStore,
+  type StudentStoreApi,
+} from './student-store';

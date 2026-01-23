@@ -1,18 +1,6 @@
 # pdfjs-reader-core
 
-A fully-featured, Next.js-compatible PDF viewer for React with annotations, highlights, search, and more.
-
-## Features
-
-- **PDF Rendering** - High-quality canvas-based rendering using PDF.js
-- **Text Selection & Highlighting** - Select text and highlight with multiple colors
-- **Annotations** - Add sticky notes, freehand drawings, and shapes (rectangles, circles, arrows, lines)
-- **Search** - Full-text search across all pages with match highlighting
-- **Multiple View Modes** - Single page, continuous scroll, and dual page views
-- **Thumbnails & Outline** - Page thumbnails and document outline navigation
-- **Theming** - Light, dark, and sepia themes
-- **Mobile Support** - Touch gestures, pinch-to-zoom, responsive UI
-- **Programmatic API** - Full control via React hooks
+A React library for rendering PDFs with built-in search, highlighting, and annotation capabilities.
 
 ## Installation
 
@@ -24,7 +12,13 @@ yarn add pdfjs-reader-core
 pnpm add pdfjs-reader-core
 ```
 
-## Quick Start
+---
+
+## 1. Rendering PDFs
+
+### Quick Start - Full-Featured Viewer
+
+The easiest way to render a PDF with all features enabled:
 
 ```tsx
 import { PDFViewerClient } from 'pdfjs-reader-core';
@@ -37,344 +31,675 @@ function App() {
         src="/document.pdf"
         showToolbar
         showSidebar
+        onDocumentLoad={({ numPages }) => console.log(`Loaded ${numPages} pages`)}
+        onError={(error) => console.error('Failed to load:', error)}
       />
     </div>
   );
 }
 ```
 
-## Usage Examples
+### Custom Viewer with Hooks
 
-### Basic Viewer
-
-```tsx
-import { PDFViewerClient } from 'pdfjs-reader-core';
-import 'pdfjs-reader-core/styles.css';
-
-function BasicViewer() {
-  return (
-    <PDFViewerClient
-      src="https://example.com/document.pdf"
-      showToolbar={true}
-      showSidebar={true}
-      theme="light"
-      onDocumentLoad={({ numPages }) => console.log(`Loaded ${numPages} pages`)}
-      onError={(error) => console.error('Failed to load:', error)}
-    />
-  );
-}
-```
-
-### With Annotations Toolbar
-
-```tsx
-import { PDFViewerClient } from 'pdfjs-reader-core';
-import 'pdfjs-reader-core/styles.css';
-
-function AnnotationViewer() {
-  return (
-    <PDFViewerClient
-      src="/document.pdf"
-      showToolbar
-      showSidebar
-      showAnnotationToolbar={true}  // Enables annotation tools
-      viewMode="continuous"          // continuous | single | dual
-      theme="dark"
-    />
-  );
-}
-```
-
-### Programmatic Highlights
-
-Add highlights programmatically using coordinates:
+For more control, use the provider and hooks:
 
 ```tsx
 import {
   PDFViewerProvider,
-  useHighlights,
   usePDFViewer,
-  DocumentContainer,
-  Toolbar
+  ContinuousScrollContainer,
+  Toolbar,
+  Sidebar,
 } from 'pdfjs-reader-core';
 import 'pdfjs-reader-core/styles.css';
 
-function HighlightDemo() {
-  const { addHighlight, allHighlights } = useHighlights();
-  const { currentPage } = usePDFViewer();
-
-  const handleAddHighlight = () => {
-    addHighlight({
-      pageNumber: currentPage,
-      rects: [
-        { x: 72, y: 100, width: 200, height: 14 },
-        { x: 72, y: 116, width: 150, height: 14 },
-      ],
-      text: 'Highlighted text',
-      color: 'yellow', // yellow | green | blue | pink | orange
-      comment: 'My note',
-    });
-  };
-
-  return (
-    <div>
-      <button onClick={handleAddHighlight}>Add Highlight</button>
-      <p>Total highlights: {allHighlights.length}</p>
-    </div>
-  );
-}
-
-// Wrap with provider
 function App() {
   return (
     <PDFViewerProvider>
-      <Toolbar />
-      <DocumentContainer />
-      <HighlightDemo />
+      <MyPDFViewer />
     </PDFViewerProvider>
   );
 }
-```
 
-### Programmatic Shape Annotations
+function MyPDFViewer() {
+  const { loadDocument, isLoading, error, numPages } = usePDFViewer();
 
-Add shapes (rectangles, circles, arrows, lines) programmatically:
+  useEffect(() => {
+    loadDocument({ src: '/document.pdf' });
+  }, []);
 
-```tsx
-import { useAnnotations, usePDFViewer } from 'pdfjs-reader-core';
-
-function ShapeDemo() {
-  const { createShape, annotations } = useAnnotations();
-  const { currentPage } = usePDFViewer();
-
-  const addRectangle = () => {
-    createShape({
-      pageNumber: currentPage,
-      shapeType: 'rect', // rect | circle | arrow | line
-      x: 100,
-      y: 200,
-      width: 150,
-      height: 80,
-      color: '#ef4444',
-      strokeWidth: 2,
-    });
-  };
-
-  const addCircle = () => {
-    createShape({
-      pageNumber: currentPage,
-      shapeType: 'circle',
-      x: 300,
-      y: 200,
-      width: 80,
-      height: 80,
-      color: '#3b82f6',
-      strokeWidth: 2,
-    });
-  };
-
-  const addArrow = () => {
-    createShape({
-      pageNumber: currentPage,
-      shapeType: 'arrow',
-      x: 100,
-      y: 350,
-      width: 120,
-      height: 40,
-      color: '#22c55e',
-      strokeWidth: 3,
-    });
-  };
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
 
   return (
-    <div>
-      <button onClick={addRectangle}>Add Rectangle</button>
-      <button onClick={addCircle}>Add Circle</button>
-      <button onClick={addArrow}>Add Arrow</button>
-      <p>Total annotations: {annotations.length}</p>
+    <div style={{ display: 'flex', height: '100vh' }}>
+      <Sidebar />
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+        <Toolbar />
+        <ContinuousScrollContainer />
+      </div>
     </div>
   );
 }
 ```
 
-### Search and Highlight Text
-
-Search for text and highlight all matches:
+### Load PDF from Different Sources
 
 ```tsx
-import { usePDFViewer, useHighlights } from 'pdfjs-reader-core';
+const { loadDocument } = usePDFViewer();
 
-function SearchAndHighlight() {
-  const { search, searchResults, goToPage } = usePDFViewer();
-  const { addHighlight } = useHighlights();
+// From URL
+await loadDocument({ src: 'https://example.com/document.pdf' });
+
+// From file input
+const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const file = e.target.files?.[0];
+  if (file) {
+    const arrayBuffer = await file.arrayBuffer();
+    await loadDocument({ src: arrayBuffer });
+  }
+};
+
+// From base64
+const base64 = 'JVBERi0xLjQK...';
+const binaryString = atob(base64);
+const bytes = new Uint8Array(binaryString.length);
+for (let i = 0; i < binaryString.length; i++) {
+  bytes[i] = binaryString.charCodeAt(i);
+}
+await loadDocument({ src: bytes });
+```
+
+### Navigation API
+
+```tsx
+const {
+  currentPage,    // Current page number (1-indexed)
+  numPages,       // Total pages
+  scale,          // Current zoom level (1 = 100%)
+  goToPage,       // Navigate to specific page
+  nextPage,       // Go to next page
+  previousPage,   // Go to previous page
+  setScale,       // Set zoom level
+  zoomIn,         // Zoom in by preset amount
+  zoomOut,        // Zoom out by preset amount
+  fitToWidth,     // Fit page to container width
+  fitToPage,      // Fit entire page in view
+  rotateClockwise, // Rotate 90° clockwise
+} = usePDFViewer();
+
+// Examples
+goToPage(5);           // Go to page 5
+setScale(1.5);         // Set zoom to 150%
+zoomIn();              // Zoom in
+fitToWidth();          // Fit to width
+rotateClockwise();     // Rotate
+```
+
+---
+
+## 2. Search
+
+Search text across all pages and navigate through results.
+
+### Basic Search
+
+```tsx
+const {
+  search,               // (query: string) => Promise<void>
+  searchResults,        // Array of search results
+  currentSearchResult,  // Index of current result
+  nextSearchResult,     // Go to next result
+  previousSearchResult, // Go to previous result
+  clearSearch,          // Clear search
+  goToPage,             // Navigate to page
+} = usePDFViewer();
+
+// Perform search
+await search('important term');
+
+// Navigate results
+console.log(`Found ${searchResults.length} matches`);
+nextSearchResult();     // Go to next match
+previousSearchResult(); // Go to previous match
+
+// Clear when done
+clearSearch();
+```
+
+### Search Result Structure
+
+```typescript
+interface SearchResult {
+  pageNumber: number;    // Page where match was found
+  text: string;          // Matched text
+  index: number;         // Index in results array
+  rects?: {              // Bounding rectangles for highlighting
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  }[];
+}
+```
+
+### Complete Search UI Example
+
+```tsx
+import { useState } from 'react';
+import { usePDFViewer } from 'pdfjs-reader-core';
+
+function SearchBar() {
   const [query, setQuery] = useState('');
+  const {
+    search,
+    searchResults,
+    currentSearchResult,
+    nextSearchResult,
+    previousSearchResult,
+    clearSearch,
+  } = usePDFViewer();
 
-  const handleSearch = async () => {
-    await search(query);
+  const handleSearch = async (text: string) => {
+    setQuery(text);
+    if (text.length >= 2) {
+      await search(text);
+    } else {
+      clearSearch();
+    }
   };
 
-  const highlightAllMatches = () => {
-    for (const result of searchResults) {
-      if (result.rects?.length > 0) {
+  return (
+    <div>
+      <input
+        type="text"
+        value={query}
+        onChange={(e) => handleSearch(e.target.value)}
+        placeholder="Search..."
+      />
+
+      {searchResults.length > 0 && (
+        <div>
+          <span>
+            {currentSearchResult + 1} of {searchResults.length}
+          </span>
+          <button onClick={previousSearchResult}>←</button>
+          <button onClick={nextSearchResult}>→</button>
+          <button onClick={clearSearch}>Clear</button>
+        </div>
+      )}
+    </div>
+  );
+}
+```
+
+---
+
+## 3. Highlighting
+
+Create persistent highlights on PDF text. Highlights are rendered as colored overlays.
+
+### Add Highlight Programmatically
+
+```tsx
+const { addHighlight, highlights, removeHighlight } = usePDFViewer();
+
+// Add a highlight with coordinates
+const highlight = addHighlight({
+  pageNumber: 1,
+  text: 'The highlighted text',
+  color: 'yellow',  // 'yellow' | 'green' | 'blue' | 'pink' | 'orange'
+  rects: [
+    { x: 72, y: 100, width: 200, height: 14 },
+    { x: 72, y: 116, width: 150, height: 14 },  // Multi-line support
+  ],
+  comment: 'Optional note',  // Optional
+});
+
+console.log(highlight.id);  // Unique ID for the highlight
+
+// List all highlights
+highlights.forEach(h => {
+  console.log(`Page ${h.pageNumber}: "${h.text}" (${h.color})`);
+});
+
+// Remove a highlight
+removeHighlight(highlight.id);
+```
+
+### Highlight from Search Results
+
+Convert search results into permanent highlights:
+
+```tsx
+const { search, searchResults, addHighlight } = usePDFViewer();
+
+// Search for a term
+await search('important');
+
+// Highlight all matches
+searchResults.forEach((result) => {
+  if (result.rects && result.rects.length > 0) {
+    addHighlight({
+      pageNumber: result.pageNumber,
+      text: result.text,
+      rects: result.rects,
+      color: 'yellow',
+    });
+  }
+});
+```
+
+### Using the useHighlights Hook
+
+For more control over highlights:
+
+```tsx
+import { useHighlights } from 'pdfjs-reader-core';
+
+function HighlightManager() {
+  const {
+    allHighlights,                 // All highlights
+    highlightsForPage,             // (pageNum) => highlights on that page
+    addHighlight,                  // Add new highlight
+    updateHighlight,               // Update existing
+    deleteHighlight,               // Delete by ID
+    selectedHighlight,             // Currently selected highlight
+    selectHighlight,               // Select a highlight
+    createHighlightFromSelection,  // Create from text selection
+  } = useHighlights({
+    onHighlightCreate: (h) => console.log('Created:', h),
+    onHighlightUpdate: (h) => console.log('Updated:', h),
+    onHighlightDelete: (id) => console.log('Deleted:', id),
+  });
+
+  // Get highlights for page 1
+  const page1Highlights = highlightsForPage(1);
+
+  // Update a highlight's color
+  updateHighlight('highlight-id', { color: 'green' });
+
+  // Add a comment to highlight
+  updateHighlight('highlight-id', { comment: 'This is important!' });
+
+  return (
+    <div>
+      <h3>Highlights ({allHighlights.length})</h3>
+      {allHighlights.map(h => (
+        <div key={h.id} onClick={() => selectHighlight(h.id)}>
+          <span style={{ background: h.color }}>{h.text}</span>
+          <button onClick={() => deleteHighlight(h.id)}>Delete</button>
+        </div>
+      ))}
+    </div>
+  );
+}
+```
+
+### Highlight Type Definition
+
+```typescript
+interface Highlight {
+  id: string;
+  pageNumber: number;
+  rects: { x: number; y: number; width: number; height: number }[];
+  text: string;
+  color: 'yellow' | 'green' | 'blue' | 'pink' | 'orange';
+  comment?: string;
+  source?: 'user' | 'agent';  // Who created it
+  createdAt: Date;
+  updatedAt: Date;
+}
+```
+
+### Persist Highlights
+
+Save and restore highlights:
+
+```tsx
+import {
+  saveHighlights,
+  loadHighlights,
+  exportHighlightsAsJSON,
+  importHighlightsFromJSON,
+} from 'pdfjs-reader-core';
+
+// Save to localStorage
+saveHighlights('doc-123', highlights);
+
+// Load from localStorage
+const saved = loadHighlights('doc-123');
+
+// Export as JSON file
+exportHighlightsAsJSON(highlights, 'my-highlights.json');
+
+// Import from JSON
+const imported = await importHighlightsFromJSON(jsonFile);
+```
+
+---
+
+## 4. Annotations
+
+Add notes, drawings, and shapes to PDFs.
+
+### Add Sticky Notes
+
+```tsx
+import { useAnnotationStore } from 'pdfjs-reader-core';
+
+function NoteManager() {
+  const addNote = useAnnotationStore((s) => s.addNote);
+  const annotations = useAnnotationStore((s) => s.annotations);
+  const deleteAnnotation = useAnnotationStore((s) => s.deleteAnnotation);
+
+  // Add a note at specific position
+  const createNote = () => {
+    addNote({
+      pageNumber: 1,
+      x: 100,        // X position in PDF points
+      y: 200,        // Y position in PDF points
+      content: 'This is my note',
+      color: '#ffeb3b',  // Note color
+    });
+  };
+
+  // List all notes
+  const notes = annotations.filter(a => a.type === 'note');
+
+  return (
+    <div>
+      <button onClick={createNote}>Add Note</button>
+      {notes.map(note => (
+        <div key={note.id}>
+          Page {note.pageNumber}: {note.content}
+          <button onClick={() => deleteAnnotation(note.id)}>Delete</button>
+        </div>
+      ))}
+    </div>
+  );
+}
+```
+
+### Add Shapes
+
+```tsx
+const addShape = useAnnotationStore((s) => s.addShape);
+
+// Rectangle
+addShape({
+  pageNumber: 1,
+  shapeType: 'rect',
+  x: 100,
+  y: 200,
+  width: 150,
+  height: 80,
+  color: '#ef4444',
+  strokeWidth: 2,
+});
+
+// Circle
+addShape({
+  pageNumber: 1,
+  shapeType: 'circle',
+  x: 300,
+  y: 200,
+  width: 100,
+  height: 100,
+  color: '#22c55e',
+  strokeWidth: 2,
+});
+
+// Arrow
+addShape({
+  pageNumber: 1,
+  shapeType: 'arrow',
+  x: 100,
+  y: 350,
+  width: 120,
+  height: 40,
+  color: '#3b82f6',
+  strokeWidth: 3,
+});
+
+// Line
+addShape({
+  pageNumber: 1,
+  shapeType: 'line',
+  x: 100,
+  y: 450,
+  width: 200,
+  height: 0,
+  color: '#000000',
+  strokeWidth: 2,
+});
+```
+
+### Freehand Drawing
+
+```tsx
+const startDrawing = useAnnotationStore((s) => s.startDrawing);
+const addDrawingPoint = useAnnotationStore((s) => s.addDrawingPoint);
+const finishDrawing = useAnnotationStore((s) => s.finishDrawing);
+const setDrawingColor = useAnnotationStore((s) => s.setDrawingColor);
+const setDrawingStrokeWidth = useAnnotationStore((s) => s.setDrawingStrokeWidth);
+
+// Configure drawing
+setDrawingColor('#ff0000');
+setDrawingStrokeWidth(3);
+
+// Start drawing on page 1 at position (100, 200)
+startDrawing(1, { x: 100, y: 200 });
+
+// Add points as user draws
+addDrawingPoint({ x: 110, y: 210 });
+addDrawingPoint({ x: 120, y: 205 });
+addDrawingPoint({ x: 130, y: 215 });
+
+// Finish drawing (saves the annotation)
+finishDrawing();
+```
+
+### Enable Drawing Mode UI
+
+```tsx
+const setActiveAnnotationTool = useAnnotationStore((s) => s.setActiveAnnotationTool);
+const activeAnnotationTool = useAnnotationStore((s) => s.activeAnnotationTool);
+
+// Enable drawing mode
+setActiveAnnotationTool('draw');
+
+// Enable note mode (click to add notes)
+setActiveAnnotationTool('note');
+
+// Enable shape mode
+setActiveAnnotationTool('shape');
+
+// Disable annotation mode
+setActiveAnnotationTool(null);
+
+// Check current mode
+if (activeAnnotationTool === 'draw') {
+  console.log('Drawing mode is active');
+}
+```
+
+### Annotation Type Definition
+
+```typescript
+interface Annotation {
+  id: string;
+  pageNumber: number;
+  type: 'note' | 'drawing' | 'shape';
+
+  // For notes
+  content?: string;
+  x?: number;
+  y?: number;
+
+  // For shapes
+  shapeType?: 'rect' | 'circle' | 'arrow' | 'line';
+  width?: number;
+  height?: number;
+
+  // For drawings
+  points?: { x: number; y: number }[];
+
+  // Common
+  color: string;
+  strokeWidth?: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+```
+
+---
+
+## 5. Complete Example
+
+Here's a full example combining rendering, search, highlighting, and annotations:
+
+```tsx
+import { useState, useEffect } from 'react';
+import {
+  PDFViewerProvider,
+  usePDFViewer,
+  useHighlights,
+  useAnnotationStore,
+  ContinuousScrollContainer,
+} from 'pdfjs-reader-core';
+import 'pdfjs-reader-core/styles.css';
+
+function App() {
+  return (
+    <PDFViewerProvider>
+      <div style={{ display: 'flex', height: '100vh' }}>
+        <ControlPanel />
+        <div style={{ flex: 1 }}>
+          <ContinuousScrollContainer />
+        </div>
+      </div>
+    </PDFViewerProvider>
+  );
+}
+
+function ControlPanel() {
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // PDF viewer controls
+  const {
+    loadDocument,
+    currentPage,
+    numPages,
+    goToPage,
+    search,
+    searchResults,
+    clearSearch,
+  } = usePDFViewer();
+
+  // Highlight controls
+  const { allHighlights, addHighlight, deleteHighlight } = useHighlights();
+
+  // Annotation controls
+  const addNote = useAnnotationStore((s) => s.addNote);
+  const annotations = useAnnotationStore((s) => s.annotations);
+
+  // Load PDF on mount
+  useEffect(() => {
+    loadDocument({ src: '/sample.pdf' });
+  }, []);
+
+  // Search handler
+  const handleSearch = async () => {
+    if (searchQuery.length >= 2) {
+      await search(searchQuery);
+    }
+  };
+
+  // Highlight all search results
+  const highlightSearchResults = () => {
+    searchResults.forEach((result) => {
+      if (result.rects?.length) {
         addHighlight({
           pageNumber: result.pageNumber,
-          rects: result.rects,
           text: result.text,
+          rects: result.rects,
           color: 'yellow',
         });
       }
-    }
-    // Navigate to first match
-    if (searchResults.length > 0) {
-      goToPage(searchResults[0].pageNumber);
-    }
+    });
+    clearSearch();
+    setSearchQuery('');
+  };
+
+  // Add note at center of current page
+  const addNoteToCurrentPage = () => {
+    addNote({
+      pageNumber: currentPage,
+      x: 300,
+      y: 400,
+      content: 'New note',
+      color: '#ffeb3b',
+    });
   };
 
   return (
-    <div>
-      <input
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        placeholder="Search text..."
-      />
-      <button onClick={handleSearch}>Search</button>
-      <button onClick={highlightAllMatches}>
-        Highlight All ({searchResults.length} matches)
-      </button>
-    </div>
-  );
-}
-```
-
-### Navigation and Zoom Controls
-
-```tsx
-import { usePDFViewer } from 'pdfjs-reader-core';
-
-function CustomControls() {
-  const {
-    currentPage,
-    numPages,
-    scale,
-    goToPage,
-    nextPage,
-    previousPage,
-    zoomIn,
-    zoomOut,
-    setScale,
-    fitToWidth,
-    fitToPage,
-    rotateClockwise,
-  } = usePDFViewer();
-
-  return (
-    <div>
+    <div style={{ width: 300, padding: 16, borderRight: '1px solid #ccc' }}>
       {/* Navigation */}
-      <button onClick={previousPage} disabled={currentPage <= 1}>Previous</button>
-      <span>{currentPage} / {numPages}</span>
-      <button onClick={nextPage} disabled={currentPage >= numPages}>Next</button>
+      <div>
+        <h3>Navigation</h3>
+        <button onClick={() => goToPage(currentPage - 1)}>Previous</button>
+        <span> Page {currentPage} of {numPages} </span>
+        <button onClick={() => goToPage(currentPage + 1)}>Next</button>
+      </div>
 
-      {/* Jump to page */}
-      <input
-        type="number"
-        min={1}
-        max={numPages}
-        value={currentPage}
-        onChange={(e) => goToPage(parseInt(e.target.value))}
-      />
+      {/* Search */}
+      <div>
+        <h3>Search</h3>
+        <input
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Search..."
+        />
+        <button onClick={handleSearch}>Search</button>
+        {searchResults.length > 0 && (
+          <div>
+            <p>Found {searchResults.length} matches</p>
+            <button onClick={highlightSearchResults}>
+              Highlight All
+            </button>
+          </div>
+        )}
+      </div>
 
-      {/* Zoom */}
-      <button onClick={zoomOut}>-</button>
-      <span>{Math.round(scale * 100)}%</span>
-      <button onClick={zoomIn}>+</button>
-      <button onClick={fitToWidth}>Fit Width</button>
-      <button onClick={fitToPage}>Fit Page</button>
+      {/* Highlights */}
+      <div>
+        <h3>Highlights ({allHighlights.length})</h3>
+        {allHighlights.map((h) => (
+          <div key={h.id}>
+            <span style={{ background: h.color }}>
+              Page {h.pageNumber}: {h.text.slice(0, 30)}...
+            </span>
+            <button onClick={() => deleteHighlight(h.id)}>×</button>
+          </div>
+        ))}
+      </div>
 
-      {/* Rotation */}
-      <button onClick={rotateClockwise}>Rotate</button>
+      {/* Annotations */}
+      <div>
+        <h3>Notes ({annotations.filter(a => a.type === 'note').length})</h3>
+        <button onClick={addNoteToCurrentPage}>Add Note</button>
+      </div>
     </div>
   );
 }
+
+export default App;
 ```
 
-### Theme Switching
-
-```tsx
-import { usePDFViewer } from 'pdfjs-reader-core';
-
-function ThemeSwitcher() {
-  const { theme, setTheme } = usePDFViewer();
-
-  return (
-    <select value={theme} onChange={(e) => setTheme(e.target.value)}>
-      <option value="light">Light</option>
-      <option value="dark">Dark</option>
-      <option value="sepia">Sepia</option>
-    </select>
-  );
-}
-```
-
-### View Mode Switching
-
-```tsx
-import { usePDFViewer } from 'pdfjs-reader-core';
-
-function ViewModeSwitcher() {
-  const { viewMode, setViewMode } = usePDFViewer();
-
-  return (
-    <select value={viewMode} onChange={(e) => setViewMode(e.target.value)}>
-      <option value="single">Single Page</option>
-      <option value="continuous">Continuous Scroll</option>
-      <option value="dual">Dual Page</option>
-    </select>
-  );
-}
-```
-
-### Export/Import Annotations
-
-```tsx
-import { useAnnotations, useHighlights } from 'pdfjs-reader-core';
-
-function ExportImport() {
-  const { exportAnnotations, importAnnotations } = useAnnotations();
-  const { allHighlights } = useHighlights();
-
-  const handleExport = () => {
-    const json = exportAnnotations();
-    // Save to file or send to server
-    console.log(json);
-  };
-
-  const handleImport = (jsonString: string) => {
-    importAnnotations(jsonString);
-  };
-
-  return (
-    <div>
-      <button onClick={handleExport}>Export Annotations</button>
-      <button onClick={() => handleImport('[]')}>Import Annotations</button>
-    </div>
-  );
-}
-```
+---
 
 ## API Reference
-
-### Components
-
-| Component | Description |
-|-----------|-------------|
-| `PDFViewerClient` | Full-featured viewer with built-in provider (easiest to use) |
-| `PDFViewerProvider` | Context provider for using hooks |
-| `DocumentContainer` | Single page view container |
-| `ContinuousScrollContainer` | Continuous scroll view container |
-| `DualPageContainer` | Dual page (book) view container |
-| `Toolbar` | Navigation and zoom toolbar |
-| `Sidebar` | Thumbnails, outline, search panel |
-| `AnnotationToolbar` | Drawing and annotation tools |
 
 ### PDFViewerClient Props
 
@@ -383,220 +708,155 @@ function ExportImport() {
 | `src` | `string \| ArrayBuffer` | required | PDF source URL or data |
 | `showToolbar` | `boolean` | `true` | Show the toolbar |
 | `showSidebar` | `boolean` | `true` | Show the sidebar |
-| `showAnnotationToolbar` | `boolean` | `false` | Show annotation tools |
-| `viewMode` | `'single' \| 'continuous' \| 'dual'` | `'single'` | Page view mode |
+| `viewMode` | `'single' \| 'continuous' \| 'dual'` | `'continuous'` | Page view mode |
 | `theme` | `'light' \| 'dark' \| 'sepia'` | `'light'` | Color theme |
 | `initialPage` | `number` | `1` | Initial page to display |
 | `initialScale` | `number` | `1` | Initial zoom scale |
 | `onDocumentLoad` | `(event) => void` | - | Called when document loads |
 | `onPageChange` | `(page) => void` | - | Called when page changes |
-| `onScaleChange` | `(scale) => void` | - | Called when zoom changes |
 | `onError` | `(error) => void` | - | Called on error |
 
-### Hooks
+### usePDFViewer() Return Value
 
-#### `usePDFViewer()`
-
-Main hook for viewer state and actions.
-
-```tsx
-const {
-  // Document state
-  document,        // PDFDocumentProxy
-  numPages,        // Total pages
-  isLoading,       // Loading state
-  error,           // Error state
+```typescript
+{
+  // Document
+  document: PDFDocumentProxy | null;
+  numPages: number;
+  isLoading: boolean;
+  error: Error | null;
+  loadDocument: (options: LoadOptions) => Promise<void>;
 
   // Navigation
-  currentPage,     // Current page number
-  goToPage,        // (page: number) => void
-  nextPage,        // () => void
-  previousPage,    // () => void
+  currentPage: number;
+  goToPage: (page: number) => void;
+  nextPage: () => void;
+  previousPage: () => void;
 
   // Zoom
-  scale,           // Current zoom level
-  setScale,        // (scale: number) => void
-  zoomIn,          // () => void
-  zoomOut,         // () => void
-  fitToWidth,      // () => void
-  fitToPage,       // () => void
+  scale: number;
+  setScale: (scale: number) => void;
+  zoomIn: () => void;
+  zoomOut: () => void;
+  fitToWidth: () => void;
+  fitToPage: () => void;
 
   // Rotation
-  rotation,        // Current rotation (0, 90, 180, 270)
-  rotateClockwise, // () => void
+  rotation: number;
+  rotateClockwise: () => void;
+  rotateCounterClockwise: () => void;
 
-  // Theme & UI
-  theme,           // 'light' | 'dark' | 'sepia'
-  setTheme,        // (theme) => void
-  viewMode,        // 'single' | 'continuous' | 'dual'
-  setViewMode,     // (mode) => void
-  sidebarOpen,     // Sidebar visibility
-  toggleSidebar,   // () => void
+  // Theme
+  theme: 'light' | 'dark' | 'sepia';
+  setTheme: (theme: Theme) => void;
+
+  // View mode
+  viewMode: 'single' | 'continuous' | 'dual';
+  setViewMode: (mode: ViewMode) => void;
 
   // Search
-  search,          // (query: string) => Promise<void>
-  searchResults,   // SearchResult[]
-  clearSearch,     // () => void
-} = usePDFViewer();
-```
+  search: (query: string) => Promise<void>;
+  searchResults: SearchResult[];
+  currentSearchResult: number;
+  nextSearchResult: () => void;
+  previousSearchResult: () => void;
+  clearSearch: () => void;
 
-#### `useHighlights(options?)`
-
-Hook for managing text highlights.
-
-```tsx
-const {
-  // State
-  allHighlights,       // Highlight[]
-  selectedHighlight,   // Current selection
-  activeColor,         // Active highlight color
-
-  // Actions
-  addHighlight,        // Add highlight with coordinates
-  createHighlightFromSelection,  // Create from text selection
-  updateHighlight,     // (id, updates) => void
-  deleteHighlight,     // (id) => void
-  selectHighlight,     // (id) => void
-  setActiveColor,      // (color) => void
-  highlightsForPage,   // (pageNumber) => Highlight[]
-} = useHighlights({
-  onHighlightCreate: (highlight) => {},
-  onHighlightUpdate: (highlight) => {},
-  onHighlightDelete: (id) => {},
-});
-```
-
-#### `useAnnotations(options?)`
-
-Hook for managing annotations (notes, drawings, shapes).
-
-```tsx
-const {
-  // State
-  annotations,         // Annotation[]
-  selectedAnnotation,  // Current selection
-  activeTool,          // 'note' | 'draw' | 'shape' | null
-  activeShapeType,     // 'rect' | 'circle' | 'arrow' | 'line'
-  drawingColor,        // Current drawing color
-  drawingStrokeWidth,  // Current stroke width
-
-  // Tool actions
-  setActiveTool,       // (tool) => void
-  setActiveShapeType,  // (type) => void
-  setDrawingColor,     // (color) => void
-  setDrawingStrokeWidth, // (width) => void
-
-  // Note actions
-  createNote,          // (page, x, y, content?, color?) => Note
-  updateNote,          // (id, updates) => void
-
-  // Shape actions
-  createShape,         // (options) => Shape
-  updateShape,         // (id, updates) => void
-
-  // Drawing actions
-  startDrawing,        // (page, point) => void
-  continueDrawing,     // (point) => void
-  finishDrawing,       // () => Annotation | null
-
-  // General
-  selectAnnotation,    // (id) => void
-  deleteAnnotation,    // (id) => void
-  getAnnotationsByPage, // (page) => Annotation[]
-  exportAnnotations,   // () => string (JSON)
-  importAnnotations,   // (json) => void
-} = useAnnotations({
-  onAnnotationCreate: (annotation) => {},
-  onAnnotationUpdate: (annotation) => {},
-  onAnnotationDelete: (id) => {},
-});
-```
-
-## Types
-
-### Highlight
-
-```typescript
-interface Highlight {
-  id: string;
-  pageNumber: number;
-  rects: HighlightRect[];
-  text: string;
-  color: 'yellow' | 'green' | 'blue' | 'pink' | 'orange';
-  comment?: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-interface HighlightRect {
-  x: number;      // PDF points from left
-  y: number;      // PDF points from top
-  width: number;  // Width in PDF points
-  height: number; // Height in PDF points
+  // Highlights
+  highlights: Highlight[];
+  addHighlight: (params: AddHighlightParams) => Highlight;
+  removeHighlight: (id: string) => void;
 }
 ```
 
-### Annotation
+### Coordinate System
 
-```typescript
-type Annotation = NoteAnnotation | DrawingAnnotation | ShapeAnnotation;
-
-interface NoteAnnotation {
-  id: string;
-  type: 'note';
-  pageNumber: number;
-  x: number;
-  y: number;
-  content: string;
-  color: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-interface ShapeAnnotation {
-  id: string;
-  type: 'shape';
-  pageNumber: number;
-  shapeType: 'rect' | 'circle' | 'arrow' | 'line';
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  color: string;
-  strokeWidth: number;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-interface DrawingAnnotation {
-  id: string;
-  type: 'drawing';
-  pageNumber: number;
-  paths: { points: { x: number; y: number }[] }[];
-  color: string;
-  strokeWidth: number;
-  createdAt: Date;
-  updatedAt: Date;
-}
-```
-
-## Coordinate System
-
-PDF coordinates are in **points** (1 point = 1/72 inch):
+PDF coordinates use **points** (1 point = 1/72 inch):
 - Origin (0, 0) is at the **top-left** corner
 - X increases to the right
 - Y increases downward
-- Standard US Letter page: 612 x 792 points
+- Standard US Letter: 612 × 792 points (8.5" × 11")
 
-Example: To place a highlight 1 inch from the left and 2 inches from the top:
 ```tsx
-addHighlight({
-  pageNumber: 1,
-  rects: [{ x: 72, y: 144, width: 100, height: 14 }],
-  text: 'Example',
-  color: 'yellow',
-});
+// Place element 1 inch from left, 2 inches from top
+const x = 72;   // 1 inch × 72 points/inch
+const y = 144;  // 2 inches × 72 points/inch
 ```
+
+---
+
+## Additional Features
+
+### Themes
+
+```tsx
+const { theme, setTheme } = usePDFViewer();
+
+setTheme('light');  // Light background
+setTheme('dark');   // Dark background
+setTheme('sepia');  // Sepia/warm background
+```
+
+### View Modes
+
+```tsx
+const { viewMode, setViewMode } = usePDFViewer();
+
+setViewMode('single');      // One page at a time
+setViewMode('continuous');  // Scrollable pages (virtualized)
+setViewMode('dual');        // Two pages side by side
+```
+
+### Document Outline
+
+```tsx
+import { getOutline } from 'pdfjs-reader-core';
+
+const outline = await getOutline(document);
+// Returns table of contents structure
+```
+
+### Export Annotations
+
+```tsx
+import {
+  exportHighlightsAsJSON,
+  exportHighlightsAsMarkdown,
+  downloadAnnotationsAsMarkdown,
+} from 'pdfjs-reader-core';
+
+// Export highlights as JSON
+exportHighlightsAsJSON(highlights, 'highlights.json');
+
+// Export as readable Markdown
+downloadAnnotationsAsMarkdown({
+  highlights,
+  documentTitle: 'My Document',
+}, 'notes.md');
+```
+
+---
+
+## Performance
+
+The library is optimized for fast rendering:
+
+- **Virtualization** - Only visible pages are rendered
+- **Range requests** - Downloads only needed PDF data
+- **Page caching** - Loaded pages are cached
+- **Full quality** - Renders at device pixel ratio for crisp text
+
+```tsx
+import { loadDocument, preloadDocument, clearDocumentCache } from 'pdfjs-reader-core';
+
+// Preload next document
+await preloadDocument('/next-doc.pdf');
+
+// Clear cache to free memory
+clearDocumentCache('/doc.pdf');
+```
+
+---
 
 ## Browser Support
 
@@ -608,8 +868,3 @@ addHighlight({
 ## License
 
 MIT
-
-## Links
-
-- [GitHub Repository](https://github.com/suhasTeju/pdf-reader-js)
-- [Report Issues](https://github.com/suhasTeju/pdf-reader-js/issues)

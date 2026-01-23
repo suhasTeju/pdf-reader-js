@@ -13,6 +13,7 @@ export {
   TextLayer,
   HighlightLayer,
   AnnotationLayer,
+  FocusRegionLayer,
   // Toolbar
   Toolbar,
   MobileToolbar,
@@ -23,6 +24,8 @@ export {
   SearchPanel,
   OutlinePanel,
   HighlightsPanel,
+  BookmarksPanel,
+  TakeawaysPanel,
   // Popovers
   SelectionToolbar,
   HighlightPopover,
@@ -32,6 +35,13 @@ export {
   DrawingCanvas,
   ShapeRenderer,
   ShapePreview,
+  QuickNoteButton,
+  QuickNotePopover,
+  // Ask About
+  AskAboutOverlay,
+  AskAboutTrigger,
+  // Minimap
+  Minimap,
   // Error Boundary
   PDFErrorBoundary,
   withErrorBoundary,
@@ -44,6 +54,8 @@ export {
   useViewerStore,
   useAnnotationStore,
   useSearchStore,
+  useAgentStore,
+  useStudentStore,
   usePDFViewerStores,
   usePDFViewer,
   usePageNavigation,
@@ -55,6 +67,12 @@ export {
   useIsTouchDevice,
   useIsMobile,
   usePlugins,
+  // Student Learning Hooks
+  useAgentContext,
+  useAskAbout,
+  useBookmarks,
+  useQuickNotes,
+  useStudentProgress,
 } from './hooks';
 
 // Stores
@@ -62,6 +80,8 @@ export {
   createViewerStore,
   createAnnotationStore,
   createSearchStore,
+  createAgentStore,
+  createStudentStore,
 } from './store';
 
 // Plugins
@@ -94,6 +114,20 @@ export {
   // Convenience API
   createPDFViewer,
   quickViewer,
+  // Student Learning Utils
+  exportAnnotationsAsMarkdown,
+  exportAnnotationsAsJSON,
+  downloadAnnotationsAsMarkdown,
+  downloadAnnotationsAsJSON,
+  downloadFile,
+  // Student Storage
+  saveStudentData,
+  loadStudentData,
+  clearStudentData,
+  getAllStudentDataDocumentIds,
+  getStorageStats,
+  // Agent API
+  createAgentAPI,
 } from './utils';
 
 // Types
@@ -140,6 +174,23 @@ export type {
   SidebarPanelConfig,
   ContextMenuItem,
   PDFViewerEventMap,
+
+  // Agent & Student Learning types
+  AgentContext,
+  AskAboutContext,
+  PDFRegion,
+  FocusedRegion,
+  Bookmark,
+  QuickNote,
+  Takeaway,
+  AgentHighlightParams,
+  AgentAPI,
+  StudentState,
+  StudentActions,
+  AgentState,
+  AgentActions,
+  StudentModeCallbacks,
+  StudentModeProps,
 } from './types';
 
 // Store types
@@ -155,6 +206,10 @@ export type {
   SearchStore,
   SearchStoreApi,
   SearchActions,
+  AgentStore,
+  AgentStoreApi,
+  StudentStore,
+  StudentStoreApi,
 } from './store';
 
 // Hook types
@@ -171,6 +226,16 @@ export type {
   UseTouchGesturesOptions,
   UsePluginsOptions,
   UsePluginsReturn,
+  UseAgentContextOptions,
+  UseAgentContextReturn,
+  UseAskAboutOptions,
+  UseAskAboutReturn,
+  UseBookmarksOptions,
+  UseBookmarksReturn,
+  UseQuickNotesOptions,
+  UseQuickNotesReturn,
+  UseStudentProgressOptions,
+  UseStudentProgressReturn,
 } from './hooks';
 
 // Component types
@@ -180,6 +245,7 @@ export type {
   TextLayerProps,
   HighlightLayerProps,
   AnnotationLayerProps,
+  FocusRegionLayerProps,
   ToolbarProps,
   MobileToolbarProps,
   SidebarProps,
@@ -188,6 +254,8 @@ export type {
   SearchPanelProps,
   OutlinePanelProps,
   HighlightsPanelProps,
+  BookmarksPanelProps,
+  TakeawaysPanelProps,
   DocumentContainerProps,
   VirtualizedDocumentContainerProps,
   ContinuousScrollContainerProps,
@@ -199,6 +267,11 @@ export type {
   DrawingCanvasProps,
   ShapeRendererProps,
   ShapePreviewProps,
+  QuickNoteButtonProps,
+  QuickNotePopoverProps,
+  AskAboutOverlayProps,
+  AskAboutTriggerProps,
+  MinimapProps,
   PDFErrorBoundaryProps,
   WithErrorBoundaryProps,
 } from './components';
@@ -212,4 +285,9 @@ export type {
   LoadDocumentResult,
   PDFViewerController,
   PDFViewerControllerOptions,
+  ExportData,
+  StoredStudentData,
+  StudentData,
+  AgentAPIStores,
+  AgentAPIInstance,
 } from './utils';

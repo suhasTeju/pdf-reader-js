@@ -4,15 +4,21 @@ import {
   createViewerStore,
   createAnnotationStore,
   createSearchStore,
+  createAgentStore,
+  createStudentStore,
   type ViewerStoreApi,
   type AnnotationStoreApi,
   type SearchStoreApi,
+  type AgentStoreApi,
+  type StudentStoreApi,
   type ViewerStore,
   type AnnotationStore,
   type SearchStore,
+  type AgentStore,
+  type StudentStore,
   type AnnotationState,
 } from '../store';
-import type { ViewerState, SearchState, Theme, SidebarPanel } from '../types';
+import type { ViewerState, SearchState, Theme, SidebarPanel, AgentState, StudentState } from '../types';
 
 // ============================================================================
 // Context Types
@@ -22,6 +28,8 @@ export interface PDFViewerContextValue {
   viewerStore: ViewerStoreApi;
   annotationStore: AnnotationStoreApi;
   searchStore: SearchStoreApi;
+  agentStore: AgentStoreApi;
+  studentStore: StudentStoreApi;
 }
 
 export interface PDFViewerProviderProps {
@@ -30,9 +38,13 @@ export interface PDFViewerProviderProps {
     viewer?: Partial<ViewerState>;
     annotation?: Partial<AnnotationState>;
     search?: Partial<SearchState>;
+    agent?: Partial<AgentState>;
+    student?: Partial<StudentState>;
   };
   theme?: Theme;
   defaultSidebarPanel?: SidebarPanel;
+  /** Enable student learning mode features */
+  studentMode?: boolean;
 }
 
 // ============================================================================
@@ -50,10 +62,13 @@ export function PDFViewerProvider({
   initialState,
   theme = 'light',
   defaultSidebarPanel = 'thumbnails',
+  studentMode: _studentMode = false,
 }: PDFViewerProviderProps) {
   const viewerStoreRef = useRef<ViewerStoreApi | null>(null);
   const annotationStoreRef = useRef<AnnotationStoreApi | null>(null);
   const searchStoreRef = useRef<SearchStoreApi | null>(null);
+  const agentStoreRef = useRef<AgentStoreApi | null>(null);
+  const studentStoreRef = useRef<StudentStoreApi | null>(null);
 
   // Create stores only once
   if (!viewerStoreRef.current) {
@@ -72,10 +87,21 @@ export function PDFViewerProvider({
     searchStoreRef.current = createSearchStore(initialState?.search);
   }
 
+  // Create agent and student stores (always created for API consistency)
+  if (!agentStoreRef.current) {
+    agentStoreRef.current = createAgentStore(initialState?.agent);
+  }
+
+  if (!studentStoreRef.current) {
+    studentStoreRef.current = createStudentStore(initialState?.student);
+  }
+
   // Cleanup on unmount
   useEffect(() => {
     return () => {
       viewerStoreRef.current?.getState().reset();
+      agentStoreRef.current?.getState().reset();
+      studentStoreRef.current?.getState().reset();
     };
   }, []);
 
@@ -85,6 +111,8 @@ export function PDFViewerProvider({
         viewerStore: viewerStoreRef.current,
         annotationStore: annotationStoreRef.current,
         searchStore: searchStoreRef.current,
+        agentStore: agentStoreRef.current,
+        studentStore: studentStoreRef.current,
       }}
     >
       {children}
@@ -129,6 +157,24 @@ export function useAnnotationStore<T>(selector: (state: AnnotationStore) => T): 
 export function useSearchStore<T>(selector: (state: SearchStore) => T): T {
   const { searchStore } = usePDFViewerContext();
   return useStore(searchStore, selector);
+}
+
+/**
+ * Hook to access the agent store.
+ * Optionally pass a selector to subscribe to specific state.
+ */
+export function useAgentStore<T>(selector: (state: AgentStore) => T): T {
+  const { agentStore } = usePDFViewerContext();
+  return useStore(agentStore, selector);
+}
+
+/**
+ * Hook to access the student store.
+ * Optionally pass a selector to subscribe to specific state.
+ */
+export function useStudentStore<T>(selector: (state: StudentStore) => T): T {
+  const { studentStore } = usePDFViewerContext();
+  return useStore(studentStore, selector);
 }
 
 /**

@@ -4,3 +4,5 @@ export { ThumbnailPanel, type ThumbnailPanelProps } from './ThumbnailPanel';
 export { SearchPanel, type SearchPanelProps } from './SearchPanel';
 export { OutlinePanel, type OutlinePanelProps } from './OutlinePanel';
 export { HighlightsPanel, type HighlightsPanelProps } from './HighlightsPanel';
+export { BookmarksPanel, type BookmarksPanelProps } from './BookmarksPanel';
+export { TakeawaysPanel, type TakeawaysPanelProps } from './TakeawaysPanel';
