@@ -1,6 +1,6 @@
 {
   "name": "pdfjs-reader-core",
-  "version": "0.2.3",
+  "version": "0.2.5",
   "description": "A Next.js-compatible PDF renderer with canvas rendering, annotations, and search",
   "author": "suhas <suhasrdev@gmail.com>",
   "license": "MIT",
@@ -36,8 +36,10 @@
     "**/*.css"
   ],
   "scripts": {
-    "build": "tsup",
+    "build": "tsup && pnpm build:css",
+    "build:css": "tailwindcss -i ./src/styles/index.css -o ./dist/styles.css --minify",
     "dev": "tsup --watch",
+    "dev:css": "tailwindcss -i ./src/styles/index.css -o ./dist/styles.css --watch",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src --ext .ts,.tsx",
     "test": "vitest run",
