@@ -1,7 +1,7 @@
 import { memo, useEffect, useState, useRef, useCallback } from 'react';
 import type { PDFPageProxy, PDFDocumentProxy } from 'pdfjs-dist';
 import { PDFPage } from '../PDFPage';
-import { usePDFViewer, useTextSelection, useTouchGestures, useIsTouchDevice } from '../../hooks';
+import { usePDFViewer, usePDFViewerStores, useTextSelection, useTouchGestures, useIsTouchDevice, useViewerStore } from '../../hooks';
 import { useHighlights } from '../../hooks/useHighlights';
 import { SelectionToolbar } from '../SelectionToolbar';
 import { HighlightPopover } from '../HighlightPopover';
@@ -56,6 +56,10 @@ export const VirtualizedDocumentContainer = memo(function VirtualizedDocumentCon
     nextPage,
     previousPage,
   } = usePDFViewer();
+
+  // Get scroll request from store
+  const scrollToPageRequest = useViewerStore((s) => s.scrollToPageRequest);
+  const { viewerStore } = usePDFViewerStores();
 
   const containerRef = useRef<HTMLDivElement | null>(null);
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
@@ -237,8 +241,65 @@ export const VirtualizedDocumentContainer = memo(function VirtualizedDocumentCon
     loadPages();
   }, [document, visiblePages, pageObjects]);
 
-  // Scroll to page when currentPage changes externally
+  // Handle scroll requests from the store
   useEffect(() => {
+    if (!scrollToPageRequest || !scrollContainerRef.current || pageInfos.length === 0) return;
+
+    const { page, requestId, behavior } = scrollToPageRequest;
+    const pageInfo = pageInfos.find((p) => p.pageNumber === page);
+
+    if (!pageInfo) {
+      // Page not found, complete the request immediately
+      viewerStore.getState().completeScrollRequest(requestId);
+      return;
+    }
+
+    const container = scrollContainerRef.current;
+    const targetScroll = pageInfo.top - pageGap;
+
+    // Check if already at target
+    const scrollTop = container.scrollTop;
+    const viewportHeight = container.clientHeight;
+    const isVisible = targetScroll >= scrollTop && pageInfo.top + pageInfo.height <= scrollTop + viewportHeight;
+
+    if (isVisible) {
+      // Already visible, complete immediately
+      viewerStore.getState().completeScrollRequest(requestId);
+      return;
+    }
+
+    // Perform scroll
+    container.scrollTo({
+      top: targetScroll,
+      behavior,
+    });
+
+    // Handle scroll completion
+    if (behavior === 'instant') {
+      // For instant scrolls, complete immediately after setting scroll position
+      requestAnimationFrame(() => {
+        viewerStore.getState().completeScrollRequest(requestId);
+      });
+    } else {
+      // For smooth scrolls, detect scroll end
+      let scrollEndTimeout: ReturnType<typeof setTimeout>;
+      const handleScrollEnd = () => {
+        clearTimeout(scrollEndTimeout);
+        scrollEndTimeout = setTimeout(() => {
+          container.removeEventListener('scroll', handleScrollEnd);
+          viewerStore.getState().completeScrollRequest(requestId);
+        }, 100);
+      };
+
+      container.addEventListener('scroll', handleScrollEnd, { passive: true });
+      handleScrollEnd(); // Start the timeout
+    }
+  }, [scrollToPageRequest, pageInfos, pageGap, viewerStore]);
+
+  // Scroll to page when currentPage changes externally (without scroll request)
+  useEffect(() => {
+    // Skip if there's an active scroll request (it will handle scrolling)
+    if (scrollToPageRequest) return;
     if (!scrollContainerRef.current || pageInfos.length === 0) return;
 
     const pageInfo = pageInfos.find((p) => p.pageNumber === currentPage);
@@ -257,7 +318,7 @@ export const VirtualizedDocumentContainer = memo(function VirtualizedDocumentCon
         });
       }
     }
-  }, [currentPage, pageInfos, pageGap]);
+  }, [currentPage, pageInfos, pageGap, scrollToPageRequest]);
 
   // Touch gesture handlers
   const handlePinchZoom = useCallback(

@@ -15,6 +15,8 @@ export { AnnotationToolbar } from './AnnotationToolbar';
 export { StickyNote, DrawingCanvas, ShapeRenderer, ShapePreview, QuickNoteButton, QuickNotePopover } from './Annotations';
 export { AskAboutOverlay, AskAboutTrigger } from './AskAbout';
 export { Minimap } from './Minimap';
+export { FloatingZoomControls } from './FloatingZoomControls';
+export { PDFThumbnailNav } from './PDFThumbnailNav';
 export { PDFErrorBoundary, withErrorBoundary } from './ErrorBoundary';
 
 // Re-export types
@@ -33,4 +35,6 @@ export type { AnnotationToolbarProps } from './AnnotationToolbar';
 export type { StickyNoteProps, DrawingCanvasProps, ShapeRendererProps, ShapePreviewProps, QuickNoteButtonProps, QuickNotePopoverProps } from './Annotations';
 export type { AskAboutOverlayProps, AskAboutTriggerProps } from './AskAbout';
 export type { MinimapProps } from './Minimap';
+export type { FloatingZoomControlsProps } from './FloatingZoomControls';
+export type { PDFThumbnailNavProps } from './PDFThumbnailNav';
 export type { PDFErrorBoundaryProps, WithErrorBoundaryProps } from './ErrorBoundary';

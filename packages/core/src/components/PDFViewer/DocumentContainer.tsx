@@ -1,7 +1,7 @@
 import { memo, useEffect, useState, useRef, useCallback } from 'react';
 import type { PDFPageProxy, PDFDocumentProxy } from 'pdfjs-dist';
 import { PDFPage } from '../PDFPage';
-import { usePDFViewer, useTextSelection, useTouchGestures, useIsTouchDevice } from '../../hooks';
+import { usePDFViewer, usePDFViewerStores, useTextSelection, useTouchGestures, useIsTouchDevice, useViewerStore } from '../../hooks';
 import { useHighlights } from '../../hooks/useHighlights';
 import { SelectionToolbar } from '../SelectionToolbar';
 import { HighlightPopover } from '../HighlightPopover';
@@ -28,6 +28,10 @@ export const DocumentContainer = memo(function DocumentContainer({
     nextPage,
     previousPage,
   } = usePDFViewer();
+
+  // Get scroll request from store
+  const scrollToPageRequest = useViewerStore((s) => s.scrollToPageRequest);
+  const { viewerStore } = usePDFViewerStores();
   const [currentPageObj, setCurrentPageObj] = useState<PDFPageProxy | null>(null);
   const [isLoadingPage, setIsLoadingPage] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -115,6 +119,14 @@ export const DocumentContainer = memo(function DocumentContainer({
 
         if (!cancelled && document === documentRef.current) {
           setCurrentPageObj(page);
+
+          // Complete scroll request if this page load was requested
+          if (scrollToPageRequest && scrollToPageRequest.page === currentPage) {
+            // Use requestAnimationFrame to ensure page is rendered
+            requestAnimationFrame(() => {
+              viewerStore.getState().completeScrollRequest(scrollToPageRequest.requestId);
+            });
+          }
         }
       } catch (error) {
         if (!cancelled) {
@@ -136,7 +148,7 @@ export const DocumentContainer = memo(function DocumentContainer({
     return () => {
       cancelled = true;
     };
-  }, [document, currentPage]);
+  }, [document, currentPage, scrollToPageRequest, viewerStore]);
 
   // Get the page element for coordinate calculations
   const getPageElement = useCallback((): HTMLElement | null => {

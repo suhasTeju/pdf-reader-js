@@ -54,6 +54,36 @@ export {
   type AgentAPIInstance,
 } from './agent-api';
 
+// Text Search Utilities
+export {
+  extractPageText,
+  findTextOnPage,
+  findTextInDocument,
+  mergeAdjacentRects,
+  getPageText,
+  countTextOnPage,
+  type TextMatch,
+  type FindTextOptions,
+  type CharPosition,
+} from './text-search';
+
+// Coordinate Utilities
+export {
+  pdfToViewport,
+  viewportToPDF,
+  percentToPDF,
+  pdfToPercent,
+  percentToViewport,
+  viewportToPercent,
+  applyRotation,
+  removeRotation,
+  getRotatedDimensions,
+  scaleRect,
+  isPointInRect,
+  doRectsIntersect,
+  getRectIntersection,
+} from './coordinates';
+
 // Mobile Optimizations
 export {
   detectDeviceCapabilities,

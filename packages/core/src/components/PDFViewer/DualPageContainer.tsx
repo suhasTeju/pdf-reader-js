@@ -1,7 +1,7 @@
 import { memo, useEffect, useState, useRef, useCallback } from 'react';
 import type { PDFPageProxy, PDFDocumentProxy } from 'pdfjs-dist';
 import { PDFPage } from '../PDFPage';
-import { usePDFViewer, useTextSelection, useTouchGestures, useIsTouchDevice } from '../../hooks';
+import { usePDFViewer, usePDFViewerStores, useTextSelection, useTouchGestures, useIsTouchDevice, useViewerStore } from '../../hooks';
 import { useHighlights } from '../../hooks/useHighlights';
 import { SelectionToolbar } from '../SelectionToolbar';
 import { HighlightPopover } from '../HighlightPopover';
@@ -37,6 +37,10 @@ export const DualPageContainer = memo(function DualPageContainer({
     setScale,
     goToPage,
   } = usePDFViewer();
+
+  // Get scroll request from store
+  const scrollToPageRequest = useViewerStore((s) => s.scrollToPageRequest);
+  const { viewerStore } = usePDFViewerStores();
 
   const containerRef = useRef<HTMLDivElement | null>(null);
   const documentRef = useRef<PDFDocumentProxy | null>(null);
@@ -145,6 +149,16 @@ export const DualPageContainer = memo(function DualPageContainer({
         if (!cancelled) {
           setLeftPage(left);
           setRightPage(right);
+
+          // Complete scroll request if the requested page is now visible
+          if (scrollToPageRequest) {
+            const requestedPage = scrollToPageRequest.page;
+            if (requestedPage === spread.left || requestedPage === spread.right) {
+              requestAnimationFrame(() => {
+                viewerStore.getState().completeScrollRequest(scrollToPageRequest.requestId);
+              });
+            }
+          }
         }
       } catch (error) {
         if (!cancelled) {
@@ -162,7 +176,7 @@ export const DualPageContainer = memo(function DualPageContainer({
     return () => {
       cancelled = true;
     };
-  }, [document, currentPage, getSpreadPages]);
+  }, [document, currentPage, getSpreadPages, scrollToPageRequest, viewerStore]);
 
   // Navigate by spread
   const goToPreviousSpread = useCallback(() => {

@@ -17,6 +17,8 @@ export interface SearchActions {
   nextResult: () => void;
   previousResult: () => void;
   goToResult: (index: number) => void;
+  setCaseSensitive: (value: boolean) => void;
+  setWholeWord: (value: boolean) => void;
   toggleCaseSensitive: () => void;
   toggleWholeWord: () => void;
   getCurrentResult: () => SearchResult | null;
@@ -155,6 +157,14 @@ export function createSearchStore(initialOverrides: Partial<SearchState> = {}) {
       }
     },
 
+    setCaseSensitive: (value) => {
+      set({ caseSensitive: value });
+    },
+
+    setWholeWord: (value) => {
+      set({ wholeWord: value });
+    },
+
     toggleCaseSensitive: () => {
       set((state) => ({ caseSensitive: !state.caseSensitive }));
     },
@@ -207,9 +217,13 @@ function calculateMatchRects(
       const matchWidth = (item.width / item.text.length) * (matchEndInItem - matchStartInItem);
       const matchX = x + (item.width / item.text.length) * matchStartInItem;
 
+      // Adjust Y position: ty is the baseline, we need to position highlight
+      // lower to align with the actual text glyphs (not the baseline)
+      const yOffset = height * 0.30; // Shift down by 30% of height
+
       rects.push({
         x: matchX,
-        y: y - height,
+        y: y - height + yOffset,
         width: matchWidth,
         height: height,
       });

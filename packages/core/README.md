@@ -117,7 +117,7 @@ const {
   currentPage,    // Current page number (1-indexed)
   numPages,       // Total pages
   scale,          // Current zoom level (1 = 100%)
-  goToPage,       // Navigate to specific page
+  goToPage,       // Navigate to specific page (returns Promise)
   nextPage,       // Go to next page
   previousPage,   // Go to previous page
   setScale,       // Set zoom level
@@ -129,7 +129,8 @@ const {
 } = usePDFViewer();
 
 // Examples
-goToPage(5);           // Go to page 5
+await goToPage(5);     // Go to page 5 (waits for scroll)
+goToPage(5);           // Fire-and-forget also works
 setScale(1.5);         // Set zoom to 150%
 zoomIn();              // Zoom in
 fitToWidth();          // Fit to width
@@ -346,7 +347,7 @@ interface Highlight {
   text: string;
   color: 'yellow' | 'green' | 'blue' | 'pink' | 'orange';
   comment?: string;
-  source?: 'user' | 'agent';  // Who created it
+  source?: 'user' | 'agent' | 'search';  // Who/what created it
   createdAt: Date;
   updatedAt: Date;
 }
@@ -699,6 +700,366 @@ export default App;
 
 ---
 
+## 6. Controlled Page Navigation (v0.2.0+)
+
+The viewer supports both controlled and uncontrolled page modes.
+
+### Uncontrolled Mode (Default)
+
+The viewer manages page state internally:
+
+```tsx
+<PDFViewerClient
+  src="/document.pdf"
+  initialPage={5}  // Start at page 5
+  onPageChange={(page) => console.log('Now on page:', page)}
+/>
+```
+
+### Controlled Mode
+
+You control the page state externally:
+
+```tsx
+function ControlledViewer() {
+  const [page, setPage] = useState(1);
+
+  return (
+    <div>
+      <div>
+        <button onClick={() => setPage(p => Math.max(1, p - 1))}>Previous</button>
+        <span>Page {page}</span>
+        <button onClick={() => setPage(p => p + 1)}>Next</button>
+      </div>
+      <PDFViewerClient
+        src="/document.pdf"
+        page={page}           // Controlled page prop
+        onPageChange={setPage} // Sync back when user scrolls
+      />
+    </div>
+  );
+}
+```
+
+### Promise-Based Navigation
+
+`goToPage()` returns a Promise that resolves when scrolling completes:
+
+```tsx
+const viewerRef = useRef<PDFViewerHandle>(null);
+
+// Wait for scroll to complete
+await viewerRef.current?.goToPage(10);
+console.log('Now viewing page 10');
+
+// With options
+await viewerRef.current?.goToPage(10, { behavior: 'instant' }); // No animation
+await viewerRef.current?.goToPage(10, { behavior: 'smooth' });  // Smooth scroll (default)
+```
+
+---
+
+## 7. Search and Highlight (v0.2.0+)
+
+The `searchAndHighlight()` method combines search and highlighting in one operation.
+
+### Basic Usage
+
+```tsx
+const viewerRef = useRef<PDFViewerHandle>(null);
+
+// Search and highlight all matches
+const result = await viewerRef.current?.searchAndHighlight('important term');
+
+console.log(result);
+// {
+//   matchCount: 15,
+//   highlightIds: ['hl-1', 'hl-2', ...],
+//   matches: [
+//     { pageNumber: 1, text: 'important term', highlightId: 'hl-1', rects: [...] },
+//     ...
+//   ]
+// }
+```
+
+### Advanced Options
+
+```tsx
+const result = await viewerRef.current?.searchAndHighlight('term', {
+  // Highlight color
+  color: 'green',  // 'yellow' | 'green' | 'blue' | 'pink' | 'orange'
+
+  // Search specific pages only
+  pageRange: [1, 2, 3],  // Array of page numbers
+  // or
+  pageRange: { start: 1, end: 10 },  // Range object
+
+  // Search options
+  caseSensitive: true,
+  wholeWord: true,
+
+  // Navigation
+  scrollToFirst: true,   // Scroll to first match (default: true)
+
+  // Clear previous search highlights
+  clearPrevious: true,   // Remove old search highlights (default: false)
+});
+```
+
+### Clear Search Highlights
+
+```tsx
+// Remove all highlights created by searchAndHighlight
+viewerRef.current?.clearSearchHighlights();
+```
+
+---
+
+## 8. Agent Tools API (v0.2.0+)
+
+Structured API designed for AI agents with consistent response format.
+
+### Response Format
+
+All agent tools return a standardized response:
+
+```typescript
+interface AgentToolResult<T> {
+  success: boolean;
+  data?: T;
+  error?: {
+    code: string;
+    message: string;
+  };
+}
+```
+
+### Available Tools
+
+```tsx
+const viewerRef = useRef<PDFViewerHandle>(null);
+const agentTools = viewerRef.current?.agentTools;
+
+// Navigate to page
+const navResult = await agentTools?.navigateToPage(5);
+// { success: true, data: { previousPage: 1, currentPage: 5 } }
+
+// Highlight text
+const hlResult = await agentTools?.highlightText('important', {
+  color: 'yellow',
+  pageRange: [1, 2, 3],
+  caseSensitive: false,
+  wholeWord: false,
+});
+// { success: true, data: { matchCount: 5, highlightIds: ['hl-1', ...] } }
+
+// Get page text content
+const textResult = await agentTools?.getPageContent(1);
+// { success: true, data: { text: 'Full page text content...' } }
+
+// Clear all visual annotations
+const clearResult = await agentTools?.clearAllVisuals();
+// { success: true, data: undefined }
+```
+
+### Error Handling
+
+```tsx
+const result = await agentTools?.navigateToPage(999);
+if (!result.success) {
+  console.error(result.error?.code);    // 'INVALID_PAGE'
+  console.error(result.error?.message); // 'Page 999 is out of range (1-50)'
+}
+```
+
+---
+
+## 9. Coordinate Utilities (v0.2.0+)
+
+Helper functions for coordinate conversion between different systems.
+
+### Using the Coordinates Helper
+
+```tsx
+const viewerRef = useRef<PDFViewerHandle>(null);
+const coords = viewerRef.current?.coordinates;
+
+// Get page dimensions
+const dims = coords?.getPageDimensions(1);
+// { width: 612, height: 792, rotation: 0 }
+
+// Convert percentage to pixels
+const pixelPos = coords?.percentToPixels(50, 25, 1);  // 50% x, 25% y, page 1
+// { x: 306, y: 198 }
+
+// Convert pixels to percentage
+const percentPos = coords?.pixelsToPercent(306, 198, 1);
+// { x: 50, y: 25 }
+```
+
+### Standalone Coordinate Functions
+
+```tsx
+import {
+  pdfToViewport,
+  viewportToPDF,
+  percentToPDF,
+  pdfToPercent,
+  scaleRect,
+  isPointInRect,
+} from 'pdfjs-reader-core';
+
+// Convert PDF coordinates to viewport coordinates
+const viewportPos = pdfToViewport(100, 200, 1.5, 792);  // x, y, scale, pageHeight
+
+// Convert viewport to PDF coordinates
+const pdfPos = viewportToPDF(150, 300, 1.5, 792);
+
+// Check if point is inside rectangle
+const inside = isPointInRect(100, 200, { x: 50, y: 150, width: 100, height: 100 });
+```
+
+---
+
+## 10. Thumbnail Navigation (v0.2.0+)
+
+Standalone thumbnail navigation component.
+
+### Basic Usage
+
+```tsx
+import { PDFThumbnailNav } from 'pdfjs-reader-core';
+
+function MyViewer() {
+  return (
+    <PDFViewerProvider>
+      <div style={{ display: 'flex', height: '100vh' }}>
+        <PDFThumbnailNav orientation="vertical" />
+        <ContinuousScrollContainer />
+      </div>
+    </PDFViewerProvider>
+  );
+}
+```
+
+### Props
+
+```tsx
+<PDFThumbnailNav
+  orientation="vertical"   // 'horizontal' | 'vertical'
+  thumbnailScale={0.15}    // Thumbnail size (default: 0.15)
+  maxVisible={10}          // Max thumbnails to show
+  className="my-nav"       // Additional CSS class
+  onThumbnailClick={(page) => console.log('Clicked page:', page)}
+/>
+```
+
+---
+
+## 11. Floating Zoom Controls (v0.2.0+)
+
+Floating zoom control panel with 5% increments.
+
+### Basic Usage
+
+```tsx
+import { FloatingZoomControls } from 'pdfjs-reader-core';
+
+function MyViewer() {
+  return (
+    <PDFViewerProvider>
+      <ContinuousScrollContainer />
+      <FloatingZoomControls position="bottom-right" />
+    </PDFViewerProvider>
+  );
+}
+```
+
+### Props
+
+```tsx
+<FloatingZoomControls
+  position="bottom-right"  // 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left'
+  showFitToWidth={true}    // Show fit-to-width button
+  showFitToPage={false}    // Show fit-to-page button
+  showZoomLevel={true}     // Show current zoom percentage
+  className="my-controls"  // Additional CSS class
+/>
+```
+
+---
+
+## 12. Event Callbacks (v0.2.0+)
+
+Rich callbacks for tracking viewer events.
+
+```tsx
+<PDFViewerClient
+  src="/document.pdf"
+
+  // Document events
+  onDocumentLoad={({ numPages, document }) => {
+    console.log(`Loaded ${numPages} pages`);
+  }}
+  onError={(error) => console.error('Load error:', error)}
+
+  // Page events
+  onPageChange={(pageNumber) => console.log('Page:', pageNumber)}
+  onPageRenderStart={(pageNumber) => console.log('Rendering:', pageNumber)}
+  onPageRenderComplete={(pageNumber) => console.log('Rendered:', pageNumber)}
+
+  // Zoom events
+  onScaleChange={(scale) => console.log('Zoom:', Math.round(scale * 100) + '%')}
+
+  // Annotation events
+  onHighlightAdded={(highlight) => console.log('Added highlight:', highlight.id)}
+  onHighlightRemoved={(highlightId) => console.log('Removed:', highlightId)}
+  onAnnotationAdded={(annotation) => console.log('Added:', annotation.type)}
+/>
+```
+
+---
+
+## 13. Custom Loading & Error States (v0.2.0+)
+
+Customize loading and error UI components.
+
+### Custom Loading Component
+
+```tsx
+<PDFViewerClient
+  src="/document.pdf"
+  loadingComponent={
+    <div className="my-loading">
+      <Spinner />
+      <p>Loading document...</p>
+    </div>
+  }
+/>
+```
+
+### Custom Error Component
+
+```tsx
+<PDFViewerClient
+  src="/document.pdf"
+  errorComponent={(error, retry) => (
+    <div className="my-error">
+      <p>Failed to load: {error.message}</p>
+      <button onClick={retry}>Try Again</button>
+    </div>
+  )}
+/>
+
+// Or as static component
+<PDFViewerClient
+  src="/document.pdf"
+  errorComponent={<div>Something went wrong</div>}
+/>
+```
+
+---
+
 ## API Reference
 
 ### PDFViewerClient Props
@@ -710,10 +1071,19 @@ export default App;
 | `showSidebar` | `boolean` | `true` | Show the sidebar |
 | `viewMode` | `'single' \| 'continuous' \| 'dual'` | `'continuous'` | Page view mode |
 | `theme` | `'light' \| 'dark' \| 'sepia'` | `'light'` | Color theme |
-| `initialPage` | `number` | `1` | Initial page to display |
+| `initialPage` | `number` | `1` | Initial page (uncontrolled mode) |
+| `page` | `number` | - | Controlled page number |
 | `initialScale` | `number` | `1` | Initial zoom scale |
+| `loadingComponent` | `ReactNode` | - | Custom loading UI |
+| `errorComponent` | `ReactNode \| (error, retry) => ReactNode` | - | Custom error UI |
 | `onDocumentLoad` | `(event) => void` | - | Called when document loads |
 | `onPageChange` | `(page) => void` | - | Called when page changes |
+| `onScaleChange` | `(scale) => void` | - | Called when zoom changes |
+| `onPageRenderStart` | `(page) => void` | - | Called when page render starts |
+| `onPageRenderComplete` | `(page) => void` | - | Called when page render completes |
+| `onHighlightAdded` | `(highlight) => void` | - | Called when highlight is added |
+| `onHighlightRemoved` | `(id) => void` | - | Called when highlight is removed |
+| `onAnnotationAdded` | `(annotation) => void` | - | Called when annotation is added |
 | `onError` | `(error) => void` | - | Called on error |
 
 ### usePDFViewer() Return Value
@@ -729,7 +1099,7 @@ export default App;
 
   // Navigation
   currentPage: number;
-  goToPage: (page: number) => void;
+  goToPage: (page: number, options?: GoToPageOptions) => Promise<void>;
   nextPage: () => void;
   previousPage: () => void;
 
@@ -766,6 +1136,37 @@ export default App;
   highlights: Highlight[];
   addHighlight: (params: AddHighlightParams) => Highlight;
   removeHighlight: (id: string) => void;
+}
+```
+
+### PDFViewerHandle (ref methods)
+
+When using a ref with PDFViewerClient:
+
+```typescript
+interface PDFViewerHandle {
+  // Navigation
+  goToPage: (page: number, options?: GoToPageOptions) => Promise<void>;
+  getCurrentPage: () => number;
+
+  // Search & Highlight
+  searchAndHighlight: (query: string, options?: SearchAndHighlightOptions) => Promise<SearchAndHighlightResult>;
+  clearSearchHighlights: () => void;
+
+  // Agent Tools (structured API)
+  agentTools: {
+    navigateToPage: (page: number) => Promise<AgentToolResult<{ previousPage: number; currentPage: number }>>;
+    highlightText: (text: string, options?: HighlightOptions) => Promise<AgentToolResult<{ matchCount: number; highlightIds: string[] }>>;
+    getPageContent: (page: number) => Promise<AgentToolResult<{ text: string }>>;
+    clearAllVisuals: () => Promise<AgentToolResult<void>>;
+  };
+
+  // Coordinate Helpers
+  coordinates: {
+    getPageDimensions: (page: number) => { width: number; height: number; rotation: number } | null;
+    percentToPixels: (xPercent: number, yPercent: number, page: number) => { x: number; y: number } | null;
+    pixelsToPercent: (x: number, y: number, page: number) => { x: number; y: number } | null;
+  };
 }
 ```
 

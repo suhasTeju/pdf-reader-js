@@ -42,6 +42,10 @@ export {
   AskAboutTrigger,
   // Minimap
   Minimap,
+  // Floating Controls
+  FloatingZoomControls,
+  // Thumbnail Navigation
+  PDFThumbnailNav,
   // Error Boundary
   PDFErrorBoundary,
   withErrorBoundary,
@@ -128,6 +132,27 @@ export {
   getStorageStats,
   // Agent API
   createAgentAPI,
+  // Text Search Utilities
+  extractPageText,
+  findTextOnPage,
+  findTextInDocument,
+  mergeAdjacentRects,
+  getPageText,
+  countTextOnPage,
+  // Coordinate Utilities
+  pdfToViewport,
+  viewportToPDF,
+  percentToPDF,
+  pdfToPercent,
+  percentToViewport,
+  viewportToPercent,
+  applyRotation,
+  removeRotation,
+  getRotatedDimensions,
+  scaleRect,
+  isPointInRect,
+  doRectsIntersect,
+  getRectIntersection,
 } from './utils';
 
 // Types
@@ -138,6 +163,14 @@ export type {
   TextSelection,
   PDFPageState,
   PageDimensions,
+
+  // Imperative API types
+  PDFViewerHandle,
+  HighlightTextOptions,
+  DrawRectOptions,
+  DrawCircleOptions,
+  AddNoteOptions,
+  SearchOptions,
 
   // Viewer types
   ViewerState,
@@ -191,6 +224,17 @@ export type {
   AgentActions,
   StudentModeCallbacks,
   StudentModeProps,
+
+  // New types
+  ScrollToPageRequest,
+  GoToPageOptions,
+  SearchAndHighlightOptions,
+  SearchAndHighlightResult,
+  AgentToolResult,
+  AgentTools,
+  PageCoordinates,
+  PageDimensionsInfo,
+  CoordinateHelpers,
 } from './types';
 
 // Store types
@@ -272,6 +316,8 @@ export type {
   AskAboutOverlayProps,
   AskAboutTriggerProps,
   MinimapProps,
+  FloatingZoomControlsProps,
+  PDFThumbnailNavProps,
   PDFErrorBoundaryProps,
   WithErrorBoundaryProps,
 } from './components';
@@ -290,4 +336,7 @@ export type {
   StudentData,
   AgentAPIStores,
   AgentAPIInstance,
+  TextMatch,
+  FindTextOptions,
+  CharPosition,
 } from './utils';

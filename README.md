@@ -11,11 +11,14 @@ A fully-featured, Next.js-compatible PDF viewer for React with annotations, high
 - **Text Selection & Highlighting** - Select text and highlight with multiple colors (yellow, green, blue, pink, orange)
 - **Annotations** - Add sticky notes, freehand drawings, and shapes (rectangles, circles, arrows, lines)
 - **Search** - Full-text search across all pages with match highlighting
+- **Search & Highlight API** - Combined `searchAndHighlight()` method for one-step text finding and marking
 - **Multiple View Modes** - Single page, continuous scroll, and dual page views
+- **Controlled Navigation** - Controlled `page` prop with Promise-based `goToPage()` for reliable navigation
 - **Thumbnails & Outline** - Page thumbnails and document outline/table of contents navigation
 - **Theming** - Light, dark, and sepia themes
 - **Mobile Support** - Touch gestures, pinch-to-zoom, responsive UI
 - **Programmatic API** - Full control via React hooks for highlights, annotations, navigation, and more
+- **Agent-Ready API** - Structured `agentTools` API designed for AI agent integration
 
 ## Installation
 
@@ -49,8 +52,14 @@ See the full documentation in the [package README](./packages/core/README.md) fo
 
 - Detailed usage examples
 - Programmatic highlight and annotation APIs
-- Search and highlight text
-- Custom controls and navigation
+- Search and highlight text (`searchAndHighlight()` API)
+- Controlled page navigation with Promise-based `goToPage()`
+- Agent tools API for AI integration
+- Coordinate conversion utilities
+- Thumbnail navigation component
+- Floating zoom controls
+- Custom loading and error components
+- Rich event callbacks
 - Theme and view mode switching
 - Export/import annotations
 - Complete API reference
@@ -186,32 +195,101 @@ function MyComponent() {
 }
 ```
 
-### Search and Highlight Matches
+### Search and Highlight (v0.2.0+)
+
+The new `searchAndHighlight()` method combines search and highlighting in one operation:
 
 ```tsx
-import { usePDFViewer, useHighlights } from 'pdfjs-reader-core';
+import { useRef } from 'react';
+import { PDFViewerClient, PDFViewerHandle } from 'pdfjs-reader-core';
 
 function SearchComponent() {
-  const { search, searchResults } = usePDFViewer();
-  const { addHighlight } = useHighlights();
+  const viewerRef = useRef<PDFViewerHandle>(null);
 
-  const searchAndHighlight = async (query: string) => {
-    await search(query);
-
-    for (const result of searchResults) {
-      addHighlight({
-        pageNumber: result.pageNumber,
-        rects: result.rects,
-        text: result.text,
-        color: 'green',
-      });
-    }
+  const handleSearch = async () => {
+    const result = await viewerRef.current?.searchAndHighlight('keyword', {
+      color: 'yellow',
+      scrollToFirst: true,
+    });
+    console.log(`Found ${result?.matchCount} matches`);
   };
 
   return (
-    <button onClick={() => searchAndHighlight('keyword')}>
-      Find & Highlight
-    </button>
+    <>
+      <button onClick={handleSearch}>Find & Highlight</button>
+      <PDFViewerClient ref={viewerRef} src="/document.pdf" />
+    </>
+  );
+}
+```
+
+### Controlled Page Navigation (v0.2.0+)
+
+Control page state externally with Promise-based navigation:
+
+```tsx
+import { useState, useRef } from 'react';
+import { PDFViewerClient, PDFViewerHandle } from 'pdfjs-reader-core';
+
+function ControlledViewer() {
+  const viewerRef = useRef<PDFViewerHandle>(null);
+  const [page, setPage] = useState(1);
+
+  const goToPageFive = async () => {
+    await viewerRef.current?.goToPage(5);
+    console.log('Now on page 5');
+  };
+
+  return (
+    <>
+      <button onClick={goToPageFive}>Go to Page 5</button>
+      <PDFViewerClient
+        ref={viewerRef}
+        src="/document.pdf"
+        page={page}           // Controlled mode
+        onPageChange={setPage}
+      />
+    </>
+  );
+}
+```
+
+### Agent Tools API (v0.2.0+)
+
+Structured API designed for AI agent integration:
+
+```tsx
+import { useRef } from 'react';
+import { PDFViewerClient, PDFViewerHandle } from 'pdfjs-reader-core';
+
+function AgentIntegration() {
+  const viewerRef = useRef<PDFViewerHandle>(null);
+
+  const handleAgentAction = async () => {
+    const tools = viewerRef.current?.agentTools;
+
+    // Navigate with structured response
+    const navResult = await tools?.navigateToPage(5);
+    if (navResult?.success) {
+      console.log('Moved from page', navResult.data?.previousPage, 'to', navResult.data?.currentPage);
+    }
+
+    // Highlight text with structured response
+    const hlResult = await tools?.highlightText('important term', { color: 'yellow' });
+    if (hlResult?.success) {
+      console.log('Created', hlResult.data?.matchCount, 'highlights');
+    }
+
+    // Get page content
+    const textResult = await tools?.getPageContent(1);
+    console.log('Page text:', textResult?.data?.text);
+  };
+
+  return (
+    <>
+      <button onClick={handleAgentAction}>Run Agent Actions</button>
+      <PDFViewerClient ref={viewerRef} src="/document.pdf" />
+    </>
   );
 }
 ```

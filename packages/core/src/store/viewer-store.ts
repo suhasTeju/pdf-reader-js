@@ -5,8 +5,18 @@ import type { ViewerState, ViewerActions, ViewMode, Theme, SidebarPanel, ScrollM
 const ZOOM_LEVELS = [0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 2.0, 3.0, 4.0];
 const MIN_SCALE = 0.1;
 const MAX_SCALE = 10;
+const SCROLL_TIMEOUT_MS = 3000;
 
 export type ViewerStore = ViewerState & ViewerActions;
+
+// Map to hold Promise resolvers for scroll requests
+const scrollCallbacks = new Map<string, { resolve: () => void; timeoutId: ReturnType<typeof setTimeout> }>();
+
+// Generate unique request ID
+let requestCounter = 0;
+function generateRequestId(): string {
+  return `scroll-${Date.now()}-${++requestCounter}`;
+}
 
 const initialState: ViewerState = {
   // Document state
@@ -19,6 +29,9 @@ const initialState: ViewerState = {
   currentPage: 1,
   scale: 1.0,
   rotation: 0,
+
+  // Scroll coordination
+  scrollToPageRequest: null,
 
   // UI state
   viewMode: 'single',
@@ -38,14 +51,22 @@ export function createViewerStore(initialOverrides: Partial<ViewerState> = {}) {
     ...initialOverrides,
 
     // Document actions
-    setDocument: (document: PDFDocumentProxy) => {
-      set({
-        document,
-        numPages: document.numPages,
-        isLoading: false,
-        error: null,
-        currentPage: 1,
-      });
+    setDocument: (document: PDFDocumentProxy | null) => {
+      if (document) {
+        set({
+          document,
+          numPages: document.numPages,
+          isLoading: false,
+          error: null,
+          currentPage: 1,
+        });
+      } else {
+        set({
+          document: null,
+          numPages: 0,
+          isLoading: false,
+        });
+      }
     },
 
     setLoading: (isLoading: boolean) => {
@@ -81,6 +102,58 @@ export function createViewerStore(initialOverrides: Partial<ViewerState> = {}) {
       const { currentPage } = get();
       if (currentPage > 1) {
         set({ currentPage: currentPage - 1 });
+      }
+    },
+
+    // Scroll coordination actions
+    requestScrollToPage: (page: number, behavior: 'smooth' | 'instant' = 'smooth') => {
+      const { numPages } = get();
+      const validPage = Math.max(1, Math.min(page, numPages));
+
+      return new Promise<void>((resolve) => {
+        const requestId = generateRequestId();
+
+        // Set up timeout fallback
+        const timeoutId = setTimeout(() => {
+          const callback = scrollCallbacks.get(requestId);
+          if (callback) {
+            scrollCallbacks.delete(requestId);
+            callback.resolve();
+          }
+          // Clear the request if it's still pending
+          const currentRequest = get().scrollToPageRequest;
+          if (currentRequest?.requestId === requestId) {
+            set({ scrollToPageRequest: null });
+          }
+        }, SCROLL_TIMEOUT_MS);
+
+        // Store the callback
+        scrollCallbacks.set(requestId, { resolve, timeoutId });
+
+        // Set the scroll request and update current page
+        set({
+          currentPage: validPage,
+          scrollToPageRequest: {
+            page: validPage,
+            requestId,
+            behavior,
+          },
+        });
+      });
+    },
+
+    completeScrollRequest: (requestId: string) => {
+      const callback = scrollCallbacks.get(requestId);
+      if (callback) {
+        clearTimeout(callback.timeoutId);
+        scrollCallbacks.delete(requestId);
+        callback.resolve();
+      }
+
+      // Clear the request if it matches
+      const currentRequest = get().scrollToPageRequest;
+      if (currentRequest?.requestId === requestId) {
+        set({ scrollToPageRequest: null });
       }
     },
 
