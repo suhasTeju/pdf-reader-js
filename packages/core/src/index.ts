@@ -48,6 +48,8 @@ export {
   PDFThumbnailNav,
   // Error Boundary
   PDFErrorBoundary,
+  // Loading Screen
+  PDFLoadingScreen,
   withErrorBoundary,
 } from './components';
 
@@ -235,7 +237,12 @@ export type {
   PageCoordinates,
   PageDimensionsInfo,
   CoordinateHelpers,
+  LoadingPhase,
+  LoadingProgress,
 } from './types';
+
+// Component types
+export type { PDFLoadingScreenProps } from './components';
 
 // Store types
 export type {

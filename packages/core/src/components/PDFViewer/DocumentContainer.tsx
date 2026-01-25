@@ -1,6 +1,7 @@
 import { memo, useEffect, useState, useRef, useCallback } from 'react';
 import type { PDFPageProxy, PDFDocumentProxy } from 'pdfjs-dist';
 import { PDFPage } from '../PDFPage';
+import { PDFLoadingScreen } from '../PDFLoadingScreen';
 import { usePDFViewer, usePDFViewerStores, useTextSelection, useTouchGestures, useIsTouchDevice, useViewerStore } from '../../hooks';
 import { useHighlights } from '../../hooks/useHighlights';
 import { SelectionToolbar } from '../SelectionToolbar';
@@ -24,6 +25,7 @@ export const DocumentContainer = memo(function DocumentContainer({
     scale,
     rotation,
     theme,
+    isLoading,
     setScale,
     nextPage,
     previousPage,
@@ -130,9 +132,14 @@ export const DocumentContainer = memo(function DocumentContainer({
         }
       } catch (error) {
         if (!cancelled) {
-          // Silently ignore errors from document switching
+          // Silently ignore errors from document switching/destruction
           const errorMessage = error instanceof Error ? error.message : String(error);
-          if (!errorMessage.includes('destroyed') && !errorMessage.includes('sendWithStream')) {
+          const isDocumentDestroyed =
+            errorMessage.includes('destroyed') ||
+            errorMessage.includes('sendWithStream') ||
+            errorMessage.includes('sendWithPromise') ||
+            errorMessage.includes('Cannot read properties of null');
+          if (!isDocumentDestroyed) {
             console.error('Error loading page:', error);
           }
         }
@@ -216,14 +223,12 @@ export const DocumentContainer = memo(function DocumentContainer({
       <div
         className={cn(
           'document-container',
-          'flex-1 flex items-center justify-center',
+          'flex-1',
           themeStyles[theme],
           className
         )}
       >
-        <div className="text-gray-500 dark:text-gray-400">
-          No document loaded
-        </div>
+        <PDFLoadingScreen phase={isLoading ? 'fetching' : 'initializing'} />
       </div>
     );
   }

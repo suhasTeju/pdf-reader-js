@@ -289,6 +289,124 @@
   left: 0;
 }
 
+/* ============================================
+   PDF Loading Screen Styles
+   ============================================ */
+
+/* Glow animation */
+.pdf-loading-glow {
+  animation: glowPulse 2s ease-in-out infinite;
+}
+
+@keyframes glowPulse {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.3);
+    opacity: 1;
+  }
+}
+
+/* Document icon floating animation */
+.pdf-document-icon {
+  animation: documentFloat 2.5s ease-in-out infinite;
+}
+
+@keyframes documentFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Animated lines inside SVG */
+.pdf-line-1 {
+  animation: lineShimmer 1.5s ease-in-out infinite;
+}
+
+.pdf-line-2 {
+  animation: lineShimmer 1.5s ease-in-out 0.2s infinite;
+}
+
+@keyframes lineShimmer {
+  0%, 100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Animated dots */
+.pdf-dot-1, .pdf-dot-2, .pdf-dot-3 {
+  animation: dotFade 1.4s ease-in-out infinite;
+}
+
+.pdf-dot-1 {
+  animation-delay: 0s;
+}
+
+.pdf-dot-2 {
+  animation-delay: 0.2s;
+}
+
+.pdf-dot-3 {
+  animation-delay: 0.4s;
+}
+
+@keyframes dotFade {
+  0%, 80%, 100% {
+    opacity: 0.2;
+  }
+  40% {
+    opacity: 1;
+  }
+}
+
+/* Progress bar fill animation */
+.pdf-loading-progress-fill {
+  animation: progressShine 2s linear infinite;
+}
+
+@keyframes progressShine {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Indeterminate progress animation */
+.pdf-loading-progress-indeterminate {
+  width: 40%;
+  animation: indeterminate 1.5s ease-in-out infinite, progressShine 2s linear infinite;
+}
+
+@keyframes indeterminate {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(350%);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .pdf-document-icon,
+  .pdf-skeleton-line,
+  .pdf-loading-progress-fill,
+  .pdf-loading-progress-indeterminate {
+    animation: none;
+  }
+
+  .pdf-loading-progress-indeterminate {
+    width: 100%;
+    opacity: 0.5;
+  }
+}
+
 /* Print styles */
 @media print {
   .pdf-toolbar,

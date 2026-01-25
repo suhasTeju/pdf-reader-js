@@ -7,7 +7,7 @@ import {
   forwardRef,
 } from 'react';
 import { PDFViewerProvider, usePDFViewerStores, useViewerStore } from '../../hooks';
-import { loadDocument } from '../../utils';
+import { loadDocument, clearDocumentCache } from '../../utils';
 import { Toolbar } from '../Toolbar';
 import { Sidebar } from '../Sidebar';
 import { AnnotationToolbar } from '../AnnotationToolbar';
@@ -15,6 +15,7 @@ import { DocumentContainer } from './DocumentContainer';
 import { ContinuousScrollContainer } from './ContinuousScrollContainer';
 import { DualPageContainer } from './DualPageContainer';
 import { FloatingZoomControls } from '../FloatingZoomControls';
+import { PDFLoadingScreen } from '../PDFLoadingScreen';
 import { cn } from '../../utils';
 import type {
   PDFViewerProps,
@@ -28,6 +29,7 @@ import type {
   GoToPageOptions,
   SearchAndHighlightOptions,
   SearchAndHighlightResult,
+  ViewerState,
 } from '../../types';
 
 interface PDFViewerInnerProps extends PDFViewerProps {
@@ -125,6 +127,7 @@ const PDFViewerInner = memo(function PDFViewerInner({
   const scale = useViewerStore((s) => s.scale);
   const theme = useViewerStore((s) => s.theme);
   const isLoading = useViewerStore((s) => s.isLoading);
+  const loadingProgress = useViewerStore((s) => s.loadingProgress);
   const error = useViewerStore((s) => s.error);
   const sidebarOpen = useViewerStore((s) => s.sidebarOpen);
 
@@ -664,13 +667,46 @@ const PDFViewerInner = memo(function PDFViewerInner({
     setLoadState('idle');
   }, [viewerStore]);
 
+  // AbortController for cancelling document loading
+  const abortControllerRef = useRef<AbortController | null>(null);
+
+  // Track the current src for cleanup
+  const currentSrcRef = useRef<string | ArrayBuffer | Uint8Array | null>(null);
+
   // Mount tracking
   useEffect(() => {
     mountedRef.current = true;
     return () => {
       mountedRef.current = false;
+      // Cancel any in-progress loading
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+        abortControllerRef.current = null;
+      }
+
+      // Clear the document from cache if it's a URL (so next load gets fresh copy)
+      if (currentSrcRef.current && typeof currentSrcRef.current === 'string') {
+        clearDocumentCache(currentSrcRef.current);
+      }
+
+      // Reset srcIdRef so reopening the modal will reload
+      srcIdRef.current = null;
+      currentSrcRef.current = null;
+
+      // Destroy the document and reset loading state to allow clean reload
+      const currentDoc = viewerStore.getState().document;
+      if (currentDoc) {
+        try {
+          currentDoc.destroy();
+        } catch {
+          // Ignore errors if already destroyed
+        }
+      }
+      viewerStore.getState().setDocument(null);
+      viewerStore.getState().setLoading(false);
+      viewerStore.getState().setError(null);
     };
-  }, []);
+  }, [viewerStore]);
 
   // Load document
   useEffect(() => {
@@ -680,45 +716,94 @@ const PDFViewerInner = memo(function PDFViewerInner({
 
     const loadId = srcId;
     srcIdRef.current = srcId;
+    currentSrcRef.current = src;
+
+    // Cancel any previous loading task
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+
+    // Create new AbortController for this load
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
 
     const currentDoc = viewerStore.getState().document;
     if (currentDoc) {
-      currentDoc.destroy();
-      viewerStore.getState().setDocument(null);
+      try {
+        currentDoc.destroy();
+      } catch {
+        // Ignore if already destroyed
+      }
     }
 
+    // Set loading state in a single update
+    viewerStore.setState({
+      document: null,
+      isLoading: true,
+      loadingProgress: { phase: 'fetching' },
+      error: null,
+    });
+    setLoadState('loading');
+
+    // Throttle progress updates to reduce re-renders
+    let lastProgressUpdate = 0;
+    let lastPercent = -1;
+    const PROGRESS_THROTTLE_MS = 100;
+    const PROGRESS_MIN_CHANGE = 5;
+
     const loadDoc = async () => {
-      if (!mountedRef.current) return;
+      if (!mountedRef.current || abortController.signal.aborted) return;
 
       try {
-        viewerStore.getState().setLoading(true);
-        viewerStore.getState().setError(null);
-        setLoadState('loading');
-
         const { document, numPages } = await loadDocument({
           src,
           workerSrc,
+          signal: abortController.signal,
+          onProgress: ({ loaded, total }) => {
+            if (!mountedRef.current || srcIdRef.current !== loadId || abortController.signal.aborted) {
+              return;
+            }
+
+            const now = Date.now();
+            const percent = total > 0 ? Math.round((loaded / total) * 100) : 0;
+
+            // Only update if enough time passed AND percent changed significantly
+            const timePassed = now - lastProgressUpdate >= PROGRESS_THROTTLE_MS;
+            const percentChanged = Math.abs(percent - lastPercent) >= PROGRESS_MIN_CHANGE;
+            const isComplete = percent >= 100;
+
+            if ((timePassed && percentChanged) || isComplete) {
+              lastProgressUpdate = now;
+              lastPercent = percent;
+              viewerStore.getState().setLoadingProgress({
+                phase: 'fetching',
+                percent,
+                bytesLoaded: loaded,
+                totalBytes: total,
+              });
+            }
+          },
         });
 
-        if (mountedRef.current && srcIdRef.current === loadId) {
+        if (mountedRef.current && srcIdRef.current === loadId && !abortController.signal.aborted) {
+          // Set document and clear loading in one update
           viewerStore.getState().setDocument(document);
           setLoadState('loaded');
 
-          if (initialPage !== 1) {
-            viewerStore.getState().goToPage(initialPage);
-          }
-
-          // Handle initial scale
-          if (typeof initialScale === 'number') {
-            viewerStore.getState().setScale(initialScale);
-          } else if (initialScale === 'auto' || initialScale === 'page-width') {
-            // Calculate scale to fit width - use a reasonable default
-            // The actual fit-to-width will be handled by the container
-            // For now, set a scale that typically fits most screens
-            viewerStore.getState().setScale(1.0);
-          } else if (initialScale === 'page-fit') {
-            // Scale to fit entire page
-            viewerStore.getState().setScale(0.75);
+          // Handle initial page and scale if needed (batched)
+          if (initialPage !== 1 || typeof initialScale === 'number' || initialScale === 'page-fit') {
+            const updates: Partial<ViewerState> = {};
+            if (initialPage !== 1) {
+              updates.currentPage = Math.max(1, Math.min(initialPage, numPages));
+            }
+            if (typeof initialScale === 'number') {
+              updates.scale = initialScale;
+            } else if (initialScale === 'page-fit') {
+              updates.scale = 0.75;
+            }
+            if (Object.keys(updates).length > 0) {
+              viewerStore.setState(updates);
+            }
           }
 
           onDocumentLoadRef.current?.({ document, numPages });
@@ -726,10 +811,22 @@ const PDFViewerInner = memo(function PDFViewerInner({
           document.destroy();
         }
       } catch (err) {
+        // Ignore abort errors - component is unmounting or loading was cancelled
+        if (err instanceof DOMException && err.name === 'AbortError') {
+          return;
+        }
+
+        // Ignore network errors caused by abort
+        const errorMessage = err instanceof Error ? err.message : String(err);
+        if (abortController.signal.aborted ||
+            errorMessage.includes('network error') ||
+            errorMessage.includes('aborted')) {
+          return;
+        }
+
         if (mountedRef.current && srcIdRef.current === loadId) {
           const error = err instanceof Error ? err : new Error('Failed to load document');
           viewerStore.getState().setError(error);
-          viewerStore.getState().setLoading(false);
           setLoadState('error');
           onErrorRef.current?.(error);
         }
@@ -738,7 +835,9 @@ const PDFViewerInner = memo(function PDFViewerInner({
 
     loadDoc();
 
-    return () => {};
+    return () => {
+      abortController.abort();
+    };
   }, [srcId, src, workerSrc, initialPage, initialScale, viewerStore]);
 
   // Page change notifications
@@ -861,12 +960,14 @@ const PDFViewerInner = memo(function PDFViewerInner({
       {showFloatingZoom && <FloatingZoomControls position="bottom-right" />}
 
       {isLoading && (
-        <div className="absolute inset-0 flex items-center justify-center bg-white/80 dark:bg-gray-900/80">
+        <div className="absolute inset-0 z-50">
           {loadingComponent ?? (
-            <div className="flex flex-col items-center">
-              <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
-              <div className="mt-2 text-sm text-gray-500">Loading PDF...</div>
-            </div>
+            <PDFLoadingScreen
+              phase={loadingProgress?.phase ?? 'fetching'}
+              progress={loadingProgress?.percent}
+              bytesLoaded={loadingProgress?.bytesLoaded}
+              totalBytes={loadingProgress?.totalBytes}
+            />
           )}
         </div>
       )}

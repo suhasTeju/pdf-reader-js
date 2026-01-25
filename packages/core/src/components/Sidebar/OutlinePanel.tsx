@@ -215,13 +215,7 @@ export const OutlinePanel = memo(function OutlinePanel({
   );
 
   if (!document) {
-    return (
-      <div className={cn('flex items-center justify-center p-4', className)}>
-        <p className="text-sm text-gray-500 dark:text-gray-400">
-          No document loaded
-        </p>
-      </div>
-    );
+    return null; // Loading screen in main container handles this
   }
 
   if (isLoading) {

@@ -101,6 +101,21 @@ export type ScrollMode = 'single' | 'continuous';
 export type SidebarPanel = 'thumbnails' | 'outline' | 'search' | 'annotations' | null;
 export type Theme = 'light' | 'dark' | 'sepia';
 
+/** Loading phase for the PDF document */
+export type LoadingPhase = 'initializing' | 'fetching' | 'parsing' | 'rendering';
+
+/** Loading progress information */
+export interface LoadingProgress {
+  /** Current loading phase */
+  phase: LoadingPhase;
+  /** Progress percentage (0-100), undefined for indeterminate */
+  percent?: number;
+  /** Bytes loaded */
+  bytesLoaded?: number;
+  /** Total bytes */
+  totalBytes?: number;
+}
+
 /** Request to scroll to a specific page */
 export interface ScrollToPageRequest {
   page: number;
@@ -113,6 +128,7 @@ export interface ViewerState {
   document: PDFDocumentProxy | null;
   numPages: number;
   isLoading: boolean;
+  loadingProgress: LoadingProgress | null;
   error: Error | null;
 
   // Navigation state
@@ -138,7 +154,8 @@ export interface ViewerState {
 export interface ViewerActions {
   // Document actions
   setDocument: (doc: PDFDocumentProxy | null) => void;
-  setLoading: (loading: boolean) => void;
+  setLoading: (loading: boolean, progress?: LoadingProgress) => void;
+  setLoadingProgress: (progress: LoadingProgress | null) => void;
   setError: (error: Error | null) => void;
 
   // Navigation actions

@@ -147,7 +147,16 @@ export const PDFThumbnailNav = memo(function PDFThumbnailNav({
             });
           }
         } catch (error) {
-          console.error(`Failed to render thumbnail for page ${pageNum}:`, error);
+          // Silently ignore errors from document switching/destruction
+          const errorMessage = error instanceof Error ? error.message : String(error);
+          const isDocumentDestroyed =
+            errorMessage.includes('destroyed') ||
+            errorMessage.includes('sendWithStream') ||
+            errorMessage.includes('sendWithPromise') ||
+            errorMessage.includes('Cannot read properties of null');
+          if (!isDocumentDestroyed) {
+            console.error(`Failed to render thumbnail for page ${pageNum}:`, error);
+          }
         } finally {
           renderQueueRef.current.delete(pageNum);
         }

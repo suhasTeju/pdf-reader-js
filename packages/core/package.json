@@ -1,6 +1,6 @@
 {
   "name": "pdfjs-reader-core",
-  "version": "0.2.5",
+  "version": "0.2.16",
   "description": "A Next.js-compatible PDF renderer with canvas rendering, annotations, and search",
   "author": "suhas <suhasrdev@gmail.com>",
   "license": "MIT",
@@ -12,6 +12,7 @@
   "bugs": {
     "url": "https://github.com/suhasTeju/pdf-reader-js/issues"
   },
+  "runkitExampleFilename": "runkit-example.js",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -30,7 +31,8 @@
     "./styles.css": "./dist/styles.css"
   },
   "files": [
-    "dist"
+    "dist",
+    "runkit-example.js"
   ],
   "sideEffects": [
     "**/*.css"

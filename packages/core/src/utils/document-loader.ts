@@ -16,6 +16,8 @@ export interface LoadDocumentOptions {
   enableStreaming?: boolean;
   /** Cache the document data (default: true) */
   cacheDocument?: boolean;
+  /** AbortSignal for cancellation */
+  signal?: AbortSignal;
 }
 
 export interface LoadDocumentResult {
@@ -44,19 +46,45 @@ export async function loadDocument(options: LoadDocumentOptions): Promise<LoadDo
     enableRangeRequests = true,
     enableStreaming = true,
     cacheDocument = true,
+    signal,
   } = options;
+
+  // Check if already aborted
+  if (signal?.aborted) {
+    throw new DOMException('Aborted', 'AbortError');
+  }
 
   // Initialize pdf.js if not already done
   await initializePDFJS({ workerSrc });
+
+  // Check if aborted during initialization
+  if (signal?.aborted) {
+    throw new DOMException('Aborted', 'AbortError');
+  }
 
   // Check cache for URL-based documents
   const cacheKey = typeof src === 'string' ? src : null;
   if (cacheKey && cacheDocument && documentCache.has(cacheKey)) {
     const cachedDoc = documentCache.get(cacheKey)!;
-    return {
-      document: cachedDoc,
-      numPages: cachedDoc.numPages,
-    };
+    // Verify the cached doc is still valid (not destroyed)
+    try {
+      // Check if document looks valid - numPages should be > 0
+      // Also check internal state if available
+      const numPages = cachedDoc.numPages;
+      // @ts-expect-error - checking internal destroyed state
+      const isDestroyed = cachedDoc._transport?.destroyed || cachedDoc.destroyed;
+      if (numPages > 0 && !isDestroyed) {
+        return {
+          document: cachedDoc,
+          numPages,
+        };
+      }
+      // Invalid document, remove from cache
+      documentCache.delete(cacheKey);
+    } catch {
+      // Document was destroyed or invalid, remove from cache and reload
+      documentCache.delete(cacheKey);
+    }
   }
 
   // Prepare loading parameters
@@ -83,6 +111,15 @@ export async function loadDocument(options: LoadDocumentOptions): Promise<LoadDo
 
   const loadingTask = pdfjsLib.getDocument(loadingParams);
 
+  // Handle abort signal
+  let abortHandler: (() => void) | null = null;
+  if (signal) {
+    abortHandler = () => {
+      loadingTask.destroy();
+    };
+    signal.addEventListener('abort', abortHandler);
+  }
+
   // Handle progress
   if (onProgress) {
     loadingTask.onProgress = ({ loaded, total }: { loaded: number; total: number }) => {
@@ -90,7 +127,34 @@ export async function loadDocument(options: LoadDocumentOptions): Promise<LoadDo
     };
   }
 
-  const document = await loadingTask.promise;
+  let document: PDFDocumentProxy;
+  try {
+    document = await loadingTask.promise;
+  } catch (error) {
+    // Clean up abort handler
+    if (signal && abortHandler) {
+      signal.removeEventListener('abort', abortHandler);
+    }
+
+    // Check if this was an abort
+    if (signal?.aborted) {
+      throw new DOMException('Aborted', 'AbortError');
+    }
+
+    // Re-throw original error
+    throw error;
+  }
+
+  // Clean up abort handler
+  if (signal && abortHandler) {
+    signal.removeEventListener('abort', abortHandler);
+  }
+
+  // Check if aborted after loading completed
+  if (signal?.aborted) {
+    document.destroy();
+    throw new DOMException('Aborted', 'AbortError');
+  }
 
   // Cache the document
   if (cacheKey && cacheDocument) {

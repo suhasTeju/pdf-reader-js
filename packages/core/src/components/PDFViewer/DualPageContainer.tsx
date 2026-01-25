@@ -1,6 +1,7 @@
 import { memo, useEffect, useState, useRef, useCallback } from 'react';
 import type { PDFPageProxy, PDFDocumentProxy } from 'pdfjs-dist';
 import { PDFPage } from '../PDFPage';
+import { PDFLoadingScreen } from '../PDFLoadingScreen';
 import { usePDFViewer, usePDFViewerStores, useTextSelection, useTouchGestures, useIsTouchDevice, useViewerStore } from '../../hooks';
 import { useHighlights } from '../../hooks/useHighlights';
 import { SelectionToolbar } from '../SelectionToolbar';
@@ -34,6 +35,7 @@ export const DualPageContainer = memo(function DualPageContainer({
     scale,
     rotation,
     theme,
+    isLoading: isDocumentLoading,
     setScale,
     goToPage,
   } = usePDFViewer();
@@ -162,7 +164,16 @@ export const DualPageContainer = memo(function DualPageContainer({
         }
       } catch (error) {
         if (!cancelled) {
-          console.error('Error loading pages:', error);
+          // Silently ignore errors from document switching/destruction
+          const errorMessage = error instanceof Error ? error.message : String(error);
+          const isDocumentDestroyed =
+            errorMessage.includes('destroyed') ||
+            errorMessage.includes('sendWithStream') ||
+            errorMessage.includes('sendWithPromise') ||
+            errorMessage.includes('Cannot read properties of null');
+          if (!isDocumentDestroyed) {
+            console.error('Error loading pages:', error);
+          }
         }
       } finally {
         if (!cancelled) {
@@ -278,12 +289,12 @@ export const DualPageContainer = memo(function DualPageContainer({
       <div
         className={cn(
           'dual-page-container',
-          'flex-1 flex items-center justify-center',
+          'flex-1',
           themeStyles[theme],
           className
         )}
       >
-        <div className="text-gray-500 dark:text-gray-400">No document loaded</div>
+        <PDFLoadingScreen phase={isDocumentLoading ? 'fetching' : 'initializing'} />
       </div>
     );
   }

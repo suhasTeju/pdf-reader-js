@@ -23,6 +23,7 @@ const initialState: ViewerState = {
   document: null,
   numPages: 0,
   isLoading: false,
+  loadingProgress: null,
   error: null,
 
   // Navigation state
@@ -57,6 +58,7 @@ export function createViewerStore(initialOverrides: Partial<ViewerState> = {}) {
           document,
           numPages: document.numPages,
           isLoading: false,
+          loadingProgress: null,
           error: null,
           currentPage: 1,
         });
@@ -65,16 +67,24 @@ export function createViewerStore(initialOverrides: Partial<ViewerState> = {}) {
           document: null,
           numPages: 0,
           isLoading: false,
+          loadingProgress: null,
         });
       }
     },
 
-    setLoading: (isLoading: boolean) => {
-      set({ isLoading });
+    setLoading: (isLoading: boolean, progress?: ViewerState['loadingProgress']) => {
+      set({
+        isLoading,
+        loadingProgress: isLoading ? (progress ?? { phase: 'initializing' }) : null,
+      });
+    },
+
+    setLoadingProgress: (progress: ViewerState['loadingProgress']) => {
+      set({ loadingProgress: progress });
     },
 
     setError: (error: Error | null) => {
-      set({ error, isLoading: false });
+      set({ error, isLoading: false, loadingProgress: null });
     },
 
     // Navigation actions

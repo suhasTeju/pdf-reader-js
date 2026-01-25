@@ -55,7 +55,16 @@ const Thumbnail = memo(function Thumbnail({
         }
       } catch (error) {
         if (!cancelled) {
-          console.error(`Error rendering thumbnail for page ${pageNumber}:`, error);
+          // Silently ignore errors from document switching/destruction
+          const errorMessage = error instanceof Error ? error.message : String(error);
+          const isDocumentDestroyed =
+            errorMessage.includes('destroyed') ||
+            errorMessage.includes('sendWithStream') ||
+            errorMessage.includes('sendWithPromise') ||
+            errorMessage.includes('Cannot read properties of null');
+          if (!isDocumentDestroyed) {
+            console.error(`Error rendering thumbnail for page ${pageNumber}:`, error);
+          }
         }
       }
     };
@@ -119,11 +128,7 @@ export const ThumbnailPanel = memo(function ThumbnailPanel({
   );
 
   if (!document) {
-    return (
-      <div className={cn('thumbnail-panel p-4', className)}>
-        <div className="text-sm text-gray-500">No document loaded</div>
-      </div>
-    );
+    return null; // Loading screen in main container handles this
   }
 
   return (
