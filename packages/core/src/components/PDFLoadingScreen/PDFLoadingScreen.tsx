@@ -14,6 +14,10 @@ export interface PDFLoadingScreenProps {
   documentName?: string;
   /** Additional class name */
   className?: string;
+  /** Show compact inline mode for streaming progress */
+  compact?: boolean;
+  /** Show streaming progress (when first page is ready but background loading continues) */
+  showStreamingProgress?: boolean;
 }
 
 const phaseMessages: Record<string, string> = {
@@ -22,6 +26,14 @@ const phaseMessages: Record<string, string> = {
   parsing: 'Processing pages',
   rendering: 'Almost ready',
 };
+
+// Phase descriptions for future enhanced loading messages
+// const phaseDescriptions: Record<string, string> = {
+//   initializing: 'Setting up the PDF viewer...',
+//   fetching: 'Downloading the PDF file...',
+//   parsing: 'Analyzing document structure...',
+//   rendering: 'Preparing pages for display...',
+// };
 
 function formatBytes(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
@@ -40,9 +52,64 @@ export const PDFLoadingScreen = memo(function PDFLoadingScreen({
   phase = 'fetching',
   documentName,
   className,
+  compact = false,
+  showStreamingProgress = false,
 }: PDFLoadingScreenProps) {
   const hasProgress = progress !== undefined && progress >= 0;
   const hasBytes = bytesLoaded !== undefined && totalBytes !== undefined && totalBytes > 0;
+
+  // Compact mode for inline streaming progress
+  if (compact || showStreamingProgress) {
+    return (
+      <div
+        className={cn(
+          'pdf-loading-compact',
+          'flex items-center gap-3 px-4 py-3 bg-gray-800 text-white rounded-lg shadow-lg',
+          className
+        )}
+        role="status"
+        aria-live="polite"
+      >
+        {/* Spinner */}
+        <div
+          style={{
+            width: 20,
+            height: 20,
+            border: '2px solid rgba(255,255,255,0.3)',
+            borderTopColor: '#fff',
+            borderRadius: '50%',
+            animation: 'spin 0.8s linear infinite',
+          }}
+        />
+
+        {/* Text */}
+        <span className="text-sm font-medium">
+          {phaseMessages[phase]}
+        </span>
+
+        {/* Progress */}
+        {hasProgress && (
+          <span className="text-sm text-white/70">
+            {Math.round(progress)}%
+          </span>
+        )}
+
+        {/* Bytes */}
+        {hasBytes && (
+          <span className="text-xs text-white/50 font-mono">
+            {formatBytes(bytesLoaded)} / {formatBytes(totalBytes)}
+          </span>
+        )}
+
+        <style>{`
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `}</style>
+      </div>
+    );
+  }
 
   return (
     <div

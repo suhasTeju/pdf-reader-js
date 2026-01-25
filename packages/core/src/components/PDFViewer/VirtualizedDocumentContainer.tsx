@@ -2,6 +2,7 @@ import { memo, useEffect, useState, useRef, useCallback } from 'react';
 import type { PDFPageProxy, PDFDocumentProxy } from 'pdfjs-dist';
 import { PDFPage } from '../PDFPage';
 import { PDFLoadingScreen } from '../PDFLoadingScreen';
+import { PageSkeleton } from './PageSkeleton';
 import { usePDFViewer, usePDFViewerStores, useTextSelection, useTouchGestures, useIsTouchDevice, useViewerStore } from '../../hooks';
 import { useHighlights } from '../../hooks/useHighlights';
 import { SelectionToolbar } from '../SelectionToolbar';
@@ -441,7 +442,7 @@ export const VirtualizedDocumentContainer = memo(function VirtualizedDocumentCon
             minHeight: '100%',
           }}
         >
-          {/* Render visible pages */}
+          {/* Render visible pages or skeletons */}
           {pageInfos
             .filter((info) => visiblePages.includes(info.pageNumber))
             .map((info) => {
@@ -450,6 +451,9 @@ export const VirtualizedDocumentContainer = memo(function VirtualizedDocumentCon
               const scaledWidth = dimensions
                 ? Math.floor(dimensions.width * scale)
                 : Math.floor(DEFAULT_PAGE_WIDTH * scale);
+              const scaledHeight = dimensions
+                ? Math.floor(dimensions.height * scale)
+                : Math.floor(DEFAULT_PAGE_HEIGHT * scale);
 
               return (
                 <div
@@ -460,12 +464,21 @@ export const VirtualizedDocumentContainer = memo(function VirtualizedDocumentCon
                     width: scaledWidth,
                   }}
                 >
-                  <PDFPage
-                    pageNumber={info.pageNumber}
-                    page={page || null}
-                    scale={scale}
-                    rotation={rotation}
-                  />
+                  {page ? (
+                    <PDFPage
+                      pageNumber={info.pageNumber}
+                      page={page}
+                      scale={scale}
+                      rotation={rotation}
+                    />
+                  ) : (
+                    <PageSkeleton
+                      pageNumber={info.pageNumber}
+                      width={scaledWidth}
+                      height={scaledHeight}
+                      isFirstPage={info.pageNumber === 1}
+                    />
+                  )}
                 </div>
               );
             })}

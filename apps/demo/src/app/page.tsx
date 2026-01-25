@@ -13,7 +13,8 @@ import {
   DocumentContainer,
   ContinuousScrollContainer,
   DualPageContainer,
-  loadDocument,
+  loadDocumentWithCallbacks,
+  PDFLoadingScreen,
 } from '@pdf-reader/core';
 import type { PDFDocumentLoadedEvent, ViewMode, HighlightColor, ShapeType } from '@pdf-reader/core';
 
@@ -340,42 +341,87 @@ function PDFViewerWithDemo({
 }) {
   const setDocument = useViewerStore((s) => s.setDocument);
   const setLoading = useViewerStore((s) => s.setLoading);
+  const setLoadingProgress = useViewerStore((s) => s.setLoadingProgress);
   const setError = useViewerStore((s) => s.setError);
+  const setDocumentLoadingState = useViewerStore((s) => s.setDocumentLoadingState);
+  const setFirstPageReady = useViewerStore((s) => s.setFirstPageReady);
+  const setStreamingProgress = useViewerStore((s) => s.setStreamingProgress);
   const isLoading = useViewerStore((s) => s.isLoading);
+  const loadingProgress = useViewerStore((s) => s.loadingProgress);
   const error = useViewerStore((s) => s.error);
   const sidebarOpen = useViewerStore((s) => s.sidebarOpen);
+  const streamingProgress = useViewerStore((s) => s.streamingProgress);
 
-  // Load document on src change
+  // Track cancel function
+  const cancelRef = React.useRef<(() => void) | null>(null);
+
+  // Load document with progressive loading
   useEffect(() => {
     if (!src) return;
 
-    let cancelled = false;
-
-    async function load() {
-      setLoading(true);
-      setError(null);
-
-      try {
-        const { document, numPages } = await loadDocument({ src });
-        if (!cancelled) {
-          setDocument(document);
-          onDocumentLoad({ document, numPages });
-        }
-      } catch (err) {
-        if (!cancelled) {
-          const error = err instanceof Error ? err : new Error('Failed to load');
-          setError(error);
-          onError(error);
-        }
-      }
+    // Cancel previous load
+    if (cancelRef.current) {
+      cancelRef.current();
+      cancelRef.current = null;
     }
 
-    load();
+    // Reset state for progressive loading
+    setLoading(true, { phase: 'initializing' });
+    setError(null);
+    setDocumentLoadingState('initializing');
+    setFirstPageReady(false);
+    setStreamingProgress(null);
+
+    const { promise, cancel } = loadDocumentWithCallbacks({
+      src,
+      onProgress: ({ loaded, total }) => {
+        setLoadingProgress({
+          phase: 'fetching',
+          percent: total > 0 ? Math.round((loaded / total) * 100) : undefined,
+          bytesLoaded: loaded,
+          totalBytes: total,
+        });
+        setStreamingProgress({ loaded, total });
+        setDocumentLoadingState('loading');
+      },
+      onDocumentReady: (document, numPages) => {
+        // Document structure is ready - set document but keep loading
+        setDocument(document);
+        setLoadingProgress({ phase: 'parsing' });
+        console.log(`Document ready: ${numPages} pages`);
+      },
+      onFirstPageReady: () => {
+        // First page is ready - hide loading screen
+        setLoading(false);
+        setFirstPageReady(true);
+        setDocumentLoadingState('ready');
+        console.log('First page ready - showing content');
+      },
+    });
+
+    cancelRef.current = cancel;
+
+    promise
+      .then(({ document, numPages }) => {
+        onDocumentLoad({ document, numPages });
+        console.log(`Document fully loaded: ${numPages} pages`);
+      })
+      .catch((err) => {
+        if (err instanceof DOMException && err.name === 'AbortError') {
+          return; // Cancelled, ignore
+        }
+        const error = err instanceof Error ? err : new Error('Failed to load');
+        setError(error);
+        onError(error);
+      });
 
     return () => {
-      cancelled = true;
+      if (cancelRef.current) {
+        cancelRef.current();
+        cancelRef.current = null;
+      }
     };
-  }, [src, setDocument, setLoading, setError, onDocumentLoad, onError]);
+  }, [src, setDocument, setLoading, setLoadingProgress, setError, setDocumentLoadingState, setFirstPageReady, setStreamingProgress, onDocumentLoad, onError]);
 
   // Render the appropriate container based on view mode
   const renderContainer = () => {
@@ -416,11 +462,24 @@ function PDFViewerWithDemo({
       {showDemoPanel && <DemoAPIPanel />}
 
       {isLoading && (
-        <div className="absolute inset-0 flex items-center justify-center bg-white/80">
-          <div className="flex flex-col items-center">
-            <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
-            <div className="mt-2 text-sm text-gray-500">Loading PDF...</div>
-          </div>
+        <div className="absolute inset-0 z-50">
+          <PDFLoadingScreen
+            phase={loadingProgress?.phase ?? 'fetching'}
+            progress={loadingProgress?.percent}
+            bytesLoaded={loadingProgress?.bytesLoaded}
+            totalBytes={loadingProgress?.totalBytes}
+          />
+        </div>
+      )}
+
+      {/* Inline streaming progress - shows when first page is ready but background loading continues */}
+      {!isLoading && streamingProgress && streamingProgress.total > 0 && streamingProgress.loaded < streamingProgress.total && (
+        <div className="absolute bottom-20 right-4 z-40 px-3 py-2 bg-gray-900/80 text-white text-xs rounded-lg shadow-lg flex items-center gap-2">
+          <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+          <span>Loading pages...</span>
+          <span className="text-white/60">
+            {Math.round((streamingProgress.loaded / streamingProgress.total) * 100)}%
+          </span>
         </div>
       )}
     </div>
@@ -607,11 +666,11 @@ export default function Home() {
               <div className="mt-6">
                 <button
                   onClick={() => {
-                    setPdfUrl('https://mozilla.github.io/pdf.js/web/compressed.tracemonkey-pldi-09.pdf');
+                    setPdfUrl('https://storage.googleapis.com/aria-ai/textbooks/143c7de3.pdf?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=vertext-ai-aria%40inspiring-hope-474607-g4.iam.gserviceaccount.com%2F20260125%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20260125T213234Z&X-Goog-Expires=3600&X-Goog-SignedHeaders=host&X-Goog-Signature=017415a9b3bb6995d10bd3cb2b0c195b77c75e58249d12db93e3bb85c4b981ac9a719419fcdd443943af7cb8a8a5820eb2a5e7dd92d569766933e19fdd6a611f9c62b829996b01a6ed68df247f23492c6e014308a49b9e6da525e8fbf56af5eee7e82e660cefdd1e65ed46bd8288b2ffef9a80b2dc84b70df95353dee6cf48453b469d5af4e6a2afd482868f55fed557042f647e45478b7a4fb6a4eb67caa2efea3d3ea29913f54a68fc0d45825f44d3d466756a1e1488c2925147ddb17376fb0ea371cc82a2548c244c5785b40e9a72e0796d7ac4d2e22c3c8362626eeb0b74613c3051fda80af83b0543c7bb4848bc0f29f19af4125c97ceaa97857fcb1d53');
                   }}
                   className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition-colors"
                 >
-                  Or load sample PDF
+                  Load Demo PDF
                 </button>
               </div>
 

@@ -2,6 +2,7 @@ import { memo, useEffect, useState, useRef, useCallback } from 'react';
 import type { PDFPageProxy, PDFDocumentProxy } from 'pdfjs-dist';
 import { PDFPage } from '../PDFPage';
 import { PDFLoadingScreen } from '../PDFLoadingScreen';
+import { PageSkeleton, DEFAULT_PAGE_WIDTH, DEFAULT_PAGE_HEIGHT } from './PageSkeleton';
 import { usePDFViewer, usePDFViewerStores, useTextSelection, useTouchGestures, useIsTouchDevice, useViewerStore } from '../../hooks';
 import { useHighlights } from '../../hooks/useHighlights';
 import { SelectionToolbar } from '../SelectionToolbar';
@@ -36,10 +37,14 @@ export const DocumentContainer = memo(function DocumentContainer({
   const { viewerStore } = usePDFViewerStores();
   const [currentPageObj, setCurrentPageObj] = useState<PDFPageProxy | null>(null);
   const [isLoadingPage, setIsLoadingPage] = useState(false);
+  const [pageLoadError, setPageLoadError] = useState<Error | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const documentRef = useRef<PDFDocumentProxy | null>(null);
   const baseScaleRef = useRef(scale);
   const isTouchDevice = useIsTouchDevice();
+
+  // Get progressive loading state
+  const documentLoadingState = useViewerStore((s) => s.documentLoadingState);
 
   // Text selection handling
   const { selection, clearSelection, copySelection } = useTextSelection();
@@ -101,6 +106,7 @@ export const DocumentContainer = memo(function DocumentContainer({
     if (document !== documentRef.current) {
       documentRef.current = document;
       setCurrentPageObj(null);
+      setPageLoadError(null);
     }
   }, [document]);
 
@@ -108,6 +114,7 @@ export const DocumentContainer = memo(function DocumentContainer({
   useEffect(() => {
     if (!document) {
       setCurrentPageObj(null);
+      setPageLoadError(null);
       return;
     }
 
@@ -115,6 +122,7 @@ export const DocumentContainer = memo(function DocumentContainer({
 
     const loadPage = async () => {
       setIsLoadingPage(true);
+      setPageLoadError(null);
 
       try {
         const page = await document.getPage(currentPage);
@@ -141,6 +149,7 @@ export const DocumentContainer = memo(function DocumentContainer({
             errorMessage.includes('Cannot read properties of null');
           if (!isDocumentDestroyed) {
             console.error('Error loading page:', error);
+            setPageLoadError(error instanceof Error ? error : new Error(errorMessage));
           }
         }
       } finally {
@@ -233,6 +242,50 @@ export const DocumentContainer = memo(function DocumentContainer({
     );
   }
 
+  // Render page content or skeleton
+  const renderPageContent = () => {
+    // Show error state if page failed to load
+    if (pageLoadError && !currentPageObj) {
+      return (
+        <div
+          className="relative bg-white shadow-lg flex flex-col items-center justify-center gap-2 text-gray-500"
+          style={{
+            width: DEFAULT_PAGE_WIDTH * scale,
+            height: DEFAULT_PAGE_HEIGHT * scale,
+          }}
+          data-page-number={currentPage}
+        >
+          <svg className="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+          <span className="text-sm">Failed to load page {currentPage}</span>
+        </div>
+      );
+    }
+
+    // Show skeleton when page is loading
+    if (isLoadingPage && !currentPageObj) {
+      return (
+        <PageSkeleton
+          pageNumber={currentPage}
+          width={Math.floor(DEFAULT_PAGE_WIDTH * scale)}
+          height={Math.floor(DEFAULT_PAGE_HEIGHT * scale)}
+          isFirstPage={currentPage === 1 && documentLoadingState !== 'ready'}
+        />
+      );
+    }
+
+    // Show the actual page
+    return (
+      <PDFPage
+        pageNumber={currentPage}
+        page={currentPageObj}
+        scale={scale}
+        rotation={rotation}
+      />
+    );
+  };
+
   return (
     <div
       ref={setContainerRef}
@@ -245,13 +298,8 @@ export const DocumentContainer = memo(function DocumentContainer({
         className
       )}
     >
-      {/* For single page view, show only current page */}
-      <PDFPage
-        pageNumber={currentPage}
-        page={currentPageObj}
-        scale={scale}
-        rotation={rotation}
-      />
+      {/* For single page view, show current page or skeleton */}
+      {renderPageContent()}
 
       {/* Selection toolbar - appears when text is selected */}
       <SelectionToolbar
@@ -271,13 +319,6 @@ export const DocumentContainer = memo(function DocumentContainer({
         onDelete={deleteHighlight}
         onClose={handleClosePopover}
       />
-
-      {/* Loading indicator */}
-      {isLoadingPage && !currentPageObj && (
-        <div className="fixed bottom-4 right-4 px-3 py-2 bg-black/75 text-white text-sm rounded-lg">
-          Loading...
-        </div>
-      )}
     </div>
   );
 });

@@ -103,6 +103,7 @@ export {
   initializePDFJS,
   isPDFJSInitialized,
   loadDocument,
+  loadDocumentWithCallbacks,
   getPage,
   getPageTextContent,
   getOutline,
@@ -239,6 +240,8 @@ export type {
   CoordinateHelpers,
   LoadingPhase,
   LoadingProgress,
+  DocumentLoadingState,
+  StreamingProgress,
 } from './types';
 
 // Component types
@@ -336,6 +339,8 @@ export type { PluginManagerOptions } from './plugins';
 export type {
   LoadDocumentOptions,
   LoadDocumentResult,
+  LoadDocumentWithCallbacksOptions,
+  LoadDocumentWithCallbacksResult,
   PDFViewerController,
   PDFViewerControllerOptions,
   ExportData,

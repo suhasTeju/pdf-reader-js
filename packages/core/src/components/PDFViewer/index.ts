@@ -4,3 +4,4 @@ export { DocumentContainer, type DocumentContainerProps } from './DocumentContai
 export { VirtualizedDocumentContainer, type VirtualizedDocumentContainerProps } from './VirtualizedDocumentContainer';
 export { ContinuousScrollContainer, type ContinuousScrollContainerProps } from './ContinuousScrollContainer';
 export { DualPageContainer, type DualPageContainerProps } from './DualPageContainer';
+export { PageSkeleton, type PageSkeletonProps, DEFAULT_PAGE_WIDTH, DEFAULT_PAGE_HEIGHT } from './PageSkeleton';

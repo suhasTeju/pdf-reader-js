@@ -2,6 +2,7 @@ export { cn } from './cn';
 export { initializePDFJS, isPDFJSInitialized, resetPDFJS, pdfjsLib } from './pdfjs-init';
 export {
   loadDocument,
+  loadDocumentWithCallbacks,
   getPage,
   getPageTextContent,
   getOutline,
@@ -10,6 +11,8 @@ export {
   preloadDocument,
   type LoadDocumentOptions,
   type LoadDocumentResult,
+  type LoadDocumentWithCallbacksOptions,
+  type LoadDocumentWithCallbacksResult,
 } from './document-loader';
 export {
   saveHighlights,

@@ -104,6 +104,9 @@ export type Theme = 'light' | 'dark' | 'sepia';
 /** Loading phase for the PDF document */
 export type LoadingPhase = 'initializing' | 'fetching' | 'parsing' | 'rendering';
 
+/** Document loading state for progressive loading */
+export type DocumentLoadingState = 'idle' | 'initializing' | 'loading' | 'ready' | 'error';
+
 /** Loading progress information */
 export interface LoadingProgress {
   /** Current loading phase */
@@ -114,6 +117,14 @@ export interface LoadingProgress {
   bytesLoaded?: number;
   /** Total bytes */
   totalBytes?: number;
+}
+
+/** Streaming progress for progressive document loading */
+export interface StreamingProgress {
+  /** Bytes loaded so far */
+  loaded: number;
+  /** Total bytes (0 if unknown) */
+  total: number;
 }
 
 /** Request to scroll to a specific page */
@@ -130,6 +141,11 @@ export interface ViewerState {
   isLoading: boolean;
   loadingProgress: LoadingProgress | null;
   error: Error | null;
+
+  // Progressive loading state
+  documentLoadingState: DocumentLoadingState;
+  firstPageReady: boolean;
+  streamingProgress: StreamingProgress | null;
 
   // Navigation state
   currentPage: number;
@@ -157,6 +173,11 @@ export interface ViewerActions {
   setLoading: (loading: boolean, progress?: LoadingProgress) => void;
   setLoadingProgress: (progress: LoadingProgress | null) => void;
   setError: (error: Error | null) => void;
+
+  // Progressive loading actions
+  setDocumentLoadingState: (state: DocumentLoadingState) => void;
+  setFirstPageReady: (ready: boolean) => void;
+  setStreamingProgress: (progress: StreamingProgress | null) => void;
 
   // Navigation actions
   setCurrentPage: (page: number) => void;

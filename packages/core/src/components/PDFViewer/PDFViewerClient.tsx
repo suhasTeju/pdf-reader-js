@@ -7,7 +7,7 @@ import {
   forwardRef,
 } from 'react';
 import { PDFViewerProvider, usePDFViewerStores, useViewerStore } from '../../hooks';
-import { loadDocument, clearDocumentCache } from '../../utils';
+import { loadDocumentWithCallbacks, clearDocumentCache } from '../../utils';
 import { Toolbar } from '../Toolbar';
 import { Sidebar } from '../Sidebar';
 import { AnnotationToolbar } from '../AnnotationToolbar';
@@ -130,6 +130,7 @@ const PDFViewerInner = memo(function PDFViewerInner({
   const loadingProgress = useViewerStore((s) => s.loadingProgress);
   const error = useViewerStore((s) => s.error);
   const sidebarOpen = useViewerStore((s) => s.sidebarOpen);
+  const streamingProgress = useViewerStore((s) => s.streamingProgress);
 
   const srcId = getSrcIdentifier(src);
 
@@ -708,7 +709,10 @@ const PDFViewerInner = memo(function PDFViewerInner({
     };
   }, [viewerStore]);
 
-  // Load document
+  // Store cancel function for streaming loader
+  const cancelLoaderRef = useRef<(() => void) | null>(null);
+
+  // Load document with progressive/streaming approach
   useEffect(() => {
     if (srcIdRef.current === srcId && viewerStore.getState().document) {
       return;
@@ -721,6 +725,10 @@ const PDFViewerInner = memo(function PDFViewerInner({
     // Cancel any previous loading task
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
+    }
+    if (cancelLoaderRef.current) {
+      cancelLoaderRef.current();
+      cancelLoaderRef.current = null;
     }
 
     // Create new AbortController for this load
@@ -736,12 +744,15 @@ const PDFViewerInner = memo(function PDFViewerInner({
       }
     }
 
-    // Set loading state in a single update
+    // Set loading state with progressive loading states
     viewerStore.setState({
       document: null,
       isLoading: true,
-      loadingProgress: { phase: 'fetching' },
+      loadingProgress: { phase: 'initializing' },
       error: null,
+      documentLoadingState: 'initializing',
+      firstPageReady: false,
+      streamingProgress: null,
     });
     setLoadState('loading');
 
@@ -751,44 +762,78 @@ const PDFViewerInner = memo(function PDFViewerInner({
     const PROGRESS_THROTTLE_MS = 100;
     const PROGRESS_MIN_CHANGE = 5;
 
-    const loadDoc = async () => {
-      if (!mountedRef.current || abortController.signal.aborted) return;
+    // Use streaming loader with callbacks
+    const { promise, cancel } = loadDocumentWithCallbacks({
+      src,
+      workerSrc,
+      signal: abortController.signal,
+      onProgress: ({ loaded, total }) => {
+        if (!mountedRef.current || srcIdRef.current !== loadId || abortController.signal.aborted) {
+          return;
+        }
 
-      try {
-        const { document, numPages } = await loadDocument({
-          src,
-          workerSrc,
-          signal: abortController.signal,
-          onProgress: ({ loaded, total }) => {
-            if (!mountedRef.current || srcIdRef.current !== loadId || abortController.signal.aborted) {
-              return;
-            }
+        const now = Date.now();
+        const percent = total > 0 ? Math.round((loaded / total) * 100) : 0;
 
-            const now = Date.now();
-            const percent = total > 0 ? Math.round((loaded / total) * 100) : 0;
+        // Only update if enough time passed AND percent changed significantly
+        const timePassed = now - lastProgressUpdate >= PROGRESS_THROTTLE_MS;
+        const percentChanged = Math.abs(percent - lastPercent) >= PROGRESS_MIN_CHANGE;
+        const isComplete = percent >= 100;
 
-            // Only update if enough time passed AND percent changed significantly
-            const timePassed = now - lastProgressUpdate >= PROGRESS_THROTTLE_MS;
-            const percentChanged = Math.abs(percent - lastPercent) >= PROGRESS_MIN_CHANGE;
-            const isComplete = percent >= 100;
+        if ((timePassed && percentChanged) || isComplete) {
+          lastProgressUpdate = now;
+          lastPercent = percent;
+          viewerStore.setState({
+            loadingProgress: {
+              phase: 'fetching',
+              percent,
+              bytesLoaded: loaded,
+              totalBytes: total,
+            },
+            streamingProgress: { loaded, total },
+            documentLoadingState: 'loading',
+          });
+        }
+      },
+      onDocumentReady: (document, numPages) => {
+        if (!mountedRef.current || srcIdRef.current !== loadId || abortController.signal.aborted) {
+          return;
+        }
 
-            if ((timePassed && percentChanged) || isComplete) {
-              lastProgressUpdate = now;
-              lastPercent = percent;
-              viewerStore.getState().setLoadingProgress({
-                phase: 'fetching',
-                percent,
-                bytesLoaded: loaded,
-                totalBytes: total,
-              });
-            }
-          },
+        // Document structure is ready - update state but don't clear loading yet
+        viewerStore.setState({
+          document,
+          numPages,
+          loadingProgress: { phase: 'parsing' },
+          documentLoadingState: 'loading',
         });
+      },
+      onFirstPageReady: () => {
+        if (!mountedRef.current || srcIdRef.current !== loadId || abortController.signal.aborted) {
+          return;
+        }
 
+        // First page is ready - hide loading screen and show content
+        viewerStore.setState({
+          isLoading: false,
+          firstPageReady: true,
+          loadingProgress: null,
+          documentLoadingState: 'ready',
+        });
+        setLoadState('loaded');
+      },
+    });
+
+    cancelLoaderRef.current = cancel;
+
+    // Handle final completion
+    promise
+      .then(({ document, numPages }) => {
         if (mountedRef.current && srcIdRef.current === loadId && !abortController.signal.aborted) {
-          // Set document and clear loading in one update
-          viewerStore.getState().setDocument(document);
-          setLoadState('loaded');
+          // Ensure document is set (may already be set by onDocumentReady)
+          if (!viewerStore.getState().document) {
+            viewerStore.getState().setDocument(document);
+          }
 
           // Handle initial page and scale if needed (batched)
           if (initialPage !== 1 || typeof initialScale === 'number' || initialScale === 'page-fit') {
@@ -807,10 +852,9 @@ const PDFViewerInner = memo(function PDFViewerInner({
           }
 
           onDocumentLoadRef.current?.({ document, numPages });
-        } else {
-          document.destroy();
         }
-      } catch (err) {
+      })
+      .catch((err) => {
         // Ignore abort errors - component is unmounting or loading was cancelled
         if (err instanceof DOMException && err.name === 'AbortError') {
           return;
@@ -830,13 +874,14 @@ const PDFViewerInner = memo(function PDFViewerInner({
           setLoadState('error');
           onErrorRef.current?.(error);
         }
-      }
-    };
-
-    loadDoc();
+      });
 
     return () => {
       abortController.abort();
+      if (cancelLoaderRef.current) {
+        cancelLoaderRef.current();
+        cancelLoaderRef.current = null;
+      }
     };
   }, [srcId, src, workerSrc, initialPage, initialScale, viewerStore]);
 
@@ -969,6 +1014,17 @@ const PDFViewerInner = memo(function PDFViewerInner({
               totalBytes={loadingProgress?.totalBytes}
             />
           )}
+        </div>
+      )}
+
+      {/* Inline streaming progress indicator - shows when first page is ready but background loading continues */}
+      {!isLoading && streamingProgress && streamingProgress.total > 0 && streamingProgress.loaded < streamingProgress.total && (
+        <div className="absolute bottom-20 right-4 z-40 px-3 py-2 bg-gray-900/80 text-white text-xs rounded-lg shadow-lg flex items-center gap-2">
+          <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+          <span>Loading pages...</span>
+          <span className="text-white/60">
+            {Math.round((streamingProgress.loaded / streamingProgress.total) * 100)}%
+          </span>
         </div>
       )}
     </div>

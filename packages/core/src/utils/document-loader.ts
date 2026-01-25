@@ -20,6 +20,20 @@ export interface LoadDocumentOptions {
   signal?: AbortSignal;
 }
 
+export interface LoadDocumentWithCallbacksOptions extends LoadDocumentOptions {
+  /** Callback when document structure is ready (XRef parsed) */
+  onDocumentReady?: (document: PDFDocumentProxy, numPages: number) => void;
+  /** Callback when the first page is loaded and ready to render */
+  onFirstPageReady?: (page: PDFPageProxy) => void;
+}
+
+export interface LoadDocumentWithCallbacksResult {
+  /** Promise that resolves when loading is complete */
+  promise: Promise<LoadDocumentResult>;
+  /** Function to cancel loading */
+  cancel: () => void;
+}
+
 export interface LoadDocumentResult {
   document: PDFDocumentProxy;
   numPages: number;
@@ -219,6 +233,176 @@ export function clearDocumentCache(url?: string): void {
     }
     documentCache.clear();
   }
+}
+
+/**
+ * Load a PDF document with streaming callbacks for progressive loading.
+ *
+ * This function provides callbacks that fire at different stages of loading:
+ * - onDocumentReady: Fires when the document structure (XRef) is parsed
+ * - onFirstPageReady: Fires when the first page is loaded and ready to render
+ *
+ * This enables showing the PDF viewer UI immediately and rendering the first
+ * page as soon as it's available, while the rest of the document loads in
+ * the background.
+ */
+export function loadDocumentWithCallbacks(
+  options: LoadDocumentWithCallbacksOptions
+): LoadDocumentWithCallbacksResult {
+  const {
+    src,
+    workerSrc,
+    password,
+    onProgress,
+    onDocumentReady,
+    onFirstPageReady,
+    enableRangeRequests = true,
+    enableStreaming = true,
+    cacheDocument = true,
+    signal,
+  } = options;
+
+  // Create internal abort controller
+  const abortController = new AbortController();
+
+  // Link external signal if provided
+  if (signal) {
+    signal.addEventListener('abort', () => abortController.abort());
+  }
+
+  const promise = (async () => {
+    // Check if already aborted
+    if (abortController.signal.aborted) {
+      throw new DOMException('Aborted', 'AbortError');
+    }
+
+    // Initialize pdf.js if not already done
+    await initializePDFJS({ workerSrc });
+
+    // Check if aborted during initialization
+    if (abortController.signal.aborted) {
+      throw new DOMException('Aborted', 'AbortError');
+    }
+
+    // Check cache for URL-based documents
+    const cacheKey = typeof src === 'string' ? src : null;
+    if (cacheKey && cacheDocument && documentCache.has(cacheKey)) {
+      const cachedDoc = documentCache.get(cacheKey)!;
+      try {
+        const numPages = cachedDoc.numPages;
+        // @ts-expect-error - checking internal destroyed state
+        const isDestroyed = cachedDoc._transport?.destroyed || cachedDoc.destroyed;
+        if (numPages > 0 && !isDestroyed) {
+          // Fire callbacks for cached document
+          onDocumentReady?.(cachedDoc, numPages);
+
+          // Load first page
+          if (onFirstPageReady && numPages > 0) {
+            try {
+              const firstPage = await cachedDoc.getPage(1);
+              if (!abortController.signal.aborted) {
+                onFirstPageReady(firstPage);
+              }
+            } catch {
+              // First page load failed, but document is still valid
+            }
+          }
+
+          return {
+            document: cachedDoc,
+            numPages,
+          };
+        }
+        documentCache.delete(cacheKey);
+      } catch {
+        documentCache.delete(cacheKey);
+      }
+    }
+
+    // Prepare loading parameters
+    const loadingParams: Record<string, unknown> = {
+      password,
+      isEvalSupported: false,
+      useSystemFonts: true,
+      disableRange: !enableRangeRequests,
+      disableStream: !enableStreaming,
+      disableAutoFetch: true,
+    };
+
+    if (typeof src === 'string') {
+      loadingParams.url = src;
+    } else {
+      loadingParams.data = src;
+    }
+
+    const loadingTask = pdfjsLib.getDocument(loadingParams);
+
+    // Handle abort signal
+    const abortHandler = () => {
+      loadingTask.destroy();
+    };
+    abortController.signal.addEventListener('abort', abortHandler);
+
+    // Handle progress
+    if (onProgress) {
+      loadingTask.onProgress = ({ loaded, total }: { loaded: number; total: number }) => {
+        if (!abortController.signal.aborted) {
+          onProgress({ loaded, total });
+        }
+      };
+    }
+
+    let document: PDFDocumentProxy;
+    try {
+      document = await loadingTask.promise;
+    } catch (error) {
+      abortController.signal.removeEventListener('abort', abortHandler);
+
+      if (abortController.signal.aborted) {
+        throw new DOMException('Aborted', 'AbortError');
+      }
+
+      throw error;
+    }
+
+    abortController.signal.removeEventListener('abort', abortHandler);
+
+    if (abortController.signal.aborted) {
+      document.destroy();
+      throw new DOMException('Aborted', 'AbortError');
+    }
+
+    // Document is ready - fire callback
+    const numPages = document.numPages;
+    onDocumentReady?.(document, numPages);
+
+    // Load first page immediately and fire callback
+    if (onFirstPageReady && numPages > 0) {
+      try {
+        const firstPage = await document.getPage(1);
+        if (!abortController.signal.aborted) {
+          onFirstPageReady(firstPage);
+        }
+      } catch {
+        // First page load failed, but document is still valid
+      }
+    }
+
+    // Cache the document
+    if (cacheKey && cacheDocument) {
+      documentCache.set(cacheKey, document);
+    }
+
+    return {
+      document,
+      numPages,
+    };
+  })();
+
+  return {
+    promise,
+    cancel: () => abortController.abort(),
+  };
 }
 
 /**

@@ -1,6 +1,6 @@
 import { createStore } from 'zustand/vanilla';
 import type { PDFDocumentProxy } from 'pdfjs-dist';
-import type { ViewerState, ViewerActions, ViewMode, Theme, SidebarPanel, ScrollMode } from '../types';
+import type { ViewerState, ViewerActions, ViewMode, Theme, SidebarPanel, ScrollMode, DocumentLoadingState, StreamingProgress } from '../types';
 
 const ZOOM_LEVELS = [0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 2.0, 3.0, 4.0];
 const MIN_SCALE = 0.1;
@@ -25,6 +25,11 @@ const initialState: ViewerState = {
   isLoading: false,
   loadingProgress: null,
   error: null,
+
+  // Progressive loading state
+  documentLoadingState: 'idle',
+  firstPageReady: false,
+  streamingProgress: null,
 
   // Navigation state
   currentPage: 1,
@@ -61,6 +66,7 @@ export function createViewerStore(initialOverrides: Partial<ViewerState> = {}) {
           loadingProgress: null,
           error: null,
           currentPage: 1,
+          documentLoadingState: 'ready',
         });
       } else {
         set({
@@ -68,6 +74,9 @@ export function createViewerStore(initialOverrides: Partial<ViewerState> = {}) {
           numPages: 0,
           isLoading: false,
           loadingProgress: null,
+          documentLoadingState: 'idle',
+          firstPageReady: false,
+          streamingProgress: null,
         });
       }
     },
@@ -84,7 +93,20 @@ export function createViewerStore(initialOverrides: Partial<ViewerState> = {}) {
     },
 
     setError: (error: Error | null) => {
-      set({ error, isLoading: false, loadingProgress: null });
+      set({ error, isLoading: false, loadingProgress: null, documentLoadingState: error ? 'error' : 'idle' });
+    },
+
+    // Progressive loading actions
+    setDocumentLoadingState: (documentLoadingState: DocumentLoadingState) => {
+      set({ documentLoadingState });
+    },
+
+    setFirstPageReady: (firstPageReady: boolean) => {
+      set({ firstPageReady });
+    },
+
+    setStreamingProgress: (streamingProgress: StreamingProgress | null) => {
+      set({ streamingProgress });
     },
 
     // Navigation actions
