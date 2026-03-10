@@ -20,12 +20,12 @@ importers:
 
   apps/demo:
     dependencies:
-      '@pdf-reader/core':
-        specifier: workspace:*
-        version: link:../../packages/core
       next:
         specifier: ^15.1.0
         version: 15.5.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      pdfjs-reader-core:
+        specifier: workspace:*
+        version: link:../../packages/core
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -69,9 +69,15 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      page-flip:
+        specifier: ^2.0.7
+        version: 2.0.7
       pdfjs-dist:
         specifier: ^4.9.155
         version: 4.10.38
+      react-pageflip:
+        specifier: ^2.0.3
+        version: 2.0.3
       zustand:
         specifier: ^5.0.2
         version: 5.0.10(@types/react@18.3.27)(react@18.3.1)
@@ -2253,6 +2259,9 @@ packages:
     resolution: {integrity: sha512-LaNjtRWUBY++zB5nE/NwcaoMylSPk+S+ZHNB1TzdbMJMny6dynpAGt7X/tl/QYq3TIeE6nxHppbo2LGymrG5Pw==}
     engines: {node: '>=10'}
 
+  page-flip@2.0.7:
+    resolution: {integrity: sha512-96lQFUUz7r/LZzEUZJ3yBIMEKU9+m8HMFDzTvTdD6P7Ag/wXINjp9n0W7b4wanwnDbQETo4uNUoL3zMqpFxwGA==}
+
   parent-module@1.0.1:
     resolution: {integrity: sha512-GQ2EWRpQV8/o+Aw8YqtfZZPfNRWZYkbidE9k5rpl/hC3vtHHBfGm2Ifi6qWV+coDGkrUKZAxE3Lot5kcsRlh+g==}
     engines: {node: '>=6'}
@@ -2399,6 +2408,9 @@ packages:
 
   react-is@17.0.2:
     resolution: {integrity: sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==}
+
+  react-pageflip@2.0.3:
+    resolution: {integrity: sha512-k81mHhRvUM52y8jyzTCh5t4O0lepkLhp+XGSUzq2C3uD+iW99Cv0jfRlqFCjZbD5N3jKkIFr7/3giucoXKDP3Q==}
 
   react@18.3.1:
     resolution: {integrity: sha512-wS+hAgJShR0KhEvPJArfuPVN1+Hz1t0Y6n5jLrGQbkb4urgPE/0Rve+1kMB1v/oWgHgm4WIcV+i7F2pTVj+2iQ==}
@@ -5038,6 +5050,8 @@ snapshots:
     dependencies:
       p-limit: 3.1.0
 
+  page-flip@2.0.7: {}
+
   parent-module@1.0.1:
     dependencies:
       callsites: 3.1.0
@@ -5154,6 +5168,10 @@ snapshots:
   react-is@16.13.1: {}
 
   react-is@17.0.2: {}
+
+  react-pageflip@2.0.3:
+    dependencies:
+      page-flip: 2.0.7
 
   react@18.3.1:
     dependencies:

@@ -13,6 +13,7 @@ import {
   DocumentContainer,
   ContinuousScrollContainer,
   DualPageContainer,
+  BookModeContainer,
   loadDocument,
 } from '@pdf-reader/core';
 import type { PDFDocumentLoadedEvent, ViewMode, HighlightColor, ShapeType } from '@pdf-reader/core';
@@ -384,6 +385,8 @@ function PDFViewerWithDemo({
         return <ContinuousScrollContainer />;
       case 'dual':
         return <DualPageContainer />;
+      case 'book':
+        return <BookModeContainer />;
       case 'single':
       default:
         return <DocumentContainer />;
@@ -406,7 +409,7 @@ function PDFViewerWithDemo({
   return (
     <div className="relative h-full flex flex-col">
       <Toolbar />
-      {showAnnotationToolbar && <AnnotationToolbar />}
+      {showAnnotationToolbar && viewMode !== 'book' && <AnnotationToolbar />}
 
       <div className="flex flex-1 overflow-hidden">
         {sidebarOpen && <Sidebar />}
@@ -477,12 +480,13 @@ export default function Home() {
                   <option value="single">Single Page</option>
                   <option value="continuous">Continuous Scroll</option>
                   <option value="dual">Dual Page</option>
+                  <option value="book">Book Mode</option>
                 </select>
               </div>
             )}
 
-            {/* Annotation Toolbar Toggle */}
-            {pdfUrl && (
+            {/* Annotation Toolbar Toggle (hidden in book mode) */}
+            {pdfUrl && viewMode !== 'book' && (
               <button
                 onClick={() => setShowAnnotationToolbar(!showAnnotationToolbar)}
                 className={`inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${

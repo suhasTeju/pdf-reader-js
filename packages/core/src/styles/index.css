@@ -408,7 +408,7 @@
 }
 
 /* ============================================
-   Book Mode Styles
+   Book Mode Styles (uses react-pageflip)
    ============================================ */
 
 /* --- Container --- */
@@ -418,253 +418,34 @@
   -webkit-user-select: none;
   position: relative;
   outline: none;
-  touch-action: pan-y; /* allow vertical scroll, we handle horizontal */
 }
 
 .book-mode-container:focus {
   outline: none;
 }
 
-/* --- Book wrapper (sized to match the PDF page) --- */
-.book-wrapper {
-  position: relative;
-  transform-style: preserve-3d;
-  /* Width and height are set inline from JS */
-  box-shadow:
-    0 6px 24px rgba(0, 0, 0, 0.12),
-    0 2px 8px rgba(0, 0, 0, 0.08);
-  border-radius: 3px;
-}
-
-.dark .book-wrapper {
-  box-shadow:
-    0 6px 24px rgba(0, 0, 0, 0.4),
-    0 2px 8px rgba(0, 0, 0, 0.25);
-}
-
-/* --- Page edges (stacked pages illusion) --- */
-.book-page-edges {
-  position: absolute;
-  top: 3px;
-  bottom: -3px;
-  right: -3px;
-  left: 3px;
-  background: linear-gradient(to bottom, #eae7e2, #d8d3cb);
-  border-radius: 0 3px 3px 0;
-  z-index: -1;
-}
-
-.book-page-edges::after {
-  content: '';
-  position: absolute;
-  top: 2px;
-  bottom: -2px;
-  right: -2px;
-  left: 2px;
-  background: linear-gradient(to bottom, #ddd9d2, #ccc7bf);
-  border-radius: 0 3px 3px 0;
-  z-index: -1;
-}
-
-.dark .book-page-edges {
-  background: linear-gradient(to bottom, #374151, #1f2937);
-}
-
-.dark .book-page-edges::after {
-  background: linear-gradient(to bottom, #2d3748, #1a202c);
-}
-
-/* --- Layer: page revealed underneath --- */
-.book-layer-under {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  overflow: hidden;
-  border-radius: 2px;
-}
-
-/* Shadow on the revealed page (looks like the turning page casts a shadow) */
-.book-reveal-shadow {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to right, rgba(0, 0, 0, 0.25) 0%, transparent 50%);
+/* --- Disable text selection inside flipbook pages --- */
+.book-mode-container .pdf-text-layer {
   pointer-events: none;
-  z-index: 2;
-  opacity: 0;
-  transition: opacity 0.15s ease;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
-.book-reveal-shadow-right {
-  background: linear-gradient(to left, rgba(0, 0, 0, 0.25) 0%, transparent 50%);
-}
-
-/* --- The turning page layer --- */
-.book-turning-page {
-  position: absolute;
-  inset: 0;
-  z-index: 3;
-  transform-style: preserve-3d;
-  /* transform-origin set via .book-origin-right / .book-origin-left */
-}
-
-.book-origin-right {
-  transform-origin: right center;
-}
-
-.book-origin-left {
-  transform-origin: left center;
-}
-
-/* --- Front and back faces --- */
-.book-face {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  backface-visibility: hidden;
-  border-radius: 2px;
-}
-
-.book-face-front {
-  z-index: 2;
+/* --- Individual page styling --- */
+.book-page {
   background: white;
+  overflow: hidden;
 }
 
-.dark .book-face-front {
+.dark .book-page {
   background: #1f2937;
 }
 
-.sepia .book-face-front {
+.sepia .book-page {
   background: #f5f0e8;
 }
 
-.book-face-back {
-  z-index: 1;
-  transform: rotateY(180deg);
-  background: white;
-}
-
-.dark .book-face-back {
-  background: #1f2937;
-}
-
-.sepia .book-face-back {
-  background: #f5f0e8;
-}
-
-/* --- Shadow on the front face as it lifts --- */
-.book-lift-shadow {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 5;
-  opacity: 0;
-  background: linear-gradient(
-    to left,
-    rgba(0, 0, 0, 0.3) 0%,
-    rgba(0, 0, 0, 0.08) 40%,
-    transparent 100%
-  );
-}
-
-/* --- Fold crease shadow (appears at the turning axis) --- */
-.book-fold-shadow {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 30px;
-  z-index: 10;
-  pointer-events: none;
-  transition: opacity 0.15s ease;
-  opacity: 0;
-}
-
-.book-fold-shadow-left {
-  left: 0;
-  background: linear-gradient(to right, rgba(0, 0, 0, 0.2), transparent);
-}
-
-.book-fold-shadow-right {
-  right: 0;
-  background: linear-gradient(to left, rgba(0, 0, 0, 0.2), transparent);
-}
-
-/* ─── Animations ──────────────────────────────────────────────────── */
-
-/* Forward flip: page rotates from 0 (or current drag angle) to -180 around the RIGHT edge */
-.book-anim-flip-forward {
-  animation: bookFlipForward 0.5s cubic-bezier(0.4, 0.0, 0.2, 1) forwards;
-}
-
-@keyframes bookFlipForward {
-  from {
-    transform: rotateY(var(--book-drag-angle, 0deg));
-  }
-  to {
-    transform: rotateY(-180deg);
-  }
-}
-
-/* Backward flip: page rotates from 0 (or current drag angle) to 180 around the LEFT edge */
-.book-anim-flip-backward {
-  animation: bookFlipBackward 0.5s cubic-bezier(0.4, 0.0, 0.2, 1) forwards;
-}
-
-@keyframes bookFlipBackward {
-  from {
-    transform: rotateY(var(--book-drag-angle, 0deg));
-  }
-  to {
-    transform: rotateY(180deg);
-  }
-}
-
-/* Settle: snap back to flat from current drag angle */
-.book-anim-settle {
-  transition: transform 0.35s cubic-bezier(0.4, 0.0, 0.2, 1);
-  transform: rotateY(0deg) !important;
-}
-
-/* Shadow animation during forward turn */
-.book-anim-flip-forward .book-lift-shadow {
-  animation: bookLiftShadow 0.5s cubic-bezier(0.4, 0.0, 0.2, 1) forwards;
-}
-
-.book-anim-flip-backward .book-lift-shadow {
-  animation: bookLiftShadow 0.5s cubic-bezier(0.4, 0.0, 0.2, 1) forwards;
-}
-
-@keyframes bookLiftShadow {
-  0% { opacity: 0; }
-  40% { opacity: 0.4; }
-  100% { opacity: 0; }
-}
-
-/* Reveal shadow during animation */
-.book-anim-flip-forward ~ .book-layer-under .book-reveal-shadow,
-.book-anim-flip-backward ~ .book-layer-under .book-reveal-shadow {
-  animation: bookRevealShadow 0.5s cubic-bezier(0.4, 0.0, 0.2, 1) forwards;
-}
-
-@keyframes bookRevealShadow {
-  0% { opacity: 0; }
-  30% { opacity: 0.35; }
-  100% { opacity: 0; }
-}
-
-/* Fold shadow during animation */
-.book-anim-flip-forward ~ .book-fold-shadow,
-.book-anim-flip-backward ~ .book-fold-shadow {
-  animation: bookFoldShadow 0.5s cubic-bezier(0.4, 0.0, 0.2, 1) forwards;
-}
-
-@keyframes bookFoldShadow {
-  0% { opacity: 0; }
-  40% { opacity: 0.35; }
-  100% { opacity: 0; }
-}
-
-/* ─── Page indicator ─────────────────────────────────────────────── */
-
+/* --- Page indicator --- */
 .book-page-indicator {
   position: absolute;
   bottom: 1rem;
@@ -686,58 +467,6 @@
 
 .book-mode-container:hover .book-page-indicator {
   opacity: 1;
-}
-
-/* ─── Navigation hints ───────────────────────────────────────────── */
-
-.book-nav-hint {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  padding: 0.75rem;
-  background: rgba(0, 0, 0, 0.25);
-  color: white;
-  border-radius: 50%;
-  opacity: 0;
-  transition: opacity 0.25s ease;
-  pointer-events: none;
-  z-index: 15;
-  backdrop-filter: blur(4px);
-}
-
-.book-mode-container:hover .book-nav-hint {
-  opacity: 0.5;
-}
-
-.book-nav-hint-left {
-  left: 1.5rem;
-}
-
-.book-nav-hint-right {
-  right: 1.5rem;
-}
-
-/* ─── Reduced motion ─────────────────────────────────────────────── */
-
-@media (prefers-reduced-motion: reduce) {
-  .book-anim-flip-forward,
-  .book-anim-flip-backward {
-    animation: none;
-    transform: rotateY(0deg);
-  }
-
-  .book-anim-settle {
-    transition: none;
-  }
-
-  .book-anim-flip-forward .book-lift-shadow,
-  .book-anim-flip-backward .book-lift-shadow,
-  .book-anim-flip-forward ~ .book-layer-under .book-reveal-shadow,
-  .book-anim-flip-backward ~ .book-layer-under .book-reveal-shadow,
-  .book-anim-flip-forward ~ .book-fold-shadow,
-  .book-anim-flip-backward ~ .book-fold-shadow {
-    animation: none;
-  }
 }
 
 /* Print styles */
