@@ -96,7 +96,7 @@ export interface PageDimensions {
 // Viewer State Types
 // ============================================================================
 
-export type ViewMode = 'single' | 'dual' | 'continuous';
+export type ViewMode = 'single' | 'dual' | 'continuous' | 'book';
 export type ScrollMode = 'single' | 'continuous';
 export type SidebarPanel = 'thumbnails' | 'outline' | 'search' | 'annotations' | null;
 export type Theme = 'light' | 'dark' | 'sepia';

@@ -5,6 +5,7 @@ export {
   VirtualizedDocumentContainer,
   ContinuousScrollContainer,
   DualPageContainer,
+  BookModeContainer,
 } from './PDFViewer';
 export { PDFPage, CanvasLayer, TextLayer, HighlightLayer, AnnotationLayer, FocusRegionLayer } from './PDFPage';
 export { Toolbar, MobileToolbar } from './Toolbar';
@@ -29,6 +30,7 @@ export type {
   VirtualizedDocumentContainerProps,
   ContinuousScrollContainerProps,
   DualPageContainerProps,
+  BookModeContainerProps,
 } from './PDFViewer';
 export type { SelectionToolbarProps } from './SelectionToolbar';
 export type { HighlightPopoverProps } from './HighlightPopover';
