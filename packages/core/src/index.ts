@@ -7,6 +7,7 @@ export {
   VirtualizedDocumentContainer,
   ContinuousScrollContainer,
   DualPageContainer,
+  BookModeContainer,
   // PDF Page
   PDFPage,
   CanvasLayer,
@@ -141,6 +142,8 @@ export {
   mergeAdjacentRects,
   getPageText,
   countTextOnPage,
+  // Page Turn Sound
+  playPageTurnSound,
   // Coordinate Utilities
   pdfToViewport,
   viewportToPDF,
@@ -311,6 +314,7 @@ export type {
   VirtualizedDocumentContainerProps,
   ContinuousScrollContainerProps,
   DualPageContainerProps,
+  BookModeContainerProps,
   SelectionToolbarProps,
   HighlightPopoverProps,
   AnnotationToolbarProps,

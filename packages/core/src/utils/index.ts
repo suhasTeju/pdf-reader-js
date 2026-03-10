@@ -84,6 +84,9 @@ export {
   getRectIntersection,
 } from './coordinates';
 
+// Page Turn Sound
+export { playPageTurnSound } from './page-turn-sound';
+
 // Mobile Optimizations
 export {
   detectDeviceCapabilities,

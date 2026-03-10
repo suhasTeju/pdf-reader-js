@@ -14,6 +14,7 @@ import { AnnotationToolbar } from '../AnnotationToolbar';
 import { DocumentContainer } from './DocumentContainer';
 import { ContinuousScrollContainer } from './ContinuousScrollContainer';
 import { DualPageContainer } from './DualPageContainer';
+import { BookModeContainer } from './BookModeContainer';
 import { FloatingZoomControls } from '../FloatingZoomControls';
 import { PDFLoadingScreen } from '../PDFLoadingScreen';
 import { cn } from '../../utils';
@@ -931,6 +932,8 @@ const PDFViewerInner = memo(function PDFViewerInner({
         return <ContinuousScrollContainer />;
       case 'dual':
         return <DualPageContainer />;
+      case 'book':
+        return <BookModeContainer />;
       case 'single':
       default:
         return <DocumentContainer />;
