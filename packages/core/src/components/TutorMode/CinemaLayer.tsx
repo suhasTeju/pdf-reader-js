@@ -16,7 +16,7 @@ import type {
 import type { PageBBoxData, BBoxIndex, BBoxCoords } from '../../types/bbox';
 import { SpotlightMask } from './SpotlightMask';
 import { AnimatedUnderline } from './AnimatedUnderline';
-import { Highlight } from './Highlight';
+import { AnimatedHighlight } from './AnimatedHighlight';
 import { PulseOverlay } from './PulseOverlay';
 import { CalloutArrow } from './CalloutArrow';
 import { GhostReference } from './GhostReference';
@@ -79,7 +79,7 @@ export function CinemaLayer({
               const a = overlay.action as ActionHighlight;
               const b = blockBbox(index, a.target_block);
               if (!b) return null;
-              return <Highlight key={overlay.id} bbox={b} action={a} />;
+              return <AnimatedHighlight key={overlay.id} bbox={b} action={a} />;
             }
             case 'pulse': {
               const a = overlay.action as ActionPulse;

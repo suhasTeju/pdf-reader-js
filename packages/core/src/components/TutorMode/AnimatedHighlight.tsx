@@ -3,12 +3,12 @@ import { motion } from 'framer-motion';
 import type { ActionHighlight } from '../../types/storyboard';
 import type { BBoxCoords } from '../../types/bbox';
 
-export interface HighlightProps {
+export interface AnimatedHighlightProps {
   bbox: BBoxCoords;
   action: ActionHighlight;
 }
 
-export function Highlight({ bbox, action }: HighlightProps) {
+export function AnimatedHighlight({ bbox, action }: AnimatedHighlightProps) {
   const [x1, y1, x2, y2] = bbox;
   const w = x2 - x1;
   const h = y2 - y1;
