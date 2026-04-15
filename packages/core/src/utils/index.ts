@@ -110,3 +110,12 @@ export {
   type RenderConfig,
   type MemoryStatus,
 } from './mobile-config';
+
+export {
+  fitPageScale,
+  fitPageTarget,
+  computeCameraForBlock,
+  clampCamera,
+  type ViewportSize,
+  type CameraTarget,
+} from './camera-math';
