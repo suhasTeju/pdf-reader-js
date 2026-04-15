@@ -16,7 +16,6 @@ import {
   loadDocumentWithCallbacks,
   PDFLoadingScreen,
   BookModeContainer,
-  loadDocument,
 } from '@pdf-reader/core';
 import type { PDFDocumentLoadedEvent, ViewMode, HighlightColor, ShapeType } from '@pdf-reader/core';
 

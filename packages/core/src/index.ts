@@ -135,6 +135,8 @@ export {
   createSearchStore,
   createAgentStore,
   createStudentStore,
+  createNarrationStore,
+  makeOverlayId,
 } from './store';
 
 // Plugins
@@ -260,6 +262,39 @@ export type {
   ContextMenuItem,
   PDFViewerEventMap,
 
+  // Tutor Mode types
+  BlockType,
+  DefaultAction,
+  BBoxCoords,
+  Block,
+  PageDimensionsDpi,
+  PageBBoxData,
+  BBoxIndex,
+  EasingName,
+  SpotlightShape,
+  UnderlineStyle,
+  ArrowCurve,
+  PulseIntensity,
+  BoxStyle,
+  LabelPosition,
+  GhostPosition,
+  ClearTarget,
+  StoryboardAction,
+  ActionCamera,
+  ActionSpotlight,
+  ActionUnderline,
+  ActionHighlight,
+  ActionPulse,
+  ActionCallout,
+  ActionGhostReference,
+  ActionBox,
+  ActionLabel,
+  ActionClear,
+  StoryboardStep,
+  Storyboard,
+  ActiveOverlay,
+  CameraState,
+
   // Agent & Student Learning types
   AgentContext,
   AskAboutContext,
@@ -313,6 +348,13 @@ export type {
   AgentStoreApi,
   StudentStore,
   StudentStoreApi,
+  NarrationStore,
+  NarrationStoreApi,
+  NarrationState,
+  NarrationActions,
+  EngineStatus,
+  LlmStatus,
+  ChunkHistoryEntry,
 } from './store';
 
 // Hook types

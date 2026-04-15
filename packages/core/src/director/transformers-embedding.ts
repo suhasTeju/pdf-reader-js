@@ -9,7 +9,7 @@ let loaded: Promise<EmbeddingProvider> | null = null;
 export function getLocalMiniLM(): Promise<EmbeddingProvider> {
   if (loaded) return loaded;
   loaded = (async (): Promise<EmbeddingProvider> => {
-    const mod = await import('@xenova/transformers');
+    const mod = await import(/* webpackIgnore: true */ '@xenova/transformers');
     const { pipeline } = mod;
     const extractor = await pipeline(
       'feature-extraction',
