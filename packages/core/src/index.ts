@@ -52,6 +52,38 @@ export {
   // Loading Screen
   PDFLoadingScreen,
   withErrorBoundary,
+} from './components';
+
+// Director (for advanced consumers who want to use the engine/director directly)
+export {
+  directStoryboard,
+  type LlmConfig,
+  type DirectorInput,
+  type DirectorResult,
+} from './director/llm-director';
+export { StoryboardEngine } from './director/storyboard-engine';
+export {
+  buildUserPrompt,
+  SYSTEM_PROMPT,
+  truncate,
+  type BuildUserPromptInput,
+} from './director/prompts';
+export {
+  StoryboardSchema,
+  StoryboardActionSchema,
+  storyboardJsonSchema,
+  type StoryboardParsed,
+} from './director/storyboard-schema';
+export {
+  matchChunkToBlock,
+  storyboardFromMatch,
+  cosineSimilarity,
+  type EmbeddingProvider,
+  type BlockMatch,
+} from './director/embedding-fallback';
+export { getLocalMiniLM } from './director/transformers-embedding';
+
+export {
   // Tutor Mode
   TutorModeContainer,
   CinemaLayer,

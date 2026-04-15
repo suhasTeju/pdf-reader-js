@@ -14,6 +14,11 @@ import {
   directStoryboard,
   type LlmConfig,
 } from '../../director/llm-director';
+import {
+  matchChunkToBlock,
+  storyboardFromMatch,
+  type EmbeddingProvider,
+} from '../../director/embedding-fallback';
 
 export interface TutorModeContainerProps {
   pageNumber: number;
@@ -27,6 +32,8 @@ export interface TutorModeContainerProps {
   llm?: LlmConfig;
   /** Milliseconds of no new chunks before the camera returns to fit-page */
   idleTimeoutMs?: number;
+  /** Optional embedding provider for fallback matching when the LLM fails */
+  embeddingProvider?: EmbeddingProvider;
   className?: string;
 }
 
@@ -71,6 +78,7 @@ export function TutorModeContainer({
   currentChunk,
   llm,
   idleTimeoutMs = 5000,
+  embeddingProvider,
   className,
 }: TutorModeContainerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -173,13 +181,22 @@ export function TutorModeContainer({
         narrationStore
           .getState()
           .setLlmStatus('failed', result.error ?? 'unknown');
+        if (embeddingProvider) {
+          try {
+            const match = await matchChunkToBlock(chunk, page, embeddingProvider);
+            const fallbackSb = storyboardFromMatch(match);
+            engineRef.current?.execute(fallbackSb);
+          } catch {
+            // fallback itself failed — nothing more to do
+          }
+        }
       }
     }, 200);
 
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
     };
-  }, [currentChunk, llm, index, pageNumber, narrationStore]);
+  }, [currentChunk, llm, index, pageNumber, narrationStore, embeddingProvider]);
 
   // Idle recovery
   useEffect(() => {
