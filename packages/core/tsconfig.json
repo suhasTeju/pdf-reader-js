@@ -1,6 +1,7 @@
 {
   "extends": "@pdf-reader/tsconfig/react-library.json",
   "compilerOptions": {
+    "noUnusedLocals": false,
     "outDir": "./dist",
     "rootDir": "./src",
     "baseUrl": ".",
