@@ -57,6 +57,13 @@ export {
   CinemaLayer,
   CameraView,
   SpotlightMask,
+  AnimatedUnderline,
+  Highlight,
+  PulseOverlay,
+  CalloutArrow,
+  GhostReference,
+  BoxOverlay,
+  StickyLabel,
   buildBBoxIndex,
 } from './components';
 
@@ -344,6 +351,13 @@ export type {
   CinemaLayerProps,
   CameraViewProps,
   SpotlightMaskProps,
+  AnimatedUnderlineProps,
+  HighlightProps,
+  PulseOverlayProps,
+  CalloutArrowProps,
+  GhostReferenceProps,
+  BoxOverlayProps,
+  StickyLabelProps,
 } from './components';
 
 // Plugin types
