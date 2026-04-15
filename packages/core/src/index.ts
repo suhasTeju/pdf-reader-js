@@ -96,6 +96,7 @@ export {
   GhostReference,
   BoxOverlay,
   StickyLabel,
+  SubtitleBar,
   buildBBoxIndex,
 } from './components';
 
@@ -390,6 +391,7 @@ export type {
   GhostReferenceProps,
   BoxOverlayProps,
   StickyLabelProps,
+  SubtitleBarProps,
 } from './components';
 
 // Plugin types

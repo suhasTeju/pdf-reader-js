@@ -9,6 +9,7 @@ import type { NarrationStoreApi } from '../../store/narration-store';
 import { usePDFViewer } from '../../hooks';
 import { CameraView } from './CameraView';
 import { CinemaLayer } from './CinemaLayer';
+import { SubtitleBar } from './SubtitleBar';
 import { StoryboardEngine } from '../../director/storyboard-engine';
 import {
   directStoryboard,
@@ -34,6 +35,12 @@ export interface TutorModeContainerProps {
   idleTimeoutMs?: number;
   /** Optional embedding provider for fallback matching when the LLM fails */
   embeddingProvider?: EmbeddingProvider;
+  /** Show subtitle bar with the current chunk text (default: true) */
+  showSubtitles?: boolean;
+  /** Show the "Exit tutor" button (default: true, only rendered if onExitTutorMode is provided) */
+  showExitButton?: boolean;
+  /** Called when the exit button is clicked; engine's resetVisuals runs first */
+  onExitTutorMode?: () => void;
   className?: string;
 }
 
@@ -79,6 +86,9 @@ export function TutorModeContainer({
   llm,
   idleTimeoutMs = 5000,
   embeddingProvider,
+  showSubtitles = true,
+  showExitButton = true,
+  onExitTutorMode,
   className,
 }: TutorModeContainerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -236,6 +246,31 @@ export function TutorModeContainer({
       }}
       data-role="tutor-mode-container"
     >
+      {showExitButton && onExitTutorMode ? (
+        <button
+          onClick={() => {
+            engineRef.current?.resetVisuals();
+            onExitTutorMode();
+          }}
+          style={{
+            position: 'absolute',
+            top: 16,
+            right: 16,
+            zIndex: 60,
+            padding: '6px 12px',
+            border: 'none',
+            borderRadius: 6,
+            background: 'rgba(255,255,255,0.1)',
+            color: 'white',
+            cursor: 'pointer',
+            fontFamily: 'system-ui, sans-serif',
+            fontSize: 13,
+          }}
+          data-role="exit-tutor"
+        >
+          Exit tutor
+        </button>
+      ) : null}
       <CameraView camera={camera}>
         <div
           style={{
@@ -262,6 +297,7 @@ export function TutorModeContainer({
           />
         </div>
       </CameraView>
+      {showSubtitles ? <SubtitleBar text={currentChunk ?? null} /> : null}
     </div>
   );
 }

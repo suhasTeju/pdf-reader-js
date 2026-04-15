@@ -13,3 +13,4 @@ export { CalloutArrow, type CalloutArrowProps } from './CalloutArrow';
 export { GhostReference, type GhostReferenceProps } from './GhostReference';
 export { BoxOverlay, type BoxOverlayProps } from './BoxOverlay';
 export { StickyLabel, type StickyLabelProps } from './StickyLabel';
+export { SubtitleBar, type SubtitleBarProps } from './SubtitleBar';

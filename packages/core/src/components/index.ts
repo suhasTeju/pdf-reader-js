@@ -32,6 +32,7 @@ export {
   GhostReference,
   BoxOverlay,
   StickyLabel,
+  SubtitleBar,
   buildBBoxIndex,
 } from './TutorMode';
 
@@ -68,4 +69,5 @@ export type {
   GhostReferenceProps,
   BoxOverlayProps,
   StickyLabelProps,
+  SubtitleBarProps,
 } from './TutorMode';
