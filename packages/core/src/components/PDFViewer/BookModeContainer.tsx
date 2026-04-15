@@ -64,14 +64,36 @@ export const BookModeContainer = memo(function BookModeContainer({
 
   // All page proxy objects
   const [pages, setPages] = useState<(PDFPageProxy | null)[]>([]);
-  const [pageDims, setPageDims] = useState({ width: 612, height: 792 });
+  // Raw PDF page dimensions (at scale=1, rotation=0)
+  const [rawPageDims, setRawPageDims] = useState({ width: 612, height: 792 });
   const [isLoadingPages, setIsLoadingPages] = useState(false);
+
+  // Container measurement for responsive sizing
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
 
   // Flipbook ref for programmatic control
   const flipBookRef = useRef<any>(null);
 
   // Track whether we're syncing from flipbook → store (to avoid loops)
   const isSyncingRef = useRef(false);
+
+  // ─── Measure container ──────────────────────────────────────────────
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    const measure = () => {
+      setContainerSize({ width: el.clientWidth, height: el.clientHeight });
+    };
+
+    measure();
+
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   // ─── Load all pages from the PDF ──────────────────────────────────
 
@@ -96,11 +118,11 @@ export const BookModeContainer = memo(function BookModeContainer({
           const loaded = results.map(r => r.status === 'fulfilled' ? r.value : null);
           setPages(loaded);
 
-          // Get dimensions from first page
+          // Get raw dimensions from first page (scale=1)
           const firstPage = loaded[0];
           if (firstPage) {
-            const vp = firstPage.getViewport({ scale, rotation });
-            setPageDims({ width: Math.floor(vp.width), height: Math.floor(vp.height) });
+            const vp = firstPage.getViewport({ scale: 1, rotation });
+            setRawPageDims({ width: vp.width, height: vp.height });
           }
         }
       } catch {
@@ -112,16 +134,40 @@ export const BookModeContainer = memo(function BookModeContainer({
 
     loadAllPages();
     return () => { cancelled = true; };
-  }, [document, numPages, scale, rotation]);
+  }, [document, numPages, rotation]);
 
-  // ─── Update page dimensions when scale/rotation changes ───────────
+  // ─── Update raw page dimensions when rotation changes ──────────────
 
   useEffect(() => {
     if (pages[0]) {
-      const vp = pages[0].getViewport({ scale, rotation });
-      setPageDims({ width: Math.floor(vp.width), height: Math.floor(vp.height) });
+      const vp = pages[0].getViewport({ scale: 1, rotation });
+      setRawPageDims({ width: vp.width, height: vp.height });
     }
-  }, [pages, scale, rotation]);
+  }, [pages, rotation]);
+
+  // ─── Compute fitted dimensions ─────────────────────────────────────
+
+  const padding = 8; // px padding around the flipbook
+  const fitWidth = Math.max(containerSize.width - padding * 2, 200);
+  const fitHeight = Math.max(containerSize.height - padding * 2, 300);
+
+  const pageAspect = rawPageDims.width / rawPageDims.height;
+  let displayWidth: number;
+  let displayHeight: number;
+
+  // Fit within container maintaining aspect ratio
+  if (fitWidth / fitHeight > pageAspect) {
+    // Container is wider — height is the constraint
+    displayHeight = fitHeight;
+    displayWidth = Math.floor(fitHeight * pageAspect);
+  } else {
+    // Container is taller — width is the constraint
+    displayWidth = fitWidth;
+    displayHeight = Math.floor(fitWidth / pageAspect);
+  }
+
+  // Compute the scale needed to render the PDF page at the display size
+  const renderScale = displayWidth / rawPageDims.width;
 
   // ─── Sync viewer store → flipbook (e.g. toolbar page input) ──────
 
@@ -169,27 +215,15 @@ export const BookModeContainer = memo(function BookModeContainer({
 
   const themeClass = theme === 'dark' ? 'dark' : theme === 'sepia' ? 'sepia' : '';
 
-  if (!document) {
-    return (
-      <div className={cn('document-container', 'flex-1', themeStyles[theme], className)}>
-        <PDFLoadingScreen phase={isLoading ? 'fetching' : 'initializing'} />
-      </div>
-    );
-  }
-
-  if (isLoadingPages || pages.length === 0) {
-    return (
-      <div className={cn('document-container', 'flex-1', themeStyles[theme], className)}>
-        <PDFLoadingScreen phase="rendering" />
-      </div>
-    );
-  }
+  const ready = !!document && !isLoadingPages && pages.length > 0;
+  const hasContainer = containerSize.width > 0 && containerSize.height > 0;
 
   return (
     <div
+      ref={containerRef}
       className={cn(
         'book-mode-container',
-        'flex-1 overflow-hidden',
+        'flex-1 h-full w-full overflow-hidden',
         'flex items-center justify-center',
         themeStyles[theme],
         themeClass,
@@ -197,51 +231,55 @@ export const BookModeContainer = memo(function BookModeContainer({
       )}
       style={{ userSelect: 'none', WebkitUserSelect: 'none' }}
     >
-      <HTMLFlipBook
-        ref={flipBookRef}
-        width={pageDims.width}
-        height={pageDims.height}
-        size="stretch"
-        minWidth={300}
-        maxWidth={pageDims.width}
-        minHeight={400}
-        maxHeight={pageDims.height}
-        drawShadow={drawShadow}
-        maxShadowOpacity={maxShadowOpacity}
-        flippingTime={flippingTime}
-        usePortrait={true}
-        startPage={currentPage - 1}
-        showCover={false}
-        mobileScrollSupport={false}
-        swipeDistance={30}
-        showPageCorners={true}
-        useMouseEvents={true}
-        clickEventForward={false}
-        onFlip={handleFlip}
-        className="book-flipbook"
-        style={{}}
-        startZIndex={0}
-        autoSize={true}
-        renderOnlyPageLengthChange={false}
-        disableFlipByClick={false}
-      >
-        {pages.map((page, index) => (
-          <BookPage
-            key={index}
-            pageNumber={index + 1}
-            page={page}
-            scale={scale}
-            rotation={rotation}
-            width={pageDims.width}
-            height={pageDims.height}
-          />
-        ))}
-      </HTMLFlipBook>
+      {!ready && (
+        <PDFLoadingScreen
+          phase={!document ? (isLoading ? 'fetching' : 'initializing') : 'rendering'}
+        />
+      )}
 
-      {/* Page number indicator */}
-      <div className="book-page-indicator">
-        {currentPage} / {numPages}
-      </div>
+      {ready && hasContainer && (
+        <HTMLFlipBook
+          ref={flipBookRef}
+          width={displayWidth}
+          height={displayHeight}
+          size="fixed"
+          minWidth={displayWidth}
+          maxWidth={displayWidth}
+          minHeight={displayHeight}
+          maxHeight={displayHeight}
+          drawShadow={drawShadow}
+          maxShadowOpacity={maxShadowOpacity}
+          flippingTime={flippingTime}
+          usePortrait={true}
+          startPage={currentPage - 1}
+          showCover={false}
+          mobileScrollSupport={true}
+          swipeDistance={30}
+          showPageCorners={true}
+          useMouseEvents={true}
+          clickEventForward={false}
+          onFlip={handleFlip}
+          className="book-flipbook"
+          style={{}}
+          startZIndex={0}
+          autoSize={false}
+          renderOnlyPageLengthChange={false}
+          disableFlipByClick={false}
+        >
+          {pages.map((page, index) => (
+            <BookPage
+              key={index}
+              pageNumber={index + 1}
+              page={page}
+              scale={renderScale}
+              rotation={rotation}
+              width={displayWidth}
+              height={displayHeight}
+            />
+          ))}
+        </HTMLFlipBook>
+      )}
+
     </div>
   );
 });
