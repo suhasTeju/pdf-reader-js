@@ -9,6 +9,11 @@ import type { NarrationStoreApi } from '../../store/narration-store';
 import { usePDFViewer } from '../../hooks';
 import { CameraView } from './CameraView';
 import { CinemaLayer } from './CinemaLayer';
+import { StoryboardEngine } from '../../director/storyboard-engine';
+import {
+  directStoryboard,
+  type LlmConfig,
+} from '../../director/llm-director';
 
 export interface TutorModeContainerProps {
   pageNumber: number;
@@ -16,6 +21,12 @@ export interface TutorModeContainerProps {
   narrationStore: NarrationStoreApi;
   scale: number;
   rotation?: number;
+  /** Reactive chunk from the tutor (updates as she speaks) */
+  currentChunk?: string | null;
+  /** LLM endpoint configuration provided by the consumer */
+  llm?: LlmConfig;
+  /** Milliseconds of no new chunks before the camera returns to fit-page */
+  idleTimeoutMs?: number;
   className?: string;
 }
 
@@ -57,6 +68,9 @@ export function TutorModeContainer({
   narrationStore,
   scale,
   rotation = 0,
+  currentChunk,
+  llm,
+  idleTimeoutMs = 5000,
   className,
 }: TutorModeContainerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -64,10 +78,23 @@ export function TutorModeContainer({
 
   const { document } = usePDFViewer();
   const [pageProxy, setPageProxy] = useState<PDFPageProxy | null>(null);
+  const [viewport, setViewport] = useState({ width: 800, height: 1000 });
 
   // Subscribe to store state for re-renders
   const camera = useStore(narrationStore, (s) => s.camera);
   const activeOverlays = useStore(narrationStore, (s) => s.activeOverlays);
+
+  // Track viewport size for camera math
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const el = containerRef.current;
+    const update = () =>
+      setViewport({ width: el.clientWidth, height: el.clientHeight });
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   // Load the current PDF page proxy
   useEffect(() => {
@@ -88,6 +115,85 @@ export function TutorModeContainer({
       cancelled = true;
     };
   }, [document, pageNumber]);
+
+  // Engine instance tied to bbox index + viewport
+  const engineRef = useRef<StoryboardEngine | null>(null);
+  useEffect(() => {
+    engineRef.current = new StoryboardEngine({
+      narrationStore,
+      bboxIndex: index,
+      getViewport: () => viewport,
+    });
+    return () => engineRef.current?.cancelPending();
+  }, [narrationStore, index, viewport]);
+
+  // React to currentChunk: debounce → call LLM → engine.execute
+  const abortRef = useRef<AbortController | null>(null);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lastChunkRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (!llm) return;
+    if (!currentChunk || currentChunk === lastChunkRef.current) return;
+
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(async () => {
+      const chunk = currentChunk;
+      if (chunk === lastChunkRef.current) return;
+      lastChunkRef.current = chunk;
+
+      const page = index.byPage.get(pageNumber);
+      if (!page) return;
+
+      narrationStore.getState().pushChunkHistory({
+        text: chunk,
+        pageNumber,
+        timestamp: Date.now(),
+      });
+
+      abortRef.current?.abort();
+      abortRef.current = new AbortController();
+
+      narrationStore.getState().setLlmStatus('in-flight');
+      const result = await directStoryboard(llm, {
+        chunk,
+        pageNumber,
+        page,
+        index,
+        history: narrationStore.getState().chunkHistory,
+        camera: narrationStore.getState().camera,
+        activeOverlays: narrationStore.getState().activeOverlays,
+        signal: abortRef.current.signal,
+      });
+
+      if (result.storyboard) {
+        narrationStore.getState().setLlmStatus('idle');
+        engineRef.current?.execute(result.storyboard);
+      } else {
+        narrationStore
+          .getState()
+          .setLlmStatus('failed', result.error ?? 'unknown');
+      }
+    }, 200);
+
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+  }, [currentChunk, llm, index, pageNumber, narrationStore]);
+
+  // Idle recovery
+  useEffect(() => {
+    if (!currentChunk) return;
+    const t = setTimeout(() => {
+      if (!engineRef.current) return;
+      const hist = narrationStore.getState().chunkHistory;
+      const latest = hist.length > 0 ? hist[hist.length - 1] : null;
+      if (!latest) return;
+      if (Date.now() - latest.timestamp < idleTimeoutMs) return;
+      engineRef.current.resetVisuals();
+    }, idleTimeoutMs + 100);
+    return () => clearTimeout(t);
+  }, [currentChunk, idleTimeoutMs, narrationStore]);
 
   const page = index.byPage.get(pageNumber);
   if (!page) {
