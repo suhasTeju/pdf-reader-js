@@ -32,3 +32,15 @@ export {
   type StudentStore,
   type StudentStoreApi,
 } from './student-store';
+
+export {
+  createNarrationStore,
+  makeOverlayId,
+  type NarrationStore,
+  type NarrationStoreApi,
+  type NarrationState,
+  type NarrationActions,
+  type EngineStatus,
+  type LlmStatus,
+  type ChunkHistoryEntry,
+} from './narration-store';
