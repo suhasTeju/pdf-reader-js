@@ -52,6 +52,12 @@ export {
   // Loading Screen
   PDFLoadingScreen,
   withErrorBoundary,
+  // Tutor Mode
+  TutorModeContainer,
+  CinemaLayer,
+  CameraView,
+  SpotlightMask,
+  buildBBoxIndex,
 } from './components';
 
 // Hooks
@@ -334,6 +340,10 @@ export type {
   PDFThumbnailNavProps,
   PDFErrorBoundaryProps,
   WithErrorBoundaryProps,
+  TutorModeContainerProps,
+  CinemaLayerProps,
+  CameraViewProps,
+  SpotlightMaskProps,
 } from './components';
 
 // Plugin types

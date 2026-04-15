@@ -20,6 +20,13 @@ export { FloatingZoomControls } from './FloatingZoomControls';
 export { PDFThumbnailNav } from './PDFThumbnailNav';
 export { PDFErrorBoundary, withErrorBoundary } from './ErrorBoundary';
 export { PDFLoadingScreen } from './PDFLoadingScreen';
+export {
+  TutorModeContainer,
+  CinemaLayer,
+  CameraView,
+  SpotlightMask,
+  buildBBoxIndex,
+} from './TutorMode';
 
 // Re-export types
 export type { PDFPageProps, CanvasLayerProps, TextLayerProps, HighlightLayerProps, AnnotationLayerProps, FocusRegionLayerProps } from './PDFPage';
@@ -42,3 +49,9 @@ export type { FloatingZoomControlsProps } from './FloatingZoomControls';
 export type { PDFThumbnailNavProps } from './PDFThumbnailNav';
 export type { PDFErrorBoundaryProps, WithErrorBoundaryProps } from './ErrorBoundary';
 export type { PDFLoadingScreenProps } from './PDFLoadingScreen';
+export type {
+  TutorModeContainerProps,
+  CinemaLayerProps,
+  CameraViewProps,
+  SpotlightMaskProps,
+} from './TutorMode';
