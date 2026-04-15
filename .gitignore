@@ -39,3 +39,6 @@ pnpm-debug.log*
 # Misc
 *.tgz
 .cache
+
+# Superpowers brainstorm artifacts
+.superpowers/
