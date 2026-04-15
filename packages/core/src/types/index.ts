@@ -96,7 +96,7 @@ export interface PageDimensions {
 // Viewer State Types
 // ============================================================================
 
-export type ViewMode = 'single' | 'dual' | 'continuous' | 'book';
+export type ViewMode = 'single' | 'dual' | 'continuous' | 'book' | 'tutor';
 export type ScrollMode = 'single' | 'continuous';
 export type SidebarPanel = 'thumbnails' | 'outline' | 'search' | 'annotations' | null;
 export type Theme = 'light' | 'dark' | 'sepia';
@@ -740,3 +740,17 @@ export type {
   StudentModeCallbacks,
   StudentModeProps,
 } from './agent-context';
+
+// ============================================================================
+// Tutor Mode Types (bbox)
+// ============================================================================
+
+export type {
+  BlockType,
+  DefaultAction,
+  BBoxCoords,
+  Block,
+  PageDimensionsDpi,
+  PageBBoxData,
+  BBoxIndex,
+} from './bbox';
