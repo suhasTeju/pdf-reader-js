@@ -1,4 +1,5 @@
 import '@testing-library/react';
+import '@testing-library/jest-dom/vitest';
 
 // Mock canvas context for pdf.js
 HTMLCanvasElement.prototype.getContext = function () {
