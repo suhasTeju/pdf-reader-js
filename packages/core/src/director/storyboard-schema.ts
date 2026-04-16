@@ -115,15 +115,155 @@ export const StoryboardSchema = z.object({
 
 export type StoryboardParsed = z.infer<typeof StoryboardSchema>;
 
-/** Converts the zod schema to JSON Schema for use with OpenAI structured outputs. */
-export function storyboardJsonSchema(): Record<string, unknown> {
+/** Converts the zod schema to JSON Schema for use with OpenAI structured outputs.
+ *
+ * OpenAI's structured outputs validator requires:
+ * - Every property has a `type` (no bare `const`/`enum` without `type`)
+ * - All properties listed in `required`
+ * - `additionalProperties: false` on every object
+ *
+ * We model the action union as a single object with all possible fields optional
+ * at the schema level (validated strictly later by zod). This keeps the schema
+ * compatible across providers; field-level required-ness is enforced post-parse.
+ */
+export interface StoryboardJsonSchemaOptions {
+  /** Block IDs valid for the CURRENT page. Constrains target_block / from_block / to_block. */
+  validBlockIds?: string[];
+  /** Block IDs valid for cross-page references (e.g., figures on other pages). */
+  validCrossPageBlockIds?: string[];
+}
+
+export function storyboardJsonSchema(
+  opts: StoryboardJsonSchemaOptions = {},
+): Record<string, unknown> {
+  const { validBlockIds, validCrossPageBlockIds } = opts;
+
+  // When we have a concrete set of IDs, constrain the target to that enum so
+  // the LLM can't hallucinate IDs that don't exist on the page. Include null
+  // because OpenAI strict mode requires every declared field to be settable.
+  const blockIdSchema: Record<string, unknown> =
+    validBlockIds && validBlockIds.length > 0
+      ? { type: ['string', 'null'], enum: [...validBlockIds, null] }
+      : { type: ['string', 'null'] };
+
+  const crossPageBlockIdSchema: Record<string, unknown> =
+    validCrossPageBlockIds && validCrossPageBlockIds.length > 0
+      ? {
+          type: ['string', 'null'],
+          enum: [...validCrossPageBlockIds, ...(validBlockIds ?? []), null],
+        }
+      : blockIdSchema;
+
+  const actionSchema = {
+    type: 'object',
+    additionalProperties: false,
+    required: [
+      'type',
+      'target_block',
+      'target_bbox',
+      'scale',
+      'padding',
+      'easing',
+      'dim_opacity',
+      'feather_px',
+      'shape',
+      'color',
+      'style',
+      'draw_duration_ms',
+      'count',
+      'intensity',
+      'from_block',
+      'to_block',
+      'label',
+      'curve',
+      'target_page',
+      'position',
+      'text',
+      'targets',
+    ],
+    properties: {
+      type: {
+        type: 'string',
+        enum: [
+          'camera',
+          'spotlight',
+          'underline',
+          'highlight',
+          'pulse',
+          'callout',
+          'ghost_reference',
+          'box',
+          'label',
+          'clear',
+        ],
+      },
+      target_block: blockIdSchema,
+      target_bbox: {
+        type: ['array', 'null'],
+        items: { type: 'number' },
+        minItems: 4,
+        maxItems: 4,
+      },
+      scale: { type: ['number', 'null'] },
+      padding: { type: ['number', 'null'] },
+      easing: {
+        type: ['string', 'null'],
+        enum: ['linear', 'ease-in', 'ease-out', 'ease-in-out', null],
+      },
+      dim_opacity: { type: ['number', 'null'] },
+      feather_px: { type: ['number', 'null'] },
+      shape: {
+        type: ['string', 'null'],
+        enum: ['rect', 'rounded', 'ellipse', null],
+      },
+      color: { type: ['string', 'null'] },
+      style: {
+        type: ['string', 'null'],
+        enum: ['straight', 'sketch', 'double', 'wavy', 'solid', 'dashed', null],
+      },
+      draw_duration_ms: { type: ['number', 'null'] },
+      count: { type: ['integer', 'null'] },
+      intensity: {
+        type: ['string', 'null'],
+        enum: ['subtle', 'normal', 'strong', null],
+      },
+      from_block: blockIdSchema,
+      to_block: crossPageBlockIdSchema,
+      label: { type: ['string', 'null'] },
+      curve: {
+        type: ['string', 'null'],
+        enum: ['straight', 'curved', 'zigzag', null],
+      },
+      target_page: { type: ['integer', 'null'] },
+      position: {
+        type: ['string', 'null'],
+        enum: [
+          'top',
+          'bottom',
+          'left',
+          'right',
+          'top-right',
+          'top-left',
+          'bottom-right',
+          'bottom-left',
+          null,
+        ],
+      },
+      text: { type: ['string', 'null'] },
+      targets: {
+        type: ['string', 'null'],
+        enum: ['all', 'spotlights', 'overlays', null],
+      },
+    },
+  };
+
   return {
     type: 'object',
     additionalProperties: false,
     required: ['version', 'reasoning', 'steps'],
     properties: {
-      version: { const: 1 },
-      reasoning: { type: 'string', maxLength: 500 },
+      version: { type: 'integer', enum: [1] },
+      reasoning: { type: 'string' },
       steps: {
         type: 'array',
         minItems: 1,
@@ -133,28 +273,9 @@ export function storyboardJsonSchema(): Record<string, unknown> {
           additionalProperties: false,
           required: ['at_ms', 'duration_ms', 'action'],
           properties: {
-            at_ms: { type: 'number', minimum: 0, maximum: 5000 },
-            duration_ms: { type: 'number', minimum: 100, maximum: 5000 },
-            action: {
-              type: 'object',
-              required: ['type'],
-              properties: {
-                type: {
-                  enum: [
-                    'camera',
-                    'spotlight',
-                    'underline',
-                    'highlight',
-                    'pulse',
-                    'callout',
-                    'ghost_reference',
-                    'box',
-                    'label',
-                    'clear',
-                  ],
-                },
-              },
-            },
+            at_ms: { type: 'number' },
+            duration_ms: { type: 'number' },
+            action: actionSchema,
           },
         },
       },

@@ -98,7 +98,7 @@ describe('chunk → director → engine', () => {
     // Run fetch outside fake timers so the promise resolves normally
     vi.useRealTimers();
     const result = await directStoryboard(
-      { endpointUrl: 'x', model: 'm', useJsonSchema: false },
+      { endpointUrl: 'x', model: 'm', useJsonSchema: false, stream: true },
       {
         chunk: 'hi',
         pageNumber: 1,

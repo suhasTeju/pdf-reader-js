@@ -33,6 +33,8 @@ export interface TutorModeContainerProps {
   llm?: LlmConfig;
   /** Milliseconds of no new chunks before the camera returns to fit-page */
   idleTimeoutMs?: number;
+  /** LLM call timeout in ms. Default 30000 (Qwen3-32B and similar can take 5-15s). */
+  llmTimeoutMs?: number;
   /** Optional embedding provider for fallback matching when the LLM fails */
   embeddingProvider?: EmbeddingProvider;
   /** Show subtitle bar with the current chunk text (default: true) */
@@ -41,6 +43,13 @@ export interface TutorModeContainerProps {
   showExitButton?: boolean;
   /** Called when the exit button is clicked; engine's resetVisuals runs first */
   onExitTutorMode?: () => void;
+  /**
+   * Minimum hold time (ms) for every overlay, regardless of the
+   * `duration_ms` the LLM specifies. Short LLM-emitted durations (600-1200ms)
+   * flash past too quickly to read; bump this for narration-paired UX.
+   * Default: 3500ms.
+   */
+  minOverlayDurationMs?: number;
   className?: string;
 }
 
@@ -85,10 +94,12 @@ export function TutorModeContainer({
   currentChunk,
   llm,
   idleTimeoutMs = 5000,
+  llmTimeoutMs = 30000,
   embeddingProvider,
-  showSubtitles = true,
+  showSubtitles = false,
   showExitButton = true,
   onExitTutorMode,
+  minOverlayDurationMs,
   className,
 }: TutorModeContainerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -134,6 +145,28 @@ export function TutorModeContainer({
     };
   }, [document, pageNumber]);
 
+  // Keep narrationStore.currentPage in sync with the rendered page so the
+  // engine's resetVisuals can read the right page for fit-scale math.
+  useEffect(() => {
+    narrationStore.getState().setCurrentPage(pageNumber);
+  }, [pageNumber, narrationStore]);
+
+  // Initial fit-to-viewport: PDF is rendered at native scale=1; the camera
+  // applies the scale that fits it. We pick the smaller of width-fit and
+  // height-fit, with a tiny padding factor for breathing room.
+  useEffect(() => {
+    const page = index.byPage.get(pageNumber);
+    if (!page) return;
+    if (viewport.width === 0 || viewport.height === 0) return;
+    if (narrationStore.getState().activeOverlays.length > 0) return;
+    const fit =
+      Math.min(
+        viewport.width / page.page_dimensions.width,
+        viewport.height / page.page_dimensions.height,
+      ) * 0.95;
+    narrationStore.getState().setCamera({ scale: fit, x: 0, y: 0 });
+  }, [pageNumber, viewport, index, narrationStore]);
+
   // Engine instance tied to bbox index + viewport
   const engineRef = useRef<StoryboardEngine | null>(null);
   useEffect(() => {
@@ -141,9 +174,10 @@ export function TutorModeContainer({
       narrationStore,
       bboxIndex: index,
       getViewport: () => viewport,
+      minOverlayDurationMs,
     });
     return () => engineRef.current?.cancelPending();
-  }, [narrationStore, index, viewport]);
+  }, [narrationStore, index, viewport, minOverlayDurationMs]);
 
   // React to currentChunk: debounce → call LLM → engine.execute
   const abortRef = useRef<AbortController | null>(null);
@@ -168,11 +202,22 @@ export function TutorModeContainer({
         pageNumber,
         timestamp: Date.now(),
       });
+      narrationStore.getState().appendDebugEvent({
+        kind: 'chunk',
+        summary: `chunk → ${chunk.slice(0, 80)}${chunk.length > 80 ? '…' : ''}`,
+        payload: { chunk, pageNumber },
+      });
 
       abortRef.current?.abort();
       abortRef.current = new AbortController();
 
       narrationStore.getState().setLlmStatus('in-flight');
+      narrationStore.getState().appendDebugEvent({
+        kind: 'llm-request',
+        summary: `LLM ${llm.model} (page ${pageNumber}, ${page.blocks.length} blocks)`,
+        payload: { model: llm.model, pageNumber, blockCount: page.blocks.length },
+      });
+
       const result = await directStoryboard(llm, {
         chunk,
         pageNumber,
@@ -182,22 +227,56 @@ export function TutorModeContainer({
         camera: narrationStore.getState().camera,
         activeOverlays: narrationStore.getState().activeOverlays,
         signal: abortRef.current.signal,
+        timeoutMs: llmTimeoutMs,
       });
 
       if (result.storyboard) {
         narrationStore.getState().setLlmStatus('idle');
+        narrationStore.getState().appendDebugEvent({
+          kind: 'llm-response',
+          summary: `storyboard ✓ ${result.storyboard.steps.length} steps — ${result.storyboard.reasoning.slice(0, 60)}`,
+          payload: { raw: result.raw, storyboard: result.storyboard },
+        });
         engineRef.current?.execute(result.storyboard);
+        narrationStore.getState().appendDebugEvent({
+          kind: 'storyboard-execute',
+          summary: `engine executing ${result.storyboard.steps.length} steps`,
+          payload: result.storyboard.steps.map((s) => ({
+            at_ms: s.at_ms,
+            type: s.action.type,
+            target:
+              'target_block' in s.action
+                ? s.action.target_block
+                : 'target' in s.action
+                  ? (s.action as { target?: string }).target
+                  : undefined,
+          })),
+        });
       } else {
         narrationStore
           .getState()
           .setLlmStatus('failed', result.error ?? 'unknown');
+        narrationStore.getState().appendDebugEvent({
+          kind: 'llm-error',
+          summary: `LLM failed: ${(result.error ?? 'unknown').slice(0, 80)}`,
+          payload: { error: result.error, raw: result.raw },
+        });
         if (embeddingProvider) {
           try {
             const match = await matchChunkToBlock(chunk, page, embeddingProvider);
-            const fallbackSb = storyboardFromMatch(match);
+            const fallbackSb = storyboardFromMatch(match, page);
+            narrationStore.getState().appendDebugEvent({
+              kind: 'fallback-fired',
+              summary: `embedding fallback → ${match?.block.block_id ?? 'no match'}`,
+              payload: { match, storyboard: fallbackSb },
+            });
             engineRef.current?.execute(fallbackSb);
-          } catch {
-            // fallback itself failed — nothing more to do
+          } catch (e) {
+            narrationStore.getState().appendDebugEvent({
+              kind: 'llm-error',
+              summary: `fallback also failed: ${(e as Error).message}`,
+              payload: e,
+            });
           }
         }
       }
@@ -206,7 +285,7 @@ export function TutorModeContainer({
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
     };
-  }, [currentChunk, llm, index, pageNumber, narrationStore, embeddingProvider]);
+  }, [currentChunk, llm, index, pageNumber, narrationStore, embeddingProvider, llmTimeoutMs]);
 
   // Idle recovery
   useEffect(() => {
@@ -223,15 +302,14 @@ export function TutorModeContainer({
   }, [currentChunk, idleTimeoutMs, narrationStore]);
 
   const page = index.byPage.get(pageNumber);
-  if (!page) {
-    return (
-      <div
-        className={className}
-        ref={containerRef}
-        data-tutor-mode-missing-page={pageNumber}
-      />
-    );
-  }
+  // The bbox `page_dimensions` are at the source DPI (e.g., 200), while
+  // pdfjs-dist's `getViewport({scale:1})` returns the page in PDF POINTS
+  // (72 DPI). To align the rendered canvas with the bbox coordinate space,
+  // we render at `dpi/72`. The `scale` prop is a quality multiplier on top.
+  const dpiScale = page ? page.page_dimensions.dpi / 72 : 1;
+  const rasterScale = dpiScale * (scale || 1);
+  const baseW = page ? page.page_dimensions.width * (scale || 1) : 0;
+  const baseH = page ? page.page_dimensions.height * (scale || 1) : 0;
 
   return (
     <div
@@ -245,6 +323,7 @@ export function TutorModeContainer({
         background: '#111',
       }}
       data-role="tutor-mode-container"
+      data-page-loaded={page ? 'true' : 'false'}
     >
       {showExitButton && onExitTutorMode ? (
         <button
@@ -254,49 +333,56 @@ export function TutorModeContainer({
           }}
           style={{
             position: 'absolute',
-            top: 16,
-            right: 16,
+            top: 12,
+            right: 12,
             zIndex: 60,
-            padding: '6px 12px',
+            minHeight: 40,
+            minWidth: 40,
+            padding: '8px 14px',
             border: 'none',
-            borderRadius: 6,
-            background: 'rgba(255,255,255,0.1)',
+            borderRadius: 8,
+            background: 'rgba(255,255,255,0.12)',
             color: 'white',
             cursor: 'pointer',
             fontFamily: 'system-ui, sans-serif',
-            fontSize: 13,
+            fontSize: 14,
+            touchAction: 'manipulation',
           }}
           data-role="exit-tutor"
         >
-          Exit tutor
+          Exit
         </button>
       ) : null}
-      <CameraView camera={camera}>
-        <div
-          style={{
-            position: 'relative',
-            width: page.page_dimensions.width * scale,
-            height: page.page_dimensions.height * scale,
-            margin: '0 auto',
-          }}
-        >
-          <PDFPage
-            pageNumber={pageNumber}
-            page={pageProxy}
-            scale={scale}
-            rotation={rotation}
-            showTextLayer={false}
-            showHighlightLayer={false}
-            showAnnotationLayer={false}
-          />
-          <CinemaLayer
-            page={page}
-            index={index}
-            overlays={activeOverlays}
-            scale={scale}
-          />
-        </div>
-      </CameraView>
+      {page ? (
+        <CameraView camera={camera}>
+          <div
+            style={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              width: baseW,
+              height: baseH,
+              transform: 'translate(-50%, -50%)',
+            }}
+          >
+            <PDFPage
+              pageNumber={pageNumber}
+              page={pageProxy}
+              scale={rasterScale}
+              rotation={rotation}
+              showTextLayer={false}
+              showHighlightLayer={false}
+              showAnnotationLayer={false}
+            />
+            <CinemaLayer
+              page={page}
+              index={index}
+              overlays={activeOverlays}
+              scale={scale || 1}
+            />
+          </div>
+        </CameraView>
+      ) : null}
       {showSubtitles ? <SubtitleBar text={currentChunk ?? null} /> : null}
     </div>
   );

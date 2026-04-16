@@ -1,0 +1,3741 @@
+[
+    {
+        "id": "911986e8-889f-4f35-ad80-eefbc9434333",
+        "page_number": 1,
+        "page_text": "![p1-img-0.jpeg](p1-img-0.jpeg)\n\n# Joints\n\nWhat I hear, I forget, What I see, I remember, What I do, I understand\n\n## Related Terms\n\n1. Arthron (G a joint). Compare with the terms arthrology, synarthrosis, diarthrosis, arthritis, arthrodesis, etc.\n2. Articulatio (L a joint); articulation (NA).\n3. Junctura (L a joint).\n4. Syndesmology (G syndesmosis = ligament) is the study of ligaments and related joints.\n\n## Definition\n\nJoint is a junction between two or more bones or cartilages. It is a device to permit movements.\n\nHowever, immovable joints are primarily meant for growth. Primary cartilaginous joints of long bones increase length of bone. A newborn baby is about 15\" long and length increases to 60–70\" in an adult due to growth at these joints. Fontanelles of skull may permit moulding during childbirth.\n\nThere are more joints in a child than in an adult because as growth proceeds some of the bones fuse together, e.g. the ilium, ischium and pubis to fuse form the pelvic bone. The two halves of the infant frontal bone, and of the infant mandible also fuse to form single frontal and mandible bone respectively. The five sacral vertebrae fuse to form sacrum and the four coccygeal vertebrae join to form coccyx.\n\nJoints help to form cavities like cranial, thoracic, abdominal and pelvic cavities where the respective organs are safely kept. Joints of thoracic cage help in increasing transverse and anteroposterior diameters of the cage, helping in respiration.\n\n## CLASSIFICATION OF JOINTS\n\n### A. Structural Classification\n\n#### 1. Fibrous Joints\n\na. Sutures\n\nb. Syndesmosis\nc. Gomphosis\n\n#### 2. Cartilaginous Joints\n\na. Primary cartilaginous joints or synchondrosis\nb. Secondary cartilaginous joints or symphysis or amphiarthrosis\n\n#### 3. Synovial Joints\n\na. Ball-and-socket or spheroidal joints\nb. Sellar or saddle joints\nc. Condylar or bicondylar joints\nd. Ellipsoid joints\ne. Hinge joints\nf. Pivot or trochoid joints\ng. Plane joints\n\n### B. Functional Classification (According to the Degree of Mobility)\n\n1. Synarthroses (immovable), like sutures of the fibrous joints (Fig. 3.1), and epiphyseal plate of a young growing bone (Fig. 3.2).\n\n![p1-img-1.jpeg](p1-img-1.jpeg)\nFig. 3.1: Fibrous joint—sutures",
+        "page_dimensions": {
+            "width": 1756,
+            "height": 2269,
+            "dpi": 200
+        },
+        "blocks": [
+            {
+                "bbox": [
+                    154.7,
+                    879.4,
+                    340.9,
+                    904.1
+                ],
+                "text": "Related Terms",
+                "type": "heading",
+                "block_id": "p1_head0",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 0,
+                "default_action": "zoom_pan",
+                "semantic_unit_id": "su_1_0"
+            },
+            {
+                "bbox": [
+                    154,
+                    921.2,
+                    859.6,
+                    1012.6
+                ],
+                "text": "1 Arthron  (G  a  jo in t).  C om p are  w ith   th e  term s arth rology,  syn arth rosis,  d iarth rosis,  a rth ritis, arthrodesis, etc.",
+                "type": "list_item",
+                "block_id": "p1_list0",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 1,
+                "default_action": "underline",
+                "semantic_unit_id": "su_1_1"
+            },
+            {
+                "bbox": [
+                    153.3,
+                    1023.9,
+                    705.2,
+                    1048.6
+                ],
+                "text": "2  Articulatio (L a joint); articu lation (NA).",
+                "type": "list_item",
+                "block_id": "p1_list1",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 2,
+                "default_action": "underline",
+                "semantic_unit_id": "su_1_2"
+            },
+            {
+                "bbox": [
+                    153.3,
+                    1059.8,
+                    436.3,
+                    1084.6
+                ],
+                "text": "3  Junctura (L a joint).",
+                "type": "list_item",
+                "block_id": "p1_list2",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 3,
+                "default_action": "underline",
+                "semantic_unit_id": "su_1_3"
+            },
+            {
+                "bbox": [
+                    153.3,
+                    1096.5,
+                    859.6,
+                    1154.6
+                ],
+                "text": "4  Syndesmology (G syndesmosis  =  ligament)  is  the study of ligaments and related joints.",
+                "type": "list_item",
+                "block_id": "p1_list3",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 4,
+                "default_action": "underline",
+                "semantic_unit_id": "su_1_4"
+            },
+            {
+                "bbox": [
+                    154.7,
+                    1187.5,
+                    275.1,
+                    1212.2
+                ],
+                "text": "Definition",
+                "type": "heading",
+                "block_id": "p1_head1",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 5,
+                "default_action": "zoom_pan",
+                "semantic_unit_id": "su_1_5"
+            },
+            {
+                "bbox": [
+                    151.9,
+                    1229.8,
+                    859.6,
+                    1287.9
+                ],
+                "text": "Join t  is  a  ju n ctio n   b etw een   tw o  or  m ore  b on es  or cartilages. It is a d evice to p erm it m ovem ents.",
+                "type": "paragraph",
+                "block_id": "p1_para0",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 6,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_1_6"
+            },
+            {
+                "bbox": [
+                    153.3,
+                    1296.5,
+                    860.3,
+                    1487.3
+                ],
+                "text": "However, immovable joints are primarily meant for growth.  Prim ary  cartilaginou s join ts  of  long bones increase length of bone. A new born baby is about 15\" long and length increases to 60-70\" in an adult due to growth at these joints. Fontanelles of skull m ay perm it moulding during childbirth.",
+                "type": "paragraph",
+                "block_id": "p1_para1",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 7,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_1_7"
+            },
+            {
+                "bbox": [
+                    153.3,
+                    1496.5,
+                    860.3,
+                    1754.6
+                ],
+                "text": "There  are  m ore joints  in   a  child   th an  in  an  ad u lt because  as  grow th proceeds  som e  of the bones  fuse together, e.g. the ilium , ischium  and pubis to fuse form the  pelvic bone.  The  tw o halves  of the  infant frontal bone,  and  of the  in fan t  m and ible  also  fu se  to  form single frontal and m andible bone respectively. The five sacral  vertebrae  fu se  to  form   sacru m   and   th e  fou r coccygeal vertebrae join to form coccyx.",
+                "type": "paragraph",
+                "block_id": "p1_para2",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 8,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_1_8"
+            },
+            {
+                "bbox": [
+                    153.3,
+                    1763.2,
+                    860.3,
+                    1920.7
+                ],
+                "text": "Joints  help   to  form   cavities  like  cranial,  th oracic, abdominal  and  pelvic  cavities  w here  the  resp ective organs are safely kept. Joints of thoracic cage help in increasing transverse and anteroposterior diameters of the cage, helping in respiration.",
+                "type": "paragraph",
+                "block_id": "p1_para3",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 9,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_1_9"
+            },
+            {
+                "bbox": [
+                    153.3,
+                    1962.2,
+                    515.1,
+                    1986.9
+                ],
+                "text": "CLASSIFICATION OF JOINTS",
+                "type": "heading",
+                "block_id": "p1_head2",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 10,
+                "default_action": "zoom_pan",
+                "semantic_unit_id": "su_1_10"
+            },
+            {
+                "bbox": [
+                    153.3,
+                    2006.8,
+                    507.3,
+                    2031.5
+                ],
+                "text": " Structural Classification",
+                "type": "list_item",
+                "block_id": "p1_list4",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 11,
+                "default_action": "underline",
+                "semantic_unit_id": "su_1_11"
+            },
+            {
+                "bbox": [
+                    156.7,
+                    2048.8,
+                    369.3,
+                    2073.6
+                ],
+                "text": "Fib ro u s Jo in ts",
+                "type": "list_item",
+                "block_id": "p1_list5",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 12,
+                "default_action": "underline",
+                "semantic_unit_id": "su_1_12"
+            },
+            {
+                "bbox": [
+                    153.3,
+                    2091.2,
+                    288.6,
+                    2115.9
+                ],
+                "text": "Sutures",
+                "type": "list_item",
+                "block_id": "p1_list6",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 13,
+                "default_action": "underline",
+                "semantic_unit_id": "su_1_13"
+            },
+            {
+                "bbox": [
+                    939.3,
+                    540.7,
+                    1137.4,
+                    599.1
+                ],
+                "text": "Joints",
+                "type": "heading",
+                "block_id": "p1_head3",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 14,
+                "default_action": "zoom_pan",
+                "semantic_unit_id": "su_1_14"
+            },
+            {
+                "bbox": [
+                    834.7,
+                    734.8,
+                    1595.9,
+                    756.9
+                ],
+                "text": "What I  hear, I forget, What I  see,  I   remember, What I do,  I   understand",
+                "type": "caption",
+                "block_id": "p1_cap0",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 15,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_1_15"
+            },
+            {
+                "bbox": [
+                    901.9,
+                    879.3,
+                    1102.5,
+                    904
+                ],
+                "text": " Syndesmosis",
+                "type": "list_item",
+                "block_id": "p1_list7",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 16,
+                "default_action": "underline",
+                "semantic_unit_id": "su_1_16"
+            },
+            {
+                "bbox": [
+                    903.3,
+                    913.2,
+                    1082.5,
+                    937.9
+                ],
+                "text": " Gomphosis",
+                "type": "list_item",
+                "block_id": "p1_list8",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 17,
+                "default_action": "underline",
+                "semantic_unit_id": "su_1_17"
+            },
+            {
+                "bbox": [
+                    903.3,
+                    970.8,
+                    1196.6,
+                    995.5
+                ],
+                "text": "Cartila g in o u s Jo in ts",
+                "type": "list_item",
+                "block_id": "p1_list9",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 18,
+                "default_action": "underline",
+                "semantic_unit_id": "su_1_18"
+            },
+            {
+                "bbox": [
+                    903.3,
+                    1013.2,
+                    1526.5,
+                    1037.9
+                ],
+                "text": " Prim ary cartilaginous joints or synchondrosis",
+                "type": "list_item",
+                "block_id": "p1_list10",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 19,
+                "default_action": "underline",
+                "semantic_unit_id": "su_1_19"
+            },
+            {
+                "bbox": [
+                    901.9,
+                    1046.5,
+                    1609.6,
+                    1104.6
+                ],
+                "text": " Secon d ary  cartilagin ou s  join ts  or  sym p h ysis  or amphiarthrosis",
+                "type": "list_item",
+                "block_id": "p1_list11",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 20,
+                "default_action": "underline",
+                "semantic_unit_id": "su_1_20"
+            },
+            {
+                "bbox": [
+                    903.3,
+                    1137.5,
+                    1130.6,
+                    1162.2
+                ],
+                "text": "Sy n o v ia l Jo in ts",
+                "type": "list_item",
+                "block_id": "p1_list12",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 21,
+                "default_action": "underline",
+                "semantic_unit_id": "su_1_21"
+            },
+            {
+                "bbox": [
+                    903.3,
+                    1179.8,
+                    1394.1,
+                    1204.6
+                ],
+                "text": " Ball-and -socket or spheroidal joints",
+                "type": "list_item",
+                "block_id": "p1_list13",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 22,
+                "default_action": "underline",
+                "semantic_unit_id": "su_1_22"
+            },
+            {
+                "bbox": [
+                    901.9,
+                    1213.2,
+                    1213,
+                    1237.9
+                ],
+                "text": " Sellar or sad d le joints",
+                "type": "list_item",
+                "block_id": "p1_list14",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 23,
+                "default_action": "underline",
+                "semantic_unit_id": "su_1_23"
+            },
+            {
+                "bbox": [
+                    903.3,
+                    1245.9,
+                    1318.3,
+                    1270.7
+                ],
+                "text": " Condylar or bicondylar joints",
+                "type": "list_item",
+                "block_id": "p1_list15",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 24,
+                "default_action": "underline",
+                "semantic_unit_id": "su_1_24"
+            },
+            {
+                "bbox": [
+                    904,
+                    1279.8,
+                    1128.3,
+                    1304.6
+                ],
+                "text": "Ellipsoid joints",
+                "type": "list_item",
+                "block_id": "p1_list16",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 25,
+                "default_action": "underline",
+                "semantic_unit_id": "su_1_25"
+            },
+            {
+                "bbox": [
+                    903.3,
+                    1313.2,
+                    1092.3,
+                    1337.9
+                ],
+                "text": " H inge joints",
+                "type": "list_item",
+                "block_id": "p1_list17",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 26,
+                "default_action": "underline",
+                "semantic_unit_id": "su_1_26"
+            },
+            {
+                "bbox": [
+                    903.3,
+                    1346.5,
+                    1233.4,
+                    1371.2
+                ],
+                "text": " Pivot or trochoid joints",
+                "type": "list_item",
+                "block_id": "p1_list18",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 27,
+                "default_action": "underline",
+                "semantic_unit_id": "su_1_27"
+            },
+            {
+                "bbox": [
+                    903.3,
+                    1379.8,
+                    1084.1,
+                    1404.6
+                ],
+                "text": " Plane joints",
+                "type": "list_item",
+                "block_id": "p1_list19",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 28,
+                "default_action": "underline",
+                "semantic_unit_id": "su_1_28"
+            },
+            {
+                "bbox": [
+                    903.3,
+                    1437.5,
+                    1619.9,
+                    1495.5
+                ],
+                "text": "B. Functional Classification (A ccording to the Degree of M obility)",
+                "type": "heading",
+                "block_id": "p1_head4",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 29,
+                "default_action": "zoom_pan",
+                "semantic_unit_id": "su_1_29"
+            },
+            {
+                "bbox": [
+                    904,
+                    1513.2,
+                    1610.3,
+                    1604
+                ],
+                "text": "1  Synarthroses (immovable), like sutures of the fibrous join ts  (Fig.  3.1),  and   ep ip h yseal  p late  of  a  you n g growing bone (Fig. 3.2).",
+                "type": "list_item",
+                "block_id": "p1_list20",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 30,
+                "default_action": "underline",
+                "semantic_unit_id": "su_1_30"
+            },
+            {
+                "bbox": [
+                    1080,
+                    2093.5,
+                    1426.7,
+                    2115.6
+                ],
+                "text": "Fig. 3.1 :  Fibrous joint-sutures",
+                "type": "caption",
+                "block_id": "p1_cap1",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 31,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_1_31"
+            },
+            {
+                "bbox": [
+                    955,
+                    1622,
+                    1543,
+                    2076
+                ],
+                "text": "Sagittal suture",
+                "type": "figure",
+                "block_id": "p1_fig0",
+                "parent_id": null,
+                "confidence": 0.9,
+                "reading_order": 32,
+                "default_action": "pulse",
+                "semantic_unit_id": "su_1_32"
+            },
+            {
+                "bbox": [
+                    0,
+                    0,
+                    477,
+                    773
+                ],
+                "text": "Skull and upper vertebrae",
+                "type": "figure",
+                "block_id": "p1_fig1",
+                "parent_id": null,
+                "confidence": 0.9,
+                "reading_order": 33,
+                "default_action": "pulse",
+                "semantic_unit_id": "su_1_33"
+            }
+        ],
+        "created_at": "2026-04-16T02:17:53.973732+05:30"
+    },
+    {
+        "id": "8cc7fabb-fffd-4685-8760-ca973049d179",
+        "page_number": 2,
+        "page_text": "JOINT\nJOINTS\n19\n\n![p2-img-2.jpeg](p2-img-2.jpeg)\nFig. 3.2: Primary cartilaginous joint\n\n2 Amphiarthroses (slightly movable), like secondary cartilaginous joints (Fig. 3.10).\n3 Diarthroses (freely movable), like synovial joints (Fig. 3.3).\n\nSynarthroses are fixed joints at which there is no movement. The articular surfaces are joined by tough fibrous tissue. Often the edges of the bones are dovetailed into one another as in the sutures of the skull.\n\nAmphiarthroses are joints at which slight movement is possible. The articulating bones are covered by hyaline cartilage. A pad of fibrocartilage lies between the bone surfaces, and there are fibrous ligaments to hold the bones and cartilages in place. The cartilages of such joints also act as shock absorbers, e.g. the intervertebral discs between the bodies of the vertebrae.\n\nDiarthroses or synovial joints are known as freely movable joints, though at some of them the movement is restricted by the shape of the articulating surfaces and\n\n![p2-img-3.jpeg](p2-img-3.jpeg)\nFig. 3.3: Structure of simple synovial joint\n\nby the ligaments which hold the bones together. These ligaments are of elastic connective tissue.\n\nA synovial joint has a fluid-filled cavity between articular surfaces which are covered by articular cartilage. The fluid, known as synovial fluid is produced by the synovial membrane. The synovial membrane lines the cavity except for the actual articular surfaces. It covers any ligaments or tendons which pass through the joint. Synovial fluid acts as a lubricant.\n\nThe form of the articulating surfaces controls the type of movement which takes place at any joint.\n\nThe movements possible at synovial joints are:\n\nAngular—flexion: decreasing the angle between two bones or two parts\n\nextension: increasing the angle between two bones or two parts\n\nabduction: moving the part away from the midline\nadduction: bringing the part towards the midline\n\nRotatory—rotation: rotating along the vertical axis\n\ncircumduction: moving the extremity or the part round in a circle so that the whole part inscribes a cone. When flexion, abduction, extension and adduction occur in sequence the movement is called as the circumduction\n\nGliding one part slides on another.\n\n## C. Regional Classification\n\n1 Skull type: Immovable\n2 Vertebral type: Slightly movable\n3 Limb type: Freely movable\n\n## D. According to Number of Articulating Bones\n\n1 Simple joint: When only two bones articulate, e.g. interphalangeal joints (Fig. 3.3).\n2 Compound joint: More than two bones articulate within one capsule, e.g. elbow joint, radiocarpal joint (Fig. 3.4).\n3 Complex joint: When joint cavity is divided by an intra-articular disc, e.g. temporomandibular joint (Fig. 3.5), sternoclavicular joint. Figure 3.6 is a diagrammatic representation of complex joint.\n\nThe structural classification is most commonly followed, and will be considered in detail in the following paragraphs.\n\n## FIBROUS JOINTS\n\nIn fibrous joints the bones are joined by fibrous tissue. These joints are either immovable or permit a slight degree of movement. These can be grouped in the following three subtypes.\n\n1 Sutures: Sutures are present only in skull. Two bones are separated by connective tissue. The sutural side of each bone is covered by a layer of osteogenic cells/ cambial layer, covered by capsular layer which is",
+        "page_dimensions": {
+            "width": 1756,
+            "height": 2269,
+            "dpi": 200
+        },
+        "blocks": [
+            {
+                "bbox": [
+                    306.7,
+                    968.1,
+                    700.1,
+                    990.2
+                ],
+                "text": "Fig. 3.2:  Primary cartilaginous joint",
+                "type": "caption",
+                "block_id": "p2_cap0",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 0,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_2_0"
+            },
+            {
+                "bbox": [
+                    153.3,
+                    1046.5,
+                    860.3,
+                    1104.6
+                ],
+                "text": "2  Amphiarthroses  (slightly movable), like  secondary cartilaginous joints (Fig. 3.10).",
+                "type": "list_item",
+                "block_id": "p2_list0",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 1,
+                "default_action": "underline",
+                "semantic_unit_id": "su_2_1"
+            },
+            {
+                "bbox": [
+                    153.3,
+                    1113.2,
+                    859.6,
+                    1170.7
+                ],
+                "text": "3 Diarthroses  (freely  m ovable),  like  synovial joints (Fig. 3.3).",
+                "type": "list_item",
+                "block_id": "p2_list1",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 2,
+                "default_action": "underline",
+                "semantic_unit_id": "su_2_2"
+            },
+            {
+                "bbox": [
+                    153.3,
+                    1187.9,
+                    860.3,
+                    1312.6
+                ],
+                "text": "Synarthroses are  fixed   jo in ts  a t  w h ich   th ere  is  n o movement. The articular surfaces are joined by tough fibrou s  tissu e.  O ften   th e  ed ges  of  th e  b on es  are dovetailed into one another as in the sutures of the skull.",
+                "type": "paragraph",
+                "block_id": "p2_para0",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 3,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_2_3"
+            },
+            {
+                "bbox": [
+                    151.4,
+                    1329.8,
+                    859.6,
+                    1554.6
+                ],
+                "text": "Amphiarthroses are join ts at w hich slight m ovem ent is possible.  The articulating bones are covered by hyaline cartilage. A pad of fibrocartilage lies betw een the bone surfaces,  and  there  are  fibrous ligam ents  to hold   the bones  and  cartilages  in place.  The  cartilages  of such joints also act as shock absorbers, e.g. the intervertebral discs betw een the bodies of the vertebrae.",
+                "type": "paragraph",
+                "block_id": "p2_para1",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 4,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_2_4"
+            },
+            {
+                "bbox": [
+                    151.4,
+                    1571.2,
+                    859.6,
+                    1662.6
+                ],
+                "text": "Diarthroses or synovial  joints are known as freely movable jo in ts,  th o u g h   a t  som e  of  th em   th e  m ov em en t  is restricted  by the shape of the articulating surfaces and",
+                "type": "paragraph",
+                "block_id": "p2_para2",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 5,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_2_5"
+            },
+            {
+                "bbox": [
+                    272.6,
+                    2093.5,
+                    737.4,
+                    2115.6
+                ],
+                "text": "Fig. 3.3  :  Structure of simple synovial joint",
+                "type": "caption",
+                "block_id": "p2_cap1",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 6,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_2_6"
+            },
+            {
+                "bbox": [
+                    901.9,
+                    291.2,
+                    1608.9,
+                    349.3
+                ],
+                "text": "by the ligaments w hich hold the bones together. These ligaments are of elastic connective tissue.",
+                "type": "paragraph",
+                "block_id": "p2_para3",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 7,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_2_7"
+            },
+            {
+                "bbox": [
+                    901.9,
+                    357.2,
+                    1610.3,
+                    581.9
+                ],
+                "text": "A  synovial join t has  a  flu id -filled   cavity betw een articu lar  su rfaces  w h ich   are  covered   b y   articu lar cartilage. The fluid, known as synovial fluid is produced by the synovial  m embrane.  The  synovial m embrane lines the cavity except for the actual articular surfaces. It covers any ligaments or tendons w hich pass through the joint. Synovial fluid acts as a lubricant.",
+                "type": "paragraph",
+                "block_id": "p2_para4",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 8,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_2_8"
+            },
+            {
+                "bbox": [
+                    903.3,
+                    591.2,
+                    1609.6,
+                    648.6
+                ],
+                "text": "The form of the articulating surfaces controls the type of movement which takes place at any joint.",
+                "type": "paragraph",
+                "block_id": "p2_para5",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 9,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_2_9"
+            },
+            {
+                "bbox": [
+                    936.7,
+                    657.9,
+                    1546.5,
+                    682.6
+                ],
+                "text": "The movements possible at synovial joints are:",
+                "type": "paragraph",
+                "block_id": "p2_para6",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 10,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_2_10"
+            },
+            {
+                "bbox": [
+                    901.4,
+                    690.5,
+                    1608.9,
+                    749.3
+                ],
+                "text": "Angular -flexion:  decreasing the  angle betw een two bones or two parts extension: increasing the angle betw een tw o bones or two parts",
+                "type": "paragraph",
+                "block_id": "p2_para7",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 11,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_2_11"
+            },
+            {
+                "bbox": [
+                    903.3,
+                    757.2,
+                    1608.9,
+                    815.9
+                ],
+                "text": "Angular -flexion:  decreasing the  angle betw een two bones or two parts extension: increasing the angle betw een tw o bones or two parts",
+                "type": "paragraph",
+                "block_id": "p2_para8",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 12,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_2_12"
+            },
+            {
+                "bbox": [
+                    936.7,
+                    823.9,
+                    1602.9,
+                    881.9
+                ],
+                "text": "abduction: moving the part away from the midline adduction: bringing the part towards the midline",
+                "type": "paragraph",
+                "block_id": "p2_para9",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 13,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_2_13"
+            },
+            {
+                "bbox": [
+                    902.6,
+                    899.3,
+                    1610.3,
+                    1090
+                ],
+                "text": "Rotatory -rotation: rotating along the vertical axis circu m d u ction:  m oving  the  extrem ity  or  the  p art round in a circle so that the w hole p art inscribes a cone. When flexion,  abduction,  extension  and  ad d u ction occu r  in   sequ en ce  th e  m ovem en t  is  called   as  the circumduction",
+                "type": "paragraph",
+                "block_id": "p2_para10",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 14,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_2_14"
+            },
+            {
+                "bbox": [
+                    904.7,
+                    1107.9,
+                    1353.8,
+                    1132.6
+                ],
+                "text": "Gliding one part slides on another.",
+                "type": "paragraph",
+                "block_id": "p2_para11",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 15,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_2_15"
+            },
+            {
+                "bbox": [
+                    903.3,
+                    1164.8,
+                    1252.5,
+                    1189.5
+                ],
+                "text": "C. Regional Classification",
+                "type": "heading",
+                "block_id": "p2_head0",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 16,
+                "default_action": "zoom_pan",
+                "semantic_unit_id": "su_2_16"
+            },
+            {
+                "bbox": [
+                    903.3,
+                    1207.2,
+                    1217.1,
+                    1231.9
+                ],
+                "text": "1 Skull type: Im m ovable",
+                "type": "list_item",
+                "block_id": "p2_list2",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 17,
+                "default_action": "underline",
+                "semantic_unit_id": "su_2_17"
+            },
+            {
+                "bbox": [
+                    903.3,
+                    1240.5,
+                    1339.1,
+                    1265.3
+                ],
+                "text": "2 Vertebral type: Slightly m ovable",
+                "type": "list_item",
+                "block_id": "p2_list3",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 18,
+                "default_action": "underline",
+                "semantic_unit_id": "su_2_18"
+            },
+            {
+                "bbox": [
+                    903.3,
+                    1274.6,
+                    1268.4,
+                    1299.3
+                ],
+                "text": "3 Limb type: Freely m ovable",
+                "type": "list_item",
+                "block_id": "p2_list4",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 19,
+                "default_action": "underline",
+                "semantic_unit_id": "su_2_19"
+            },
+            {
+                "bbox": [
+                    904,
+                    1337.5,
+                    1530.7,
+                    1362.2
+                ],
+                "text": "D.  According to Number of Articulating Bones",
+                "type": "heading",
+                "block_id": "p2_head1",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 20,
+                "default_action": "zoom_pan",
+                "semantic_unit_id": "su_2_20"
+            },
+            {
+                "bbox": [
+                    903.3,
+                    1379.8,
+                    1608.3,
+                    1437.9
+                ],
+                "text": "1 Simple joint: When only two bones  articulate,  e.g. interphalangeal joints (Fig. 3.3).",
+                "type": "list_item",
+                "block_id": "p2_list5",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 21,
+                "default_action": "underline",
+                "semantic_unit_id": "su_2_21"
+            },
+            {
+                "bbox": [
+                    903.3,
+                    1446.5,
+                    1610.3,
+                    1537.3
+                ],
+                "text": "2 Compound joint: More  than  tw o  bones  articu late within one capsule, e.g. elbow  joint, radiocarpal joint (Fig. 3.4).",
+                "type": "list_item",
+                "block_id": "p2_list6",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 22,
+                "default_action": "underline",
+                "semantic_unit_id": "su_2_22"
+            },
+            {
+                "bbox": [
+                    903.3,
+                    1546.5,
+                    1610.3,
+                    1670.7
+                ],
+                "text": "3 Complex joint: When joint  cavity is  d ivid ed   by  an intra-articu lar  d isc,  e.g.  tem p orom and ibu lar join t (Fig.  3.5),  stern oclav icu lar  join t.  Figu re  3.6  is  a diagrammatic representation of complex joint.",
+                "type": "list_item",
+                "block_id": "p2_list7",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 23,
+                "default_action": "underline",
+                "semantic_unit_id": "su_2_23"
+            },
+            {
+                "bbox": [
+                    903.3,
+                    1679.8,
+                    1600.5,
+                    1771.2
+                ],
+                "text": "The st ruct ural cla ssifica tio n   is  m ost  com m on ly follow ed ,  and   w ill  be  con sid ered   in   d etail  in   th e follow ing paragraphs.",
+                "type": "paragraph",
+                "block_id": "p2_para12",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 24,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_2_24"
+            },
+            {
+                "bbox": [
+                    904,
+                    1812.7,
+                    1112.3,
+                    1837.5
+                ],
+                "text": "FIBROUS JOINTS",
+                "type": "heading",
+                "block_id": "p2_head2",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 25,
+                "default_action": "zoom_pan",
+                "semantic_unit_id": "su_2_25"
+            },
+            {
+                "bbox": [
+                    903.3,
+                    1857.9,
+                    1601.5,
+                    1982.6
+                ],
+                "text": "In fibrous joints the bones are joined  by fibrous tissue. These joints  are  either im m ovable  or perm it  a  slight degree  of  m ovem ent.  These  can be  grou p ed   in  the follow ing three subtypes.",
+                "type": "paragraph",
+                "block_id": "p2_para13",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 26,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_2_26"
+            },
+            {
+                "bbox": [
+                    903.3,
+                    1991.2,
+                    1610,
+                    2115.3
+                ],
+                "text": "1 Sutures: Sutures are present only in skull. Tw o bones are separated by connective tissue. The sutural side of each bone is covered by a layer of osteogenic cells/ cambial layer,  covered by  capsular layer w hich is",
+                "type": "list_item",
+                "block_id": "p2_list8",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 27,
+                "default_action": "underline",
+                "semantic_unit_id": "su_2_27"
+            },
+            {
+                "bbox": [
+                    219,
+                    1694,
+                    779,
+                    2067
+                ],
+                "text": "Diagram of a synovial joint showing the male and female surfaces, synovial fluid, articular cartilage, synovial membrane, and capsule.",
+                "type": "figure",
+                "block_id": "p2_fig0",
+                "parent_id": null,
+                "confidence": 0.9,
+                "reading_order": 28,
+                "default_action": "pulse",
+                "semantic_unit_id": "su_2_28"
+            },
+            {
+                "bbox": [
+                    214,
+                    276,
+                    783,
+                    948
+                ],
+                "text": "Diagram of a long bone showing various parts including the epiphysis, epiphyseal plate of cartilage, metaphysis, diaphysis, compact bone, and cancellous bone.",
+                "type": "figure",
+                "block_id": "p2_fig1",
+                "parent_id": null,
+                "confidence": 0.9,
+                "reading_order": 29,
+                "default_action": "pulse",
+                "semantic_unit_id": "su_2_29"
+            }
+        ],
+        "created_at": "2026-04-16T02:17:54.620314+05:30"
+    },
+    {
+        "id": "518b68cd-6e93-4c5e-ad19-21a4bf8dfc96",
+        "page_number": 3,
+        "page_text": "GENERAL ANATOMY\n\n1\n\n![p3-img-4.jpeg](p3-img-4.jpeg)\nFig. 3.4: Some simple and compound joints\n\n![p3-img-5.jpeg](p3-img-5.jpeg)\nFig. 3.5: Condylar joint—temporomandibular joint\n\n![p3-img-6.jpeg](p3-img-6.jpeg)\nFig. 3.6: Complex joint\n\ncontinuous with the periosteum. The area between the bones decreases with age, so that osteogenic surfaces become opposed. Sutures may synostose and get obliterated as age advances.\n\nSutures are peculiar to skull, and are immovable. According to the shape of bony margins, the sutures can be:\n\ni. Plane, e.g. internasal suture (Fig. 3.7)\nii. Serrate, e.g. interparietal suture\n\niii. Squamous, e.g. temporoparietal suture\niv. Denticulate, e.g. lambdoid suture\nv. Schindylesis type, e.g. between rostrum of sphenoid and upper border of vomer.\n\nNeonatal skull reveals fontanelles which are temporary in nature permit moulding during normal childbirth. At six specific points on the sutures (in newborn skull) are membrane filled gaps called \"fontanelles\". These also allow the underlying brain to increase in size. Anterior fontanelle is used to judge the hydration of the infant. All these fontanelles become bone by 18 months (Fig. 3.8).\n\n2 Syndesmosis: It is a fibrous union between bones. It may be represented as interosseous ligament as in inferior tibiofibular joint.\n3 Gomphosis: It is a peg and socket junction between the tooth and its socket. The periodontal ligament connects the dental element to the alveolar bone (Fig. 3.9).\n\n![p3-img-7.jpeg](p3-img-7.jpeg)\n(i) Plane suture\n\n![p3-img-8.jpeg](p3-img-8.jpeg)\n(ii) Serrate suture\n\n![p3-img-9.jpeg](p3-img-9.jpeg)\n(iii) Squamous suture\n\n![p3-img-10.jpeg](p3-img-10.jpeg)\n(iv) Denticulate suture\n\n![p3-img-11.jpeg](p3-img-11.jpeg)\n(v) Schindylesis\n(weige and groove suture)\nFig. 3.7: Types of sutures",
+        "page_dimensions": {
+            "width": 1757,
+            "height": 2268,
+            "dpi": 200
+        },
+        "blocks": [
+            {
+                "bbox": [
+                    629.4,
+                    781.1,
+                    1127,
+                    810.8
+                ],
+                "text": "Fig. 3.4: Some simple and compound joints",
+                "type": "caption",
+                "block_id": "p3_cap0",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 0,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_3_0"
+            },
+            {
+                "bbox": [
+                    226.9,
+                    1248.4,
+                    779.8,
+                    1270.5
+                ],
+                "text": "Fig. 3.5: Condylar joint-temporomandibular joint",
+                "type": "caption",
+                "block_id": "p3_cap1",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 1,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_3_1"
+            },
+            {
+                "bbox": [
+                    372.4,
+                    1760,
+                    636,
+                    1790
+                ],
+                "text": "Fig. 3.6: Complex joint",
+                "type": "caption",
+                "block_id": "p3_cap2",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 2,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_3_2"
+            },
+            {
+                "bbox": [
+                    186.9,
+                    1822.5,
+                    860,
+                    1947.6
+                ],
+                "text": "continuous w ith the periosteum. The area between the bones  d ecreases  w ith  age,  so  that  osteogenic surfaces become  opposed.  Sutures  may synostose and get obliterated as age advances.",
+                "type": "paragraph",
+                "block_id": "p3_para0",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 3,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_3_3"
+            },
+            {
+                "bbox": [
+                    152.8,
+                    1956.3,
+                    859.4,
+                    2047.2
+                ],
+                "text": "Sutures  are  p ecu liar  to  sku ll,  and   are  im m ovable. According to the shape of bony margins, the sutures can be:",
+                "type": "paragraph",
+                "block_id": "p3_para1",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 4,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_3_4"
+            },
+            {
+                "bbox": [
+                    237.4,
+                    2055.9,
+                    747.2,
+                    2080.6
+                ],
+                "text": " Plane, e.g. intem asal suture (Fig. 3.7)",
+                "type": "list_item",
+                "block_id": "p3_list0",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 5,
+                "default_action": "underline",
+                "semantic_unit_id": "su_3_5"
+            },
+            {
+                "bbox": [
+                    228.9,
+                    2089.4,
+                    677.5,
+                    2114.1
+                ],
+                "text": " Serrate, e.g. interparietal suture",
+                "type": "list_item",
+                "block_id": "p3_list1",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 6,
+                "default_action": "underline",
+                "semantic_unit_id": "su_3_6"
+            },
+            {
+                "bbox": [
+                    969.8,
+                    879.5,
+                    1522.4,
+                    904.3
+                ],
+                "text": " Squamous, e.g. temporoparietal suture",
+                "type": "list_item",
+                "block_id": "p3_list2",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 7,
+                "default_action": "underline",
+                "semantic_unit_id": "su_3_7"
+            },
+            {
+                "bbox": [
+                    970.5,
+                    913,
+                    1451.5,
+                    937.7
+                ],
+                "text": " Denticulate, e.g. lam bdoid suture",
+                "type": "list_item",
+                "block_id": "p3_list3",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 8,
+                "default_action": "underline",
+                "semantic_unit_id": "su_3_8"
+            },
+            {
+                "bbox": [
+                    979,
+                    946.5,
+                    1610.3,
+                    1004
+                ],
+                "text": " Schindylesis  typ e,  e.g.  betw een  rostru m   of sphenoid and upper border of vomer.",
+                "type": "list_item",
+                "block_id": "p3_list4",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 9,
+                "default_action": "underline",
+                "semantic_unit_id": "su_3_9"
+            },
+            {
+                "bbox": [
+                    902.4,
+                    1013.3,
+                    1610.3,
+                    1271.5
+                ],
+                "text": "N eon atal  sku ll  rev ea ls  fo n ta n elles  w h ich   are temporary in nature permit moulding during normal child birth.  At  six  sp ecific  p oin ts  on  th e  su tu res  (in new born  sku ll)  are  m em brane  filled   gap s  called \"fontanelles\". These also allow the underlying brain to increase  in  size.  Anterior  fontanelle  is  u sed   to ju d ge the hydration of the infant. All these fontanelles becom e bone by 18 months (Fig. 3.8).",
+                "type": "paragraph",
+                "block_id": "p3_para2",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 10,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_3_10"
+            },
+            {
+                "bbox": [
+                    903.6,
+                    1288.2,
+                    1610.3,
+                    1379
+                ],
+                "text": "2 Syndesmosis: It is  a fibrou s u nion betw een bones.  It may be represented as interosseous ligament as in inferior tibiofibular joint.",
+                "type": "list_item",
+                "block_id": "p3_list5",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 11,
+                "default_action": "underline",
+                "semantic_unit_id": "su_3_11"
+            },
+            {
+                "bbox": [
+                    903.6,
+                    1387.7,
+                    1610.4,
+                    1512.2
+                ],
+                "text": "3 Gomphosis: It  is  a  p eg  and   socket ju n ction  betw een the  tooth and  its  socket.  The  p eriod ontal ligam ent connects  the  d ental  elem ent  to  the  alveolar bone (Fig. 3.9).",
+                "type": "list_item",
+                "block_id": "p3_list6",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 12,
+                "default_action": "underline",
+                "semantic_unit_id": "su_3_12"
+            },
+            {
+                "bbox": [
+                    1111.5,
+                    2092.6,
+                    1395.5,
+                    2116
+                ],
+                "text": "Fig. 3.7: Types of sutures",
+                "type": "caption",
+                "block_id": "p3_cap3",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 13,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_3_13"
+            },
+            {
+                "bbox": [
+                    1222,
+                    1855,
+                    1604,
+                    2004
+                ],
+                "text": "Diagram of the vomer and sphenoid bones",
+                "type": "figure",
+                "block_id": "p3_fig0",
+                "parent_id": null,
+                "confidence": 0.9,
+                "reading_order": 14,
+                "default_action": "pulse",
+                "semantic_unit_id": "su_3_14"
+            },
+            {
+                "bbox": [
+                    897,
+                    1859,
+                    1170,
+                    2032
+                ],
+                "text": "Image of a green zigzag arrow with a dotted pattern on a beige background.",
+                "type": "figure",
+                "block_id": "p3_fig1",
+                "parent_id": null,
+                "confidence": 0.9,
+                "reading_order": 15,
+                "default_action": "pulse",
+                "semantic_unit_id": "su_3_15"
+            },
+            {
+                "bbox": [
+                    1272,
+                    1705,
+                    1553,
+                    1812
+                ],
+                "text": "An image showing a cross-section of a road with a central divider.",
+                "type": "figure",
+                "block_id": "p3_fig2",
+                "parent_id": null,
+                "confidence": 0.9,
+                "reading_order": 16,
+                "default_action": "pulse",
+                "semantic_unit_id": "su_3_16"
+            },
+            {
+                "bbox": [
+                    917,
+                    1705,
+                    1196,
+                    1814
+                ],
+                "text": "An image showing two pieces of paper or documents connected by a green zigzag line.",
+                "type": "figure",
+                "block_id": "p3_fig3",
+                "parent_id": null,
+                "confidence": 0.9,
+                "reading_order": 17,
+                "default_action": "pulse",
+                "semantic_unit_id": "su_3_17"
+            },
+            {
+                "bbox": [
+                    943,
+                    1515,
+                    1514,
+                    1666
+                ],
+                "text": "Diagram of the sutural ligament between skull bones",
+                "type": "figure",
+                "block_id": "p3_fig4",
+                "parent_id": null,
+                "confidence": 0.9,
+                "reading_order": 18,
+                "default_action": "pulse",
+                "semantic_unit_id": "su_3_18"
+            },
+            {
+                "bbox": [
+                    177,
+                    1338,
+                    820,
+                    1732
+                ],
+                "text": "Diagram of the temporomandibular joint (TMJ) showing the male surface, female surface, intra-articular disc, articular cartilage, synovial membrane, and capsule.",
+                "type": "figure",
+                "block_id": "p3_fig5",
+                "parent_id": null,
+                "confidence": 0.9,
+                "reading_order": 19,
+                "default_action": "pulse",
+                "semantic_unit_id": "su_3_19"
+            },
+            {
+                "bbox": [
+                    217,
+                    859,
+                    780,
+                    1211
+                ],
+                "text": "Diagram of the temporomandibular joint (TMJ) showing key components such as the intra-articular disc, articular tubercle, mandibular fossa, synovial cavities, fibrous capsule, head of mandible, and articular fibrocartilage.",
+                "type": "figure",
+                "block_id": "p3_fig6",
+                "parent_id": null,
+                "confidence": 0.9,
+                "reading_order": 20,
+                "default_action": "pulse",
+                "semantic_unit_id": "su_3_20"
+            },
+            {
+                "bbox": [
+                    370,
+                    283,
+                    1382,
+                    759
+                ],
+                "text": "Diagram of the wrist and carpal bones",
+                "type": "figure",
+                "block_id": "p3_fig7",
+                "parent_id": null,
+                "confidence": 0.9,
+                "reading_order": 21,
+                "default_action": "pulse",
+                "semantic_unit_id": "su_3_21"
+            }
+        ],
+        "created_at": "2026-04-16T02:17:55.270756+05:30"
+    },
+    {
+        "id": "18aa920e-f058-4e67-bae6-170a16b76c45",
+        "page_number": 4,
+        "page_text": "JOINT\n\nJOINTS\n\n![p4-img-12.jpeg](p4-img-12.jpeg)\nFig. 3.8: Fontanelles of skull of a newborn baby\n\n# CARTILAGINOUS JOINTS\n\nIn this type of joints the bones are joined by cartilage. These are of the following two types:\n\n1. Primary cartilaginous joints (synchondrosis, or hyaline cartilage joints): The bones are united by a plate of hyaline cartilage (epiphysial plate) so that the joint is immovable and strong.\n\nThese joints are temporary in nature because after a certain age the cartilaginous plate is replaced by bone (synostosis). These are seen in between epiphysis and diaphysis of long bone. These are associated with growth or epiphysial plates and increasing length of the bone. Primary cartilaginous joints or synchondrosis become synostosed after some age and are not identifiable.\n\nExamples:\n\na. Joint between epiphysis and diaphysis of a growing long bone (Fig. 3.2)\n\n![p4-img-13.jpeg](p4-img-13.jpeg)\nFig. 3.9: Gomphosis\n\nb. Spheno-occipital joint\nc. First chondrosternal joint\nd. Costochondral joints.\n\n2. Secondary cartilaginous joints (symphyses or fibrocartilaginous joints): The articular surfaces are covered by a thin layer of hyaline cartilage, and united by a disc of fibrocartilage (Fig. 3.10).\n\nThese joints are permanent and persist throughout life. In this respect symphysis menti is a misnomer as it is a synostosis. Typically the secondary cartilaginous joints occur in the median plane of the body.\n\n![p4-img-14.jpeg](p4-img-14.jpeg)\nFig. 3.10: Secondary cartilaginous joints with plane synovial joint",
+        "page_dimensions": {
+            "width": 1756,
+            "height": 2269,
+            "dpi": 200
+        },
+        "blocks": [
+            {
+                "bbox": [
+                    237.4,
+                    765.5,
+                    770.1,
+                    787.6
+                ],
+                "text": "Fig. 3.8 :  Fontanelles of skull of a newborn baby",
+                "type": "caption",
+                "block_id": "p4_cap0",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 0,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_4_0"
+            },
+            {
+                "bbox": [
+                    153.3,
+                    848.8,
+                    472.3,
+                    873.6
+                ],
+                "text": "CARTILAGINOUS JOINTS",
+                "type": "heading",
+                "block_id": "p4_head0",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 1,
+                "default_action": "zoom_pan",
+                "semantic_unit_id": "su_4_1"
+            },
+            {
+                "bbox": [
+                    153.3,
+                    893.9,
+                    858.1,
+                    951.9
+                ],
+                "text": "In this type of joints the bones are joined  by cartilage. These are of the follow ing two types:",
+                "type": "paragraph",
+                "block_id": "p4_para0",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 2,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_4_2"
+            },
+            {
+                "bbox": [
+                    153.3,
+                    959.8,
+                    860.3,
+                    1085.3
+                ],
+                "text": "1 Primary cartilaginous joints (synchondrosis, or hyaline cartilage joints):  The bones are united by a plate of hyaline cartilage (epiphysial plate) so that the joint is im m ovable and strong.",
+                "type": "list_item",
+                "block_id": "p4_list0",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 3,
+                "default_action": "underline",
+                "semantic_unit_id": "su_4_3"
+            },
+            {
+                "bbox": [
+                    151.9,
+                    1093.9,
+                    860.3,
+                    1351.9
+                ],
+                "text": "These joints are tem porary in nature because after a certain age the cartilaginous plate is replaced by bone (synostosis). These are seen in betw een epiphysis and d iap h ysis  of  lon g  bon e.  Th ese  are  associated   w ith growth or epiphysial plates  and  increasing length of the bone. Primary cartilaginous joints or synchondrosis becom e  syn ostosed   after  som e  age  and   are  n ot id entifiable.",
+                "type": "paragraph",
+                "block_id": "p4_para1",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 4,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_4_4"
+            },
+            {
+                "bbox": [
+                    153.3,
+                    1368.6,
+                    285.2,
+                    1393.3
+                ],
+                "text": "Examples:",
+                "type": "heading",
+                "block_id": "p4_head1",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 5,
+                "default_action": "zoom_pan",
+                "semantic_unit_id": "su_4_5"
+            },
+            {
+                "bbox": [
+                    153.3,
+                    1401.9,
+                    867.8,
+                    1460
+                ],
+                "text": " Joint betw een epiphysis and diaphysis of a growing long bone (Fig. 3.2)",
+                "type": "list_item",
+                "block_id": "p4_list1",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 6,
+                "default_action": "underline",
+                "semantic_unit_id": "su_4_6"
+            },
+            {
+                "bbox": [
+                    901.9,
+                    1093.9,
+                    1217.3,
+                    1118.6
+                ],
+                "text": " Sp heno-occipital joint",
+                "type": "list_item",
+                "block_id": "p4_list2",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 7,
+                "default_action": "underline",
+                "semantic_unit_id": "su_4_7"
+            },
+            {
+                "bbox": [
+                    903.3,
+                    1126.5,
+                    1263.3,
+                    1151.2
+                ],
+                "text": " First chond rostem al joint",
+                "type": "list_item",
+                "block_id": "p4_list3",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 8,
+                "default_action": "underline",
+                "semantic_unit_id": "su_4_8"
+            },
+            {
+                "bbox": [
+                    903.3,
+                    1159.8,
+                    1211.1,
+                    1184.6
+                ],
+                "text": "Costochondral joints.",
+                "type": "list_item",
+                "block_id": "p4_list4",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 9,
+                "default_action": "underline",
+                "semantic_unit_id": "su_4_9"
+            },
+            {
+                "bbox": [
+                    903.3,
+                    1201.9,
+                    1609.6,
+                    1326.6
+                ],
+                "text": "2 Secondary  cartilaginous  joints (sym p h yses or fibrocartilaginous joints): The articular surfaces are covered by  a  thin  layer  of hyaline  cartilage,  and united by a disc of fibrocartilage (Fig. 3.10).",
+                "type": "list_item",
+                "block_id": "p4_list5",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 10,
+                "default_action": "underline",
+                "semantic_unit_id": "su_4_10"
+            },
+            {
+                "bbox": [
+                    1139.3,
+                    1036.1,
+                    1366.8,
+                    1058.3
+                ],
+                "text": "Fig. 3.9:  Gomphosis",
+                "type": "caption",
+                "block_id": "p4_cap1",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 11,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_4_11"
+            },
+            {
+                "bbox": [
+                    901.4,
+                    1335.2,
+                    1610.3,
+                    1460
+                ],
+                "text": "These joints are permanent and persist throughout life. In  th is resp ect sym p hysis m enti is a m isnom er as it is  a  synostosis.  Typ ically the  second ary cartilaginous joints occur in the m ed ian plane of the body.",
+                "type": "paragraph",
+                "block_id": "p4_para2",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 12,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_4_12"
+            },
+            {
+                "bbox": [
+                    514.7,
+                    2093.5,
+                    1241.9,
+                    2115.6
+                ],
+                "text": "Fig. 3.10: Secondary cartilaginous joints with plane synovial joint",
+                "type": "caption",
+                "block_id": "p4_cap2",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 13,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_4_13"
+            },
+            {
+                "bbox": [
+                    470,
+                    1508,
+                    1281,
+                    2076
+                ],
+                "text": "Intervertebral Disc Structure",
+                "type": "figure",
+                "block_id": "p4_fig0",
+                "parent_id": null,
+                "confidence": 0.9,
+                "reading_order": 14,
+                "default_action": "pulse",
+                "semantic_unit_id": "su_4_14"
+            },
+            {
+                "bbox": [
+                    960,
+                    276,
+                    1536,
+                    1014
+                ],
+                "text": "Cross-section of a tooth showing various parts including enamel, dentin, pulp cavity, gingiva, alveolar bone, periodontal ligament/membrane, apical foramen, nerve, vein, and artery.",
+                "type": "figure",
+                "block_id": "p4_fig1",
+                "parent_id": null,
+                "confidence": 0.9,
+                "reading_order": 15,
+                "default_action": "pulse",
+                "semantic_unit_id": "su_4_15"
+            },
+            {
+                "bbox": [
+                    168,
+                    276,
+                    828,
+                    737
+                ],
+                "text": "Anatomical diagram of a skull highlighting the fontanelles",
+                "type": "figure",
+                "block_id": "p4_fig2",
+                "parent_id": null,
+                "confidence": 0.9,
+                "reading_order": 16,
+                "default_action": "pulse",
+                "semantic_unit_id": "su_4_16"
+            }
+        ],
+        "created_at": "2026-04-16T02:17:57.589652+05:30"
+    },
+    {
+        "id": "df938f0c-8ec6-4601-ae80-6920c7488ca4",
+        "page_number": 5,
+        "page_text": "GENERAL ANATOMY\n\nThe thickness of fibrocartilage is directly related to the range of movement. Secondary cartilaginous joints may represent an intermediate stage in the evolution of synovial joints.\n\nExamples:\n\na. Symphysis pubis\nb. Manubriosternal joint\nc. Intervertebral joints between the vertebral bodies (Fig. 3.10).\n\nThe disc varies from few mm to 10 mm and there is dense connective tissue with few chondrocytes.\n\n## SYNOVIAL JOINTS\n\nSynovial joints are most evolved, and, therefore, most mobile type of joints. Table 3.1 shows classification of synovial joints and their movements.\n\nTable 3.1: Classification of synovial joints and their movements\n\n|  Type of Joint | Movement  |\n| --- | --- |\n|  A. Plane or gliding type | Gliding movement  |\n|  B. Uniaxial joints |   |\n|  1. Hinge joint | Flexion and extension  |\n|  2. Pivot joint | Rotation only  |\n|  C. Biaxial joints |   |\n|  1. Condylar joint | Flexion, extension, and limited rotation  |\n|  2. Ellipsoid joint | Flexion, extension, abduction, adduction, and circumduction  |\n|  D. Multiaxial joints |   |\n|  1. Saddle joint | Flexion and extension, abduction, adduction, and conjunct rotation  |\n|  2. Ball-and-socket | Flexion and extension, abduction and adduction, (spheroidal) joint circumduction, medial and lateral rotation  |\n\n## Characters\n\n1. The articular surfaces are covered with hyaline (articular) cartilage (fibrocartilage in certain membrane bones) like clavicle and mandible.\nArticular cartilage is avascular, non-nervous and elastic. Lubricated with synovial fluid, the cartilage provides slippery surfaces for free movements, like 'ice on ice'.\nThe surface of the cartilage shows fine undulations filled with synovial fluid.\n2. Between the articular surfaces there is a joint cavity filled with synovial fluid. The cavity may be partially or completely subdivided by an articular disc or meniscus (Fig. 3.6).\n3. The joint is surrounded by an articular capsule which is made up of a fibrous capsule lined by synovial membrane.\n\nBecause of its rich nerve supply, the fibrous capsule is sensitive to stretches imposed by movements. This sets up appropriate reflexes to protect the joint from any sprain. This is called the 'watch-dog' action of the capsule.\n\nThe fibrous capsule is often reinforced by:\n\na. Capsular or true ligaments representing thickenings of the fibrous capsule.\nb. The accessory ligaments (distinct from fibrous capsule) which may be intra- or extracapsular.\n\nThe synovial membrane lines whole of the interior of the joint, except for the articular surfaces covered by articular cartilage.\n\nThe membrane secretes a slimy viscous fluid called the synovia or synovial fluid which lubricates the joint and nourishes the articular cartilage. The viscosity of fluid is due to hyaluronic acid secreted by cells of the synovial membrane.\n\n4. Varying degrees of movements are always permitted by the synovial joints.\n\n## Classification of Synovial Joints\n\n### 1. Plane Synovial Joints\n\nArticular surfaces are more or less flat (plane). They permit gliding movements (translations) in various directions.\n\nExamples:\n\na. Intercarpal joints (Fig. 3.4)\nb. Intertarsal joints\nc. Joints between articular processes of vertebrae\nd. Cricothyroid joint (see Fig. 2.7)\ne. Cricoarytenoid joint (see Fig. 2.7)\n\n### 2. Hinge Joints (Ginglymi)\n\nArticular surfaces are pulley-shaped. There are strong collateral ligaments. Movements are permitted in one plane around a transverse axis.\n\nExamples:\n\na. Elbow joint (Fig. 2.1)\nb. Ankle joint\nc. Interphalangeal joints (Fig. 2.1)\n\n### 3. Pivot (Trochoid) Joints\n\nArticular surfaces comprise a central bony pivot (peg) surrounded by an osteoligamentous ring. Movements are permitted in one plane around a vertical axis.\n\nExamples:\n\na. Superior and inferior radioulnar joints\nb. Median atlantoaxial joint (Fig. 3.11).\n\n### 4. Condylar (Bicondylar) Joints\n\nArticular surfaces include two distinct condyles (convex male surfaces) fitting into reciprocally concave female surfaces (which are also, sometimes, known as condyles, such as in tibia). These joints permit movements mainly in one plane around a transverse",
+        "page_dimensions": {
+            "width": 1756,
+            "height": 2269,
+            "dpi": 200
+        },
+        "blocks": [
+            {
+                "bbox": [
+                    153.3,
+                    291.2,
+                    860.3,
+                    415.9
+                ],
+                "text": "The thickness of fibrocartilage is directly related to the range of movement. Secondary cartilaginous joints may represent an intermediate stage in the evolution of synovial joints.",
+                "type": "paragraph",
+                "block_id": "p5_para0",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 0,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_5_0"
+            },
+            {
+                "bbox": [
+                    153.3,
+                    424.6,
+                    285.2,
+                    449.3
+                ],
+                "text": "Examples:",
+                "type": "heading",
+                "block_id": "p5_head0",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 1,
+                "default_action": "zoom_pan",
+                "semantic_unit_id": "su_5_1"
+            },
+            {
+                "bbox": [
+                    153.3,
+                    457.9,
+                    406.5,
+                    482.6
+                ],
+                "text": " Sym physis pubis",
+                "type": "list_item",
+                "block_id": "p5_list0",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 2,
+                "default_action": "underline",
+                "semantic_unit_id": "su_5_2"
+            },
+            {
+                "bbox": [
+                    151.9,
+                    490.5,
+                    468,
+                    515.3
+                ],
+                "text": " Manubriosternal joint",
+                "type": "list_item",
+                "block_id": "p5_list1",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 3,
+                "default_action": "underline",
+                "semantic_unit_id": "su_5_3"
+            },
+            {
+                "bbox": [
+                    153.3,
+                    523.9,
+                    858.9,
+                    582.6
+                ],
+                "text": " In tervertebral join ts  betw een  the  vertebral  bod ies (Fig. 3.10).",
+                "type": "list_item",
+                "block_id": "p5_list2",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 4,
+                "default_action": "underline",
+                "semantic_unit_id": "su_5_4"
+            },
+            {
+                "bbox": [
+                    154,
+                    591.2,
+                    859.4,
+                    649.3
+                ],
+                "text": "The disc varies from  few  m m  to 10 m m  and there is dense connective tissue w ith few  chondrocytes.",
+                "type": "paragraph",
+                "block_id": "p5_para1",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 5,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_5_5"
+            },
+            {
+                "bbox": [
+                    152.6,
+                    681.5,
+                    389,
+                    706.2
+                ],
+                "text": "SYNOVIAL JOINTS",
+                "type": "heading",
+                "block_id": "p5_head1",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 6,
+                "default_action": "zoom_pan",
+                "semantic_unit_id": "su_5_6"
+            },
+            {
+                "bbox": [
+                    153.3,
+                    726.5,
+                    860.3,
+                    817.9
+                ],
+                "text": "Synovial joints are m ost evolved, and, therefore, m ost mobile type of joints. Table 3.1 shows classification of synovial joints and their movements.",
+                "type": "paragraph",
+                "block_id": "p5_para2",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 7,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_5_7"
+            },
+            {
+                "bbox": [
+                    156.5,
+                    914.3,
+                    849.4,
+                    1447.3
+                ],
+                "text": null,
+                "type": "table",
+                "block_id": "p5_tbl0",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 8,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_5_8"
+            },
+            {
+                "bbox": [
+                    158.6,
+                    857.5,
+                    845,
+                    911.6
+                ],
+                "text": "Table  3.1:  C lassification  of  synovial  jo in ts   and  th e ir movements",
+                "type": "caption",
+                "block_id": "p5_cap0",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 9,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_5_9"
+            },
+            {
+                "bbox": [
+                    153.3,
+                    1482.2,
+                    300.5,
+                    1506.9
+                ],
+                "text": "Characters",
+                "type": "heading",
+                "block_id": "p5_head2",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 10,
+                "default_action": "zoom_pan",
+                "semantic_unit_id": "su_5_10"
+            },
+            {
+                "bbox": [
+                    154,
+                    1523.9,
+                    860.3,
+                    1615.9
+                ],
+                "text": "1 The  articu lar  su rfaces  are  covered   w ith   h yalin e (a r t icu la r )  cartila g e  (fib r o ca r tila g e   in   ce r ta in membrane bones) like clavicle and mandible.",
+                "type": "list_item",
+                "block_id": "p5_list3",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 11,
+                "default_action": "underline",
+                "semantic_unit_id": "su_5_11"
+            },
+            {
+                "bbox": [
+                    185.3,
+                    1623.9,
+                    859.6,
+                    1749.3
+                ],
+                "text": "Articular  cartilage is  a v a scu lar,  n on -n erv ou s  an d elastic. Lubricated w ith synovial fluid, the cartilage provides slippery surfaces for free m ovements, like 'ice on ice'.",
+                "type": "list_item",
+                "block_id": "p5_list4",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 12,
+                "default_action": "underline",
+                "semantic_unit_id": "su_5_12"
+            },
+            {
+                "bbox": [
+                    186.7,
+                    1757.9,
+                    859.6,
+                    1815.3
+                ],
+                "text": "The surface of the cartilage shows fine undulations filled  w ith synovial fluid.",
+                "type": "list_item",
+                "block_id": "p5_list5",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 13,
+                "default_action": "underline",
+                "semantic_unit_id": "su_5_13"
+            },
+            {
+                "bbox": [
+                    153.3,
+                    1823.9,
+                    860.3,
+                    1949.3
+                ],
+                "text": "2  Between the articular surfaces there is a joint cavity filled  w ith synovial fluid. The cavity m ay be partially or  com pletely  su bd ivid ed   by  an  articu lar  d isc  or meniscus (Fig. 3.6).",
+                "type": "list_item",
+                "block_id": "p5_list6",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 14,
+                "default_action": "underline",
+                "semantic_unit_id": "su_5_14"
+            },
+            {
+                "bbox": [
+                    153.3,
+                    1957.2,
+                    859.6,
+                    2049.3
+                ],
+                "text": "3  The joint is surrounded by an articular capsule which is  m ad e  u p   of  a  fibrou s  cap su le  lin ed  by  synovial membrane.",
+                "type": "list_item",
+                "block_id": "p5_list7",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 15,
+                "default_action": "underline",
+                "semantic_unit_id": "su_5_15"
+            },
+            {
+                "bbox": [
+                    186.7,
+                    2057.9,
+                    859.4,
+                    2115.9
+                ],
+                "text": "Because of its rich nerve supply, t he  fibrous capsule is sensitive to stretches imposed by movements. This sets up appropriate reflexes to protect the joint from any sprain. This is called the 'w atch-d og'  action of the capsule.",
+                "type": "paragraph",
+                "block_id": "p5_para3",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 16,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_5_16"
+            },
+            {
+                "bbox": [
+                    936.7,
+                    291.2,
+                    1610.3,
+                    382.6
+                ],
+                "text": "Because of its rich nerve supply, t he  fibrous capsule is sensitive to stretches imposed by movements. This sets up appropriate reflexes to protect the joint from any sprain. This is called the 'w atch-d og'  action of the capsule.",
+                "type": "paragraph",
+                "block_id": "p5_para4",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 17,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_5_17"
+            },
+            {
+                "bbox": [
+                    936.7,
+                    391.2,
+                    1481.3,
+                    415.9
+                ],
+                "text": "The fibrous capsule is often reinforced by:",
+                "type": "paragraph",
+                "block_id": "p5_para5",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 18,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_5_18"
+            },
+            {
+                "bbox": [
+                    936.7,
+                    423.9,
+                    1608.9,
+                    482.6
+                ],
+                "text": "Capsular or t rue ligaments representing thickenings of the fibrous capsule.",
+                "type": "list_item",
+                "block_id": "p5_list8",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 19,
+                "default_action": "underline",
+                "semantic_unit_id": "su_5_19"
+            },
+            {
+                "bbox": [
+                    935.3,
+                    490.5,
+                    1609.6,
+                    548.6
+                ],
+                "text": " The accessory  ligaments (d istin ct  from   fibrou s capsule) w hich m ay be intra- or extracapsular.",
+                "type": "list_item",
+                "block_id": "p5_list9",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 20,
+                "default_action": "underline",
+                "semantic_unit_id": "su_5_20"
+            },
+            {
+                "bbox": [
+                    936.7,
+                    557.2,
+                    1610.3,
+                    649.3
+                ],
+                "text": "The synovial membrane lines w hole of the interior of the joint, except for the articular surfaces covered by articular cartilage.",
+                "type": "paragraph",
+                "block_id": "p5_para6",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 21,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_5_21"
+            },
+            {
+                "bbox": [
+                    936.7,
+                    657.9,
+                    1610.3,
+                    815.9
+                ],
+                "text": "The membrane secretes a slimy viscous fluid called the synovia or synovial  fluid w hich lu bricates the joint and nourishes the articular cartilage.  The viscosity of flu id  is d u e to hyalu ronic acid  secreted  by cells of the synovial membrane.",
+                "type": "paragraph",
+                "block_id": "p5_para7",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 22,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_5_22"
+            },
+            {
+                "bbox": [
+                    903.3,
+                    824.6,
+                    1615.7,
+                    881.9
+                ],
+                "text": "4 Varying degrees of movements are always permitted by the synovial joints.",
+                "type": "list_item",
+                "block_id": "p5_list10",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 23,
+                "default_action": "underline",
+                "semantic_unit_id": "su_5_23"
+            },
+            {
+                "bbox": [
+                    903.3,
+                    915.5,
+                    1319.9,
+                    940.2
+                ],
+                "text": "Classification of Synovial Joints",
+                "type": "heading",
+                "block_id": "p5_head3",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 24,
+                "default_action": "zoom_pan",
+                "semantic_unit_id": "su_5_24"
+            },
+            {
+                "bbox": [
+                    906.6,
+                    957.5,
+                    1214.6,
+                    982.2
+                ],
+                "text": "1. Pla n e  Sy n o v ia l Jo in ts",
+                "type": "heading",
+                "block_id": "p5_head4",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 25,
+                "default_action": "zoom_pan",
+                "semantic_unit_id": "su_5_25"
+            },
+            {
+                "bbox": [
+                    902.6,
+                    999.3,
+                    1610.3,
+                    1090.7
+                ],
+                "text": "Articular surfaces  are m ore  or less  flat  (plane).  They permit  glid ing  m ovem ents  (translations)  in  variou s directions.",
+                "type": "paragraph",
+                "block_id": "p5_para8",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 26,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_5_26"
+            },
+            {
+                "bbox": [
+                    903.3,
+                    1107.4,
+                    1025.9,
+                    1131.6
+                ],
+                "text": "Examples:",
+                "type": "heading",
+                "block_id": "p5_head5",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 27,
+                "default_action": "zoom_pan",
+                "semantic_unit_id": "su_5_27"
+            },
+            {
+                "bbox": [
+                    903.3,
+                    1140.5,
+                    1275.6,
+                    1165.3
+                ],
+                "text": " In tercarp al join ts (Fig. 3.4)",
+                "type": "list_item",
+                "block_id": "p5_list11",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 28,
+                "default_action": "underline",
+                "semantic_unit_id": "su_5_28"
+            },
+            {
+                "bbox": [
+                    901.9,
+                    1173.9,
+                    1146.2,
+                    1198.6
+                ],
+                "text": " In tertarsal join ts",
+                "type": "list_item",
+                "block_id": "p5_list12",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 29,
+                "default_action": "underline",
+                "semantic_unit_id": "su_5_29"
+            },
+            {
+                "bbox": [
+                    903.3,
+                    1207.9,
+                    1537.1,
+                    1232.6
+                ],
+                "text": " Joints betw een articular processes of vertebrae",
+                "type": "list_item",
+                "block_id": "p5_list13",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 30,
+                "default_action": "underline",
+                "semantic_unit_id": "su_5_30"
+            },
+            {
+                "bbox": [
+                    904,
+                    1240.5,
+                    1330.5,
+                    1265.3
+                ],
+                "text": "Cricothyroid joint (see Fig. 2.7)",
+                "type": "list_item",
+                "block_id": "p5_list14",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 31,
+                "default_action": "underline",
+                "semantic_unit_id": "su_5_31"
+            },
+            {
+                "bbox": [
+                    903.3,
+                    1273.9,
+                    1358.9,
+                    1298.6
+                ],
+                "text": " Cricoarytenoid joint (see Fig. 2.7)",
+                "type": "list_item",
+                "block_id": "p5_list15",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 32,
+                "default_action": "underline",
+                "semantic_unit_id": "su_5_32"
+            },
+            {
+                "bbox": [
+                    903.3,
+                    1331.5,
+                    1246.8,
+                    1356.2
+                ],
+                "text": "2. Hing e  Jo in ts  (G in g ly m i)",
+                "type": "heading",
+                "block_id": "p5_head6",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 33,
+                "default_action": "zoom_pan",
+                "semantic_unit_id": "su_5_33"
+            },
+            {
+                "bbox": [
+                    902.6,
+                    1373.9,
+                    1610.3,
+                    1465.3
+                ],
+                "text": "Articular surfaces are pulley-shaped. There are strong collateral ligaments. Movements are permitted in one plane around a transverse axis.",
+                "type": "paragraph",
+                "block_id": "p5_para9",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 34,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_5_34"
+            },
+            {
+                "bbox": [
+                    903.3,
+                    1482.8,
+                    1025.9,
+                    1507
+                ],
+                "text": "Examples:",
+                "type": "heading",
+                "block_id": "p5_head7",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 35,
+                "default_action": "zoom_pan",
+                "semantic_unit_id": "su_5_35"
+            },
+            {
+                "bbox": [
+                    903.3,
+                    1515.9,
+                    1203.8,
+                    1540.7
+                ],
+                "text": " Elbow  join t (Fig. 2.1)",
+                "type": "list_item",
+                "block_id": "p5_list16",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 36,
+                "default_action": "underline",
+                "semantic_unit_id": "su_5_36"
+            },
+            {
+                "bbox": [
+                    901.9,
+                    1549.3,
+                    1078.7,
+                    1574
+                ],
+                "text": " Ankle joint",
+                "type": "list_item",
+                "block_id": "p5_list17",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 37,
+                "default_action": "underline",
+                "semantic_unit_id": "su_5_37"
+            },
+            {
+                "bbox": [
+                    903.3,
+                    1582.6,
+                    1339,
+                    1607.3
+                ],
+                "text": " In terp halangeal joints (Fig. 2.1)",
+                "type": "list_item",
+                "block_id": "p5_list18",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 38,
+                "default_action": "underline",
+                "semantic_unit_id": "su_5_38"
+            },
+            {
+                "bbox": [
+                    903.3,
+                    1640.1,
+                    1226.5,
+                    1664.8
+                ],
+                "text": "3. Piv o t (T ro c h o id ) Jo in ts",
+                "type": "heading",
+                "block_id": "p5_head8",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 39,
+                "default_action": "zoom_pan",
+                "semantic_unit_id": "su_5_39"
+            },
+            {
+                "bbox": [
+                    903.3,
+                    1682.6,
+                    1609.6,
+                    1774
+                ],
+                "text": "Articular surfaces comprise a central bony pivot (peg) surrounded by an osteoligamentous ring. Movements are permitted in one plane around a vertical axis.",
+                "type": "paragraph",
+                "block_id": "p5_para10",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 40,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_5_40"
+            },
+            {
+                "bbox": [
+                    903.3,
+                    1790.7,
+                    1025.9,
+                    1814.9
+                ],
+                "text": "Examples:",
+                "type": "heading",
+                "block_id": "p5_head9",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 41,
+                "default_action": "zoom_pan",
+                "semantic_unit_id": "su_5_41"
+            },
+            {
+                "bbox": [
+                    903.3,
+                    1823.9,
+                    1432.9,
+                    1848.6
+                ],
+                "text": " Su p erior and inferior rad ioulnar joints",
+                "type": "list_item",
+                "block_id": "p5_list19",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 42,
+                "default_action": "underline",
+                "semantic_unit_id": "su_5_42"
+            },
+            {
+                "bbox": [
+                    901.9,
+                    1857.2,
+                    1402.5,
+                    1881.9
+                ],
+                "text": " Median atlantoaxial joint (Fig. 3.11).",
+                "type": "list_item",
+                "block_id": "p5_list20",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 43,
+                "default_action": "underline",
+                "semantic_unit_id": "su_5_43"
+            },
+            {
+                "bbox": [
+                    903.3,
+                    1914.8,
+                    1317.2,
+                    1939.5
+                ],
+                "text": "4. Condyla r (Bic o nd y la r) Jo in ts",
+                "type": "heading",
+                "block_id": "p5_head10",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 44,
+                "default_action": "zoom_pan",
+                "semantic_unit_id": "su_5_44"
+            },
+            {
+                "bbox": [
+                    903.3,
+                    1957.9,
+                    1610.3,
+                    2115.9
+                ],
+                "text": "Articular surfaces include tw o distinct condyles (convex male surfaces) fitting into reciprocally concave female su r fa ce s  (w h ich   are  a lso ,  so m etim es,  k n ow n   as cond yles,  su ch   as  in   tib ia ).  Th ese  jo in ts  p er m it movements mainly in one plane around a transverse",
+                "type": "paragraph",
+                "block_id": "p5_para11",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 45,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_5_45"
+            }
+        ],
+        "created_at": "2026-04-16T02:17:58.448288+05:30"
+    },
+    {
+        "id": "91c6b16e-e430-4e53-a0a7-73b8e59c94b2",
+        "page_number": 6,
+        "page_text": "JOINT\n\nJOINTS\n\n![p6-img-15.jpeg](p6-img-15.jpeg)\nFig. 3.11: Median atlantoaxial joint\n\naxis, but partly in another plane (rotation) around a vertical axis.\n\nExamples:\n\na. Knee joint (see Fig. 2.1)\nb. Right and left jaw joints or temporomandibular joint (Fig. 3.5).\n\n# 5. Ellipsoid Joints\n\nArticular surfaces include an oval, convex, male surface fitting into an elliptical, concave female surface. Free movements are permitted around both the axes; flexion and extension around the transverse axis, and abduction and adduction around the anteroposterior axis. Combination of movements produces circumduction. Typical rotation around a third (vertical) axis does not occur.\n\nExamples:\n\na. Atlanto-occipital joints.\nb. Wrist joint (Fig. 3.4)\nc. Metacarpophalangeal joints\n\n# 6. Saddle (Sellar) Joints\n\nArticular surfaces are reciprocally concavoconvex. Movements are similar to those permitted by an ellipsoid joint, with addition of some rotation (conjunct rotation) around a third axis which, however, cannot occur independently.\n\nExamples:\n\na. First carpometacarpal joint (Fig. 3.4)\nb. Sternoclavicular joint\nc. Calcaneocuboid joint\nd. Incudomalleolar joint (Fig. 3.12)\ne. Between femur and patella.\n\n# 7. Ball-and-Socket (Spheroidal) Joints\n\nArticular surfaces include a globular head (male surface) fitting into a cup-shaped socket (female surface).\n\n![p6-img-16.jpeg](p6-img-16.jpeg)\nFig. 3.12: Visceral bones ear ossicles with their joints\n\nMovements occur around an indefinite number of axes which have one common centre. Flexion, extension, abduction, adduction, medial rotation, lateral rotation, and circumduction, all occur quite freely.\n\nExamples:\n\na. Shoulder joint\nb. Hip joint\nc. Talocalcaneonavicular joint\nd. Incudostapedial joint (Fig. 3.12)\n\n# Mechanism of Lubrication of a Synovial Joint\n\n1 Synovial fluid, secreted by synovial membrane, is sticky and viscous due to hyaluronic acid (a mucopolysaccharide). It serves the main function of lubrication of the joint. It also nourishes the articular cartilage.\n2 Hyaline cartilage: Covering the articular surfaces possesses inherent slipperiness, like that of the ice.\n3 Intra-articular fibrocartilages, articular discs or menisci, complete or incomplete: Help in spreading the synovial fluid throughout the joint cavity, but particularly between the articular surfaces, e.g. temporomandibular joint (Fig. 3.5). The disc divides the joint into two cavities for diverse movements in 2 cavities. The disc strengthens the joint.\n\n# Blood Supply\n\nThe articular and epiphysial branches given off by the neighbouring arteries form a periarticular arterial plexus. Numerous vessels from this plexus pierce the fibrous capsule and form a rich vascular plexus in the deeper parts of synovial membrane. The blood vessels of the synovial membrane terminate around the articular margins in a fringe of looped anastomoses termed the circulus vasculosus (circulus articularis vasculosus). It supplies capsule, synovial membrane and the epiphysis. The articular cartilage is avascular.",
+        "page_dimensions": {
+            "width": 1757,
+            "height": 2268,
+            "dpi": 200
+        },
+        "blocks": [
+            {
+                "bbox": [
+                    310.1,
+                    832.5,
+                    696.8,
+                    854.6
+                ],
+                "text": "Fig. 3.11:  Median atlantoaxial joint",
+                "type": "caption",
+                "block_id": "p6_cap0",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 0,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_6_0"
+            },
+            {
+                "bbox": [
+                    152.9,
+                    890.8,
+                    859.2,
+                    948.6
+                ],
+                "text": "axis, bu t p artly  in  another  p lane  (rotation)  arou nd   a vertical axis.",
+                "type": "paragraph",
+                "block_id": "p6_para0",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 1,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_6_1"
+            },
+            {
+                "bbox": [
+                    153.5,
+                    957.8,
+                    278,
+                    982
+                ],
+                "text": "Examples:",
+                "type": "heading",
+                "block_id": "p6_head0",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 2,
+                "default_action": "zoom_pan",
+                "semantic_unit_id": "su_6_2"
+            },
+            {
+                "bbox": [
+                    153.5,
+                    990.8,
+                    479.1,
+                    1015.5
+                ],
+                "text": " Knee join t (see Fig. 2.1)",
+                "type": "list_item",
+                "block_id": "p6_list0",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 3,
+                "default_action": "underline",
+                "semantic_unit_id": "su_6_3"
+            },
+            {
+                "bbox": [
+                    152.2,
+                    1023.9,
+                    859.9,
+                    1081.8
+                ],
+                "text": " Right and left jaw  joints or tem porom andibular joint (Fig. 3.5).",
+                "type": "list_item",
+                "block_id": "p6_list1",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 4,
+                "default_action": "underline",
+                "semantic_unit_id": "su_6_4"
+            },
+            {
+                "bbox": [
+                    153.5,
+                    1115.2,
+                    376.6,
+                    1139.9
+                ],
+                "text": "5. Ellip so id  Jo in ts",
+                "type": "heading",
+                "block_id": "p6_head1",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 5,
+                "default_action": "zoom_pan",
+                "semantic_unit_id": "su_6_5"
+            },
+            {
+                "bbox": [
+                    152.9,
+                    1157.6,
+                    859.9,
+                    1414.8
+                ],
+                "text": "Articular surfaces include an oval, convex, male surface fitting into  an ellip tical,  concave  fem ale  surface.  Free movements are permitted around both the axes; flexion and  exten sion   arou n d   th e  tra n sv erse  a xis,  an d abduction and adduction around the anteroposterior axis. Combination of movements produces circumduc­ tion. Typical rotation around a third (vertical) axis does not occur.",
+                "type": "paragraph",
+                "block_id": "p6_para1",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 6,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_6_6"
+            },
+            {
+                "bbox": [
+                    153.5,
+                    1424.1,
+                    275.8,
+                    1448.3
+                ],
+                "text": "Examples:",
+                "type": "heading",
+                "block_id": "p6_head2",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 7,
+                "default_action": "zoom_pan",
+                "semantic_unit_id": "su_6_7"
+            },
+            {
+                "bbox": [
+                    153.5,
+                    1457.6,
+                    488.1,
+                    1482.3
+                ],
+                "text": " Atlanto-occipital joints.",
+                "type": "list_item",
+                "block_id": "p6_list2",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 8,
+                "default_action": "underline",
+                "semantic_unit_id": "su_6_8"
+            },
+            {
+                "bbox": [
+                    152.2,
+                    1490.8,
+                    442.3,
+                    1515.5
+                ],
+                "text": "Wrist joint (Fig. 3.4)",
+                "type": "list_item",
+                "block_id": "p6_list3",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 9,
+                "default_action": "underline",
+                "semantic_unit_id": "su_6_9"
+            },
+            {
+                "bbox": [
+                    153.5,
+                    1523.8,
+                    544.6,
+                    1548.6
+                ],
+                "text": " Metacarpophalangeal joints",
+                "type": "list_item",
+                "block_id": "p6_list4",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 10,
+                "default_action": "underline",
+                "semantic_unit_id": "su_6_10"
+            },
+            {
+                "bbox": [
+                    153.5,
+                    1582,
+                    465.4,
+                    1606.8
+                ],
+                "text": "6. Sa d d le  (Se lla r) Jo in ts",
+                "type": "heading",
+                "block_id": "p6_head3",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 11,
+                "default_action": "zoom_pan",
+                "semantic_unit_id": "su_6_11"
+            },
+            {
+                "bbox": [
+                    152.9,
+                    1623.8,
+                    859.9,
+                    1782.3
+                ],
+                "text": "Articu lar  su rfaces  are  recip rocally  concavoconvex. Movements  are  sim ilar  to  th ose  p erm itted   by  an ellip soid  join t, w ith ad d ition of som e rotation (conjunct rotation)  around a third axis w hich, however, cannot occur independently.",
+                "type": "paragraph",
+                "block_id": "p6_para2",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 12,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_6_12"
+            },
+            {
+                "bbox": [
+                    153.5,
+                    1791,
+                    275.8,
+                    1815.2
+                ],
+                "text": "Examples:",
+                "type": "heading",
+                "block_id": "p6_head4",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 13,
+                "default_action": "zoom_pan",
+                "semantic_unit_id": "su_6_13"
+            },
+            {
+                "bbox": [
+                    153.5,
+                    1823.8,
+                    654.3,
+                    1848.6
+                ],
+                "text": " First carp om etacarpal joint (Fig. 3.4)",
+                "type": "list_item",
+                "block_id": "p6_list5",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 14,
+                "default_action": "underline",
+                "semantic_unit_id": "su_6_14"
+            },
+            {
+                "bbox": [
+                    152.2,
+                    1857,
+                    461.1,
+                    1881.8
+                ],
+                "text": " Sternoclavicular joint",
+                "type": "list_item",
+                "block_id": "p6_list6",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 15,
+                "default_action": "underline",
+                "semantic_unit_id": "su_6_15"
+            },
+            {
+                "bbox": [
+                    153.5,
+                    1890.8,
+                    458.4,
+                    1915.5
+                ],
+                "text": " Calcaneocuboid joint",
+                "type": "list_item",
+                "block_id": "p6_list7",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 16,
+                "default_action": "underline",
+                "semantic_unit_id": "su_6_16"
+            },
+            {
+                "bbox": [
+                    153.5,
+                    1923.8,
+                    599.4,
+                    1948.6
+                ],
+                "text": "Incudomalleolar joint (Fig. 3.12)",
+                "type": "list_item",
+                "block_id": "p6_list8",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 17,
+                "default_action": "underline",
+                "semantic_unit_id": "su_6_17"
+            },
+            {
+                "bbox": [
+                    153.5,
+                    1957.6,
+                    541.7,
+                    1982.3
+                ],
+                "text": " Betw een fem ur and patella.",
+                "type": "list_item",
+                "block_id": "p6_list9",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 18,
+                "default_action": "underline",
+                "semantic_unit_id": "su_6_18"
+            },
+            {
+                "bbox": [
+                    154.2,
+                    2015.2,
+                    660.3,
+                    2039.9
+                ],
+                "text": "7. Ba ll-a n d -So c k e t (Sp h e ro id a l) Jo in ts",
+                "type": "heading",
+                "block_id": "p6_head5",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 19,
+                "default_action": "zoom_pan",
+                "semantic_unit_id": "su_6_19"
+            },
+            {
+                "bbox": [
+                    152.9,
+                    2057.6,
+                    858.3,
+                    2115.5
+                ],
+                "text": "Articular surfaces include a globular head (male surface) fittin g   in to  a  cu p -sh ap ed   sock et  (fem ale  su rface).",
+                "type": "paragraph",
+                "block_id": "p6_para3",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 20,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_6_20"
+            },
+            {
+                "bbox": [
+                    955.4,
+                    736.3,
+                    1550.7,
+                    758.4
+                ],
+                "text": "Fig. 3.12: Visceral bones ear ossicles with their joints",
+                "type": "caption",
+                "block_id": "p6_cap1",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 21,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_6_21"
+            },
+            {
+                "bbox": [
+                    902.5,
+                    824.5,
+                    1609.4,
+                    952.5
+                ],
+                "text": "Movements occur around an indefinite number of axes which have  one common centre.  Flexion, extension, abduction, adduction, medial rotation, lateral rotation, and circumduction, all occur quite freely.",
+                "type": "paragraph",
+                "block_id": "p6_para4",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 22,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_6_22"
+            },
+            {
+                "bbox": [
+                    903.2,
+                    965.5,
+                    1025.5,
+                    989.6
+                ],
+                "text": "Examples:",
+                "type": "heading",
+                "block_id": "p6_head6",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 23,
+                "default_action": "zoom_pan",
+                "semantic_unit_id": "su_6_23"
+            },
+            {
+                "bbox": [
+                    903.9,
+                    1002.9,
+                    1118.4,
+                    1027.6
+                ],
+                "text": " Should er joint",
+                "type": "list_item",
+                "block_id": "p6_list10",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 24,
+                "default_action": "underline",
+                "semantic_unit_id": "su_6_24"
+            },
+            {
+                "bbox": [
+                    901.9,
+                    1040.4,
+                    1051.1,
+                    1065.1
+                ],
+                "text": " H ip  join t",
+                "type": "list_item",
+                "block_id": "p6_list11",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 25,
+                "default_action": "underline",
+                "semantic_unit_id": "su_6_25"
+            },
+            {
+                "bbox": [
+                    903.2,
+                    1077.3,
+                    1291,
+                    1102
+                ],
+                "text": " Talocalcaneonavicular joint",
+                "type": "list_item",
+                "block_id": "p6_list12",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 26,
+                "default_action": "underline",
+                "semantic_unit_id": "su_6_26"
+            },
+            {
+                "bbox": [
+                    903.9,
+                    1115.7,
+                    1345.6,
+                    1140.4
+                ],
+                "text": "Incudostapedial joint (Fig. 3.12)",
+                "type": "list_item",
+                "block_id": "p6_list13",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 27,
+                "default_action": "underline",
+                "semantic_unit_id": "su_6_27"
+            },
+            {
+                "bbox": [
+                    904.4,
+                    1173.1,
+                    1505.3,
+                    1197.9
+                ],
+                "text": "Mechanism of Lubrication of a Synovial Joint",
+                "type": "heading",
+                "block_id": "p6_head7",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 28,
+                "default_action": "zoom_pan",
+                "semantic_unit_id": "su_6_28"
+            },
+            {
+                "bbox": [
+                    903.9,
+                    1216.9,
+                    1610.8,
+                    1380.5
+                ],
+                "text": "1 Synovial  fluid,  secreted  by  synovial m em brane,  is stick y   an d   v isco u s  d u e  to  h y a lu r o n ic  a cid   (a mucopolysaccharide). It serves the m ain function of lu brication of the joint. It also nou rishes the articular cartilage.",
+                "type": "list_item",
+                "block_id": "p6_list14",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 29,
+                "default_action": "underline",
+                "semantic_unit_id": "su_6_29"
+            },
+            {
+                "bbox": [
+                    903.2,
+                    1393.3,
+                    1609.4,
+                    1452.5
+                ],
+                "text": "2 Hyaline  cartilage: Covering  the  articu lar  su rfaces possesses inherent slipperiness, like that of the ice.",
+                "type": "list_item",
+                "block_id": "p6_list15",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 30,
+                "default_action": "underline",
+                "semantic_unit_id": "su_6_30"
+            },
+            {
+                "bbox": [
+                    903.2,
+                    1465.2,
+                    1610.1,
+                    1698.3
+                ],
+                "text": "3 Intra-articular  fibrocartilages, articular discs or menisci, complete or incomplete: Help in spreading the synovial flu id   th rou gh ou t  th e  join t  cavity,  b u t  p articu larly betw een   th e  a r ticu la r   su r fa ce s,  e.g .  tem p o r o ­ mandibular joint (Fig. 3.5). The disc divides the joint in to tw o  ca v ities for  d iv erse  m ov em en ts  in 2 cavities. The disc strengthens the joint.",
+                "type": "list_item",
+                "block_id": "p6_list16",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 31,
+                "default_action": "underline",
+                "semantic_unit_id": "su_6_31"
+            },
+            {
+                "bbox": [
+                    904.4,
+                    1734.9,
+                    1077.9,
+                    1759.7
+                ],
+                "text": "Blood Supply",
+                "type": "heading",
+                "block_id": "p6_head8",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 32,
+                "default_action": "zoom_pan",
+                "semantic_unit_id": "su_6_32"
+            },
+            {
+                "bbox": [
+                    902.5,
+                    1778,
+                    1609.4,
+                    2115.5
+                ],
+                "text": "The articular and epiphysial branches given off by the neighbouring  arteries  form   a  p eriarticu lar  arterial plexus. Numerous vessels from this plexus pierce the fibrous capsule and form a rich vascular plexus in the d eep er  p a r ts  o f  sy n o v ia l  m em b ra n e.  Th e  b lo o d vessels of the synovial m embrane terminate around the articu lar  m argins  in  a  fringe  of  loop ed   anastom oses term ed   the  circu lu s  vascu losu s (circuius  articularis vasculosus). It su p p lies cap su le, synovial m em brane and the epiphysis. The articular cartilage is avascular.",
+                "type": "paragraph",
+                "block_id": "p6_para5",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 33,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_6_33"
+            },
+            {
+                "bbox": [
+                    897,
+                    272,
+                    1602,
+                    707
+                ],
+                "text": "Anatomy of the ear ossicles",
+                "type": "figure",
+                "block_id": "p6_fig0",
+                "parent_id": null,
+                "confidence": 0.9,
+                "reading_order": 34,
+                "default_action": "pulse",
+                "semantic_unit_id": "su_6_34"
+            },
+            {
+                "bbox": [
+                    145,
+                    272,
+                    852,
+                    809
+                ],
+                "text": "Atlas vertebra and axis vertebra showing the transverse ligament and the dens of the axis vertebra.",
+                "type": "figure",
+                "block_id": "p6_fig1",
+                "parent_id": null,
+                "confidence": 0.9,
+                "reading_order": 35,
+                "default_action": "pulse",
+                "semantic_unit_id": "su_6_35"
+            }
+        ],
+        "created_at": "2026-04-16T02:17:58.490291+05:30"
+    },
+    {
+        "id": "d0e5b25c-2d41-4c22-88ce-0de37a04eed7",
+        "page_number": 7,
+        "page_text": "GENERAL ANATOMY\n\n24\n\n# Nerve Supply\n\nThe capsule and ligaments possess a rich nerve supply, which makes them acutely sensitive to pain. The synovial membrane has a poor nerve supply and is relatively insensitive to pain. The articular cartilage is non-nervous and totally insensitive. Articular nerves contain sensory and autonomic fibres. Autonomic fibres are vasomotor or vasosensory. The joint pain is often diffuse, and may be associated with nausea, vomiting, slowing of pulse and fall in blood pressure.\n\nThe pain commonly causes reflex contraction of muscles which fix the joint in a position of maximum comfort. Like visceral pain, the joint pain is also referred to uninvolved joints.\n\n# Lymphatic Drainage\n\nLymphatics form a plexus in the subintima of the synovial membrane, and drain along the blood vessels to the regional deep nodes.\n\n# Stability\n\nThe various factors maintaining stability at a joint are described here in order of their importance.\n\n1. Muscles: The tone of different groups of muscles acting on the joint is the most important and indispensable factor in maintaining the stability.\n2. Ligaments: These are important in preventing any over-movement, and in guarding against sudden accidental stresses. However, they do not help against a continuous strain, because once stretched, they tend to remain elongated. In this respect, the elastic ligaments (ligamenta flava and ligaments of the joints of auditory ossicles) are superior to the common type of white fibrous ligaments.\n\n# CLINICAL ANATOMY\n\n- Intervertebral disc forms secondary cartilaginous joint between the bodies of the vertebrae. If the nucleus pulposus part of the disc protrudes backwards, it may press on the spinal nerve leaving out from the intervertebral foramina. The condition is known as herniation of the disc or disc prolapse. If disc prolapse occurs in lumbar vertebrae there is radiating pain in the lower limb, and the condition is called sciatica.\n- The joints may get dislocated, i.e. the end of one of the bones gets out of its socket. In subluxation, the end of the bone partially leaves its socket.\n- Stiffness of joints is related to weather. The viscosity of synovial fluid increases with fall in temperature. This accounts for stiffness of the joints in cold weather. Mobility of joint in itself is an important factor in promoting lubrication. Thus the stiffness of joints experienced in the morning gradually passes off as the movements are resumed.\n\n# FACTS TO REMEMBER\n\n- Joint is a junction between two or more bones or cartilages.\n- Joints are classified as fibrous, cartilaginous and synovial types.\n- There are more joints in a child than in an adult. The primary cartilaginous joints at the ends of long bones after fusion disappear in the adult, decreasing the number of joints.\n- Joints help in increasing the length of bones, increasing the size of cranial, thoracic and pelvic cavities.\n- Joints in thorax help in respiratory movements.\n- Joints are vital for locomotion.\n- The secondary cartilaginous joints are in midline of the body.\n- Joints in ossicles of middle ear are synovial joints.\n- Joints chiefly suffer in osteoarthritis and rheumatoid arthritis.\n- Joints in the laryngeal cartilages help us in speech.\n\n# MULTIPLE CHOICE QUESTIONS\n\n1. Which of the following joint contains an intra-articular disc?\na. Ankle joint\nb. Sternoclavicular joint\nc. Elbow joint\nd. Shoulder joint\n\n2. Condylar joints are:\na. Uniaxial,\nb. Biaxial\nc. Multiaxial\nd. Symphysis\n\n3. Which is not a fibrous joint?\na. Sutures\nb. Gomphosis\nc. Xiphisternal\nd. Inferior tibiofibular\n\n# ANSWERS\n\n1. b\n2. b\n3. c",
+        "page_dimensions": {
+            "width": 1756,
+            "height": 2269,
+            "dpi": 200
+        },
+        "blocks": [
+            {
+                "bbox": [
+                    154.7,
+                    290.8,
+                    331.6,
+                    315.5
+                ],
+                "text": "Nerve Supply",
+                "type": "heading",
+                "block_id": "p7_head0",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 0,
+                "default_action": "zoom_pan",
+                "semantic_unit_id": "su_7_0"
+            },
+            {
+                "bbox": [
+                    152.6,
+                    332.6,
+                    860.3,
+                    624
+                ],
+                "text": "The capsule and ligaments p ossess a rich nerve supply, which makes  them   acu tely  sensitive  to  p ain .  The synovial membrane has  a poor nerve  supply and is relatively insensitive to pain. The articular cartilage is non-nervous  and totally insensitive.  Articular nerves contain sensory and autonomic fibres. Autonomic fibres are vasomotor or vasosensory. The joint pain is often diffuse, and may be associated w ith nausea, vomiting, slowing of pulse and fall in blood pressure.",
+                "type": "paragraph",
+                "block_id": "p7_para0",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 1,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_7_1"
+            },
+            {
+                "bbox": [
+                    153.3,
+                    631.9,
+                    860.3,
+                    757.3
+                ],
+                "text": "The  p ain  com m only  cau ses  reflex  contraction  of muscles which fix the joint in a position of maximum comfort. Like visceral pain, the joint pain is also referred to uninvolved joints.",
+                "type": "paragraph",
+                "block_id": "p7_para1",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 2,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_7_2"
+            },
+            {
+                "bbox": [
+                    154.7,
+                    790.8,
+                    422.8,
+                    815.5
+                ],
+                "text": "Lymphatic Drainage",
+                "type": "heading",
+                "block_id": "p7_head1",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 3,
+                "default_action": "zoom_pan",
+                "semantic_unit_id": "su_7_3"
+            },
+            {
+                "bbox": [
+                    153.3,
+                    832.6,
+                    859.6,
+                    924
+                ],
+                "text": "Lymphatics  form   a  p lexu s  in   th e  su bin tim a  of  the synovial membrane, and drain along the blood vessels to the regional deep nodes.",
+                "type": "paragraph",
+                "block_id": "p7_para2",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 4,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_7_4"
+            },
+            {
+                "bbox": [
+                    152.6,
+                    956.8,
+                    255.7,
+                    981.5
+                ],
+                "text": "Stability",
+                "type": "heading",
+                "block_id": "p7_head2",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 5,
+                "default_action": "zoom_pan",
+                "semantic_unit_id": "su_7_5"
+            },
+            {
+                "bbox": [
+                    153.3,
+                    999.3,
+                    859.6,
+                    1057.3
+                ],
+                "text": "The various factors maintaining stability at a joint are described here in order of their importance.",
+                "type": "paragraph",
+                "block_id": "p7_para3",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 6,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_7_6"
+            },
+            {
+                "bbox": [
+                    154,
+                    1065.9,
+                    859,
+                    1157.3
+                ],
+                "text": "1 Muscles: The  tone  of  d ifferen t  grou p s  of  m u scles actin g  on   th e  jo in t  is  th e  m o st  im p o r ta n t  an d indispensable factor in maintaining the stability.",
+                "type": "list_item",
+                "block_id": "p7_list0",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 7,
+                "default_action": "underline",
+                "semantic_unit_id": "su_7_7"
+            },
+            {
+                "bbox": [
+                    153.3,
+                    1165.9,
+                    860.3,
+                    1424
+                ],
+                "text": "2 Ligaments: These  are  im p ortant  in  p reventing  any over-movement,  and in guarding against sudden accid en tal  stresses.  H ow ever,  th ey  d o  n ot  h elp against a continuous strain, because once stretched, they tend  to  rem ain elongated.  In this  respect,  the elastic ligaments (ligamenta flava and ligaments of the joints  of au d itory  ossicles)  are  su p erior  to  the common type of white fibrous ligaments.",
+                "type": "list_item",
+                "block_id": "p7_list1",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 8,
+                "default_action": "underline",
+                "semantic_unit_id": "su_7_8"
+            },
+            {
+                "bbox": [
+                    368.1,
+                    1456.8,
+                    637.8,
+                    1481.5
+                ],
+                "text": "CLINICAL ANATOMY",
+                "type": "heading",
+                "block_id": "p7_head3",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 9,
+                "default_action": "zoom_pan",
+                "semantic_unit_id": "su_7_9"
+            },
+            {
+                "bbox": [
+                    952.6,
+                    305.9,
+                    1592.9,
+                    464
+                ],
+                "text": "leaving out from  the intervertebral foramina. The condition is know n as herniation of the disc or disc p r o la p se.  If  d isc  p r o la p se  o ccu r s  in   lu m b a r vertebrae there is radiating p ain in the low er limb, and the condition is called sciatica.",
+                "type": "paragraph",
+                "block_id": "p7_para4",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 10,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_7_10"
+            },
+            {
+                "bbox": [
+                    923.3,
+                    473.2,
+                    1592.9,
+                    564.6
+                ],
+                "text": " The joints m ay get dislocated, i.e. the end of one of the bones gets out of its socket. In subluxation, the end of the bone partially leaves its socket.",
+                "type": "list_item",
+                "block_id": "p7_list2",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 11,
+                "default_action": "underline",
+                "semantic_unit_id": "su_7_11"
+            },
+            {
+                "bbox": [
+                    923.3,
+                    573.2,
+                    1593.6,
+                    830.7
+                ],
+                "text": "Stiffn ess  of  jo in ts  is  related   to  w eath er.  Th e viscosity of synovial fluid  increases w ith fall  in temperature.  This  accounts  for  stiffness  of  the joints in cold  w eather. Mobility of join t in itself is an important factor in promoting lubrication. Thus the stiffness of joints experienced in the m orning grad u ally  p asses  off  as  th e  m ov em en ts  are resumed.",
+                "type": "list_item",
+                "block_id": "p7_list3",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 12,
+                "default_action": "underline",
+                "semantic_unit_id": "su_7_12"
+            },
+            {
+                "bbox": [
+                    988.1,
+                    933.4,
+                    1276,
+                    958.2
+                ],
+                "text": "FACTS TO REMEMBER",
+                "type": "heading",
+                "block_id": "p7_head4",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 13,
+                "default_action": "zoom_pan",
+                "semantic_unit_id": "su_7_13"
+            },
+            {
+                "bbox": [
+                    923.3,
+                    978.6,
+                    1592.9,
+                    1037.3
+                ],
+                "text": " Joint is a ju n ction betw een tw o or m ore bones or cartilages.",
+                "type": "list_item",
+                "block_id": "p7_list4",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 14,
+                "default_action": "underline",
+                "semantic_unit_id": "su_7_14"
+            },
+            {
+                "bbox": [
+                    923.3,
+                    1048.6,
+                    1592.9,
+                    1106.6
+                ],
+                "text": " Joints are classified as fibrous, cartilaginous and synovial types.",
+                "type": "list_item",
+                "block_id": "p7_list5",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 15,
+                "default_action": "underline",
+                "semantic_unit_id": "su_7_15"
+            },
+            {
+                "bbox": [
+                    923.3,
+                    1117.9,
+                    1593.6,
+                    1241.9
+                ],
+                "text": " There are more joints in a child than in an adult. The primary cartilaginous joints at the ends of long bones  after  fu sion   d isa p p ea r  in   th e  a d u lt, decreasing the number of joints.",
+                "type": "list_item",
+                "block_id": "p7_list6",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 16,
+                "default_action": "underline",
+                "semantic_unit_id": "su_7_16"
+            },
+            {
+                "bbox": [
+                    923.3,
+                    1253.9,
+                    1592.9,
+                    1345.3
+                ],
+                "text": "Join ts  h elp   in   in creasin g   th e  len g th   of  b on es, increasing the size of cranial, thoracic and pelvic cavities.",
+                "type": "list_item",
+                "block_id": "p7_list7",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 17,
+                "default_action": "underline",
+                "semantic_unit_id": "su_7_17"
+            },
+            {
+                "bbox": [
+                    923.3,
+                    1356.5,
+                    1565.7,
+                    1381.2
+                ],
+                "text": " Joints in thorax help in respiratory movements.",
+                "type": "list_item",
+                "block_id": "p7_list8",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 18,
+                "default_action": "underline",
+                "semantic_unit_id": "su_7_18"
+            },
+            {
+                "bbox": [
+                    923.3,
+                    1392.6,
+                    1345,
+                    1417.3
+                ],
+                "text": " Joints are vital for locomotion.",
+                "type": "list_item",
+                "block_id": "p7_list9",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 19,
+                "default_action": "underline",
+                "semantic_unit_id": "su_7_19"
+            },
+            {
+                "bbox": [
+                    923.3,
+                    1429.3,
+                    1592.9,
+                    1487.3
+                ],
+                "text": " The secondary cartilaginous joints are in midline of the body.",
+                "type": "list_item",
+                "block_id": "p7_list10",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 20,
+                "default_action": "underline",
+                "semantic_unit_id": "su_7_20"
+            },
+            {
+                "bbox": [
+                    173.3,
+                    1509.8,
+                    842.9,
+                    1635.3
+                ],
+                "text": " Intervertebral disc forms secondary cartilaginous join t betw een the bodies  of the vertebrae.  If the nucleus  p u lp osu s  p art  of  th e  d isc  p rotru d es backw ard s,  it  m ay  p ress  on  th e  sp in al  n erve",
+                "type": "list_item",
+                "block_id": "p7_list11",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 21,
+                "default_action": "underline",
+                "semantic_unit_id": "su_7_21"
+            },
+            {
+                "bbox": [
+                    923.3,
+                    1498.6,
+                    1584.4,
+                    1523.3
+                ],
+                "text": " Joints in ossicles of m id d le ear are synovial joints.",
+                "type": "list_item",
+                "block_id": "p7_list12",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 22,
+                "default_action": "underline",
+                "semantic_unit_id": "su_7_22"
+            },
+            {
+                "bbox": [
+                    923.3,
+                    1534.6,
+                    1592.9,
+                    1592.6
+                ],
+                "text": "Jo in t s ch iefly su ffer  in   osteoarth ritis  and rheumatoid arthritis.",
+                "type": "list_item",
+                "block_id": "p7_list13",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 23,
+                "default_action": "underline",
+                "semantic_unit_id": "su_7_23"
+            },
+            {
+                "bbox": [
+                    923.3,
+                    1603.9,
+                    1584.6,
+                    1628.6
+                ],
+                "text": " Joints in the laryngeal cartilages help us in speech.",
+                "type": "list_item",
+                "block_id": "p7_list14",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 24,
+                "default_action": "underline",
+                "semantic_unit_id": "su_7_24"
+            },
+            {
+                "bbox": [
+                    684.7,
+                    1712.2,
+                    1073.6,
+                    1736.9
+                ],
+                "text": "MULTIPLE CHOICE QUESTIONS",
+                "type": "heading",
+                "block_id": "p7_head5",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 25,
+                "default_action": "zoom_pan",
+                "semantic_unit_id": "su_7_25"
+            },
+            {
+                "bbox": [
+                    190,
+                    1763.9,
+                    859.6,
+                    1823.3
+                ],
+                "text": "Which of the  follow ing join t contains  an intraarticular disc?",
+                "type": "list_item",
+                "block_id": "p7_list15",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 26,
+                "default_action": "underline",
+                "semantic_unit_id": "su_7_26"
+            },
+            {
+                "bbox": [
+                    220,
+                    1839.3,
+                    392.7,
+                    1864
+                ],
+                "text": "Ankle joint",
+                "type": "list_item",
+                "block_id": "p7_list16",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 27,
+                "default_action": "underline",
+                "semantic_unit_id": "su_7_27"
+            },
+            {
+                "bbox": [
+                    218.6,
+                    1879.3,
+                    525.1,
+                    1904
+                ],
+                "text": "Sternoclavicular joint",
+                "type": "list_item",
+                "block_id": "p7_list17",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 28,
+                "default_action": "underline",
+                "semantic_unit_id": "su_7_28"
+            },
+            {
+                "bbox": [
+                    220,
+                    1919.3,
+                    397.3,
+                    1944
+                ],
+                "text": " Elbow  joint",
+                "type": "list_item",
+                "block_id": "p7_list18",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 29,
+                "default_action": "underline",
+                "semantic_unit_id": "su_7_29"
+            },
+            {
+                "bbox": [
+                    220,
+                    1959.3,
+                    432.6,
+                    1984
+                ],
+                "text": "Shoulder joint",
+                "type": "list_item",
+                "block_id": "p7_list19",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 30,
+                "default_action": "underline",
+                "semantic_unit_id": "su_7_30"
+            },
+            {
+                "bbox": [
+                    182.6,
+                    2026.1,
+                    940.9,
+                    2050.8
+                ],
+                "text": "_______________________________________________ ANSWERS",
+                "type": "paragraph",
+                "block_id": "p7_para5",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 31,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_7_31"
+            },
+            {
+                "bbox": [
+                    186.7,
+                    2070.5,
+                    495.7,
+                    2095.3
+                ],
+                "text": "1. b 2. b 3. c",
+                "type": "paragraph",
+                "block_id": "p7_para6",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 32,
+                "default_action": "spotlight",
+                "semantic_unit_id": "su_7_32"
+            },
+            {
+                "bbox": [
+                    939.3,
+                    1763.9,
+                    1225.5,
+                    1788.6
+                ],
+                "text": "Condylar joints are:",
+                "type": "list_item",
+                "block_id": "p7_list20",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 33,
+                "default_action": "underline",
+                "semantic_unit_id": "su_7_33"
+            },
+            {
+                "bbox": [
+                    970,
+                    1802.6,
+                    1125,
+                    1827.3
+                ],
+                "text": "Uniaxial,",
+                "type": "list_item",
+                "block_id": "p7_list21",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 34,
+                "default_action": "underline",
+                "semantic_unit_id": "su_7_34"
+            },
+            {
+                "bbox": [
+                    1303.3,
+                    1802.6,
+                    1423.3,
+                    1827.3
+                ],
+                "text": "Biaxial",
+                "type": "list_item",
+                "block_id": "p7_list22",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 35,
+                "default_action": "underline",
+                "semantic_unit_id": "su_7_35"
+            },
+            {
+                "bbox": [
+                    970,
+                    1841.2,
+                    1158.1,
+                    1865.9
+                ],
+                "text": "Multiaxial",
+                "type": "list_item",
+                "block_id": "p7_list23",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 36,
+                "default_action": "underline",
+                "semantic_unit_id": "su_7_36"
+            },
+            {
+                "bbox": [
+                    1303.3,
+                    1841.2,
+                    1476.5,
+                    1865.9
+                ],
+                "text": "Symphysis",
+                "type": "list_item",
+                "block_id": "p7_list24",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 37,
+                "default_action": "underline",
+                "semantic_unit_id": "su_7_37"
+            },
+            {
+                "bbox": [
+                    939.3,
+                    1887.9,
+                    1332.6,
+                    1912.6
+                ],
+                "text": "Which is not a fibrous joint?",
+                "type": "list_item",
+                "block_id": "p7_list25",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 38,
+                "default_action": "underline",
+                "semantic_unit_id": "su_7_38"
+            },
+            {
+                "bbox": [
+                    970,
+                    1927.2,
+                    1105.6,
+                    1951.9
+                ],
+                "text": "Sutures",
+                "type": "list_item",
+                "block_id": "p7_list26",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 39,
+                "default_action": "underline",
+                "semantic_unit_id": "su_7_39"
+            },
+            {
+                "bbox": [
+                    970,
+                    1965.3,
+                    1181.9,
+                    1990
+                ],
+                "text": "Xiphisternal",
+                "type": "list_item",
+                "block_id": "p7_list27",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 40,
+                "default_action": "underline",
+                "semantic_unit_id": "su_7_40"
+            },
+            {
+                "bbox": [
+                    1304,
+                    1927.2,
+                    1482.5,
+                    1951.9
+                ],
+                "text": "Gomphosis",
+                "type": "list_item",
+                "block_id": "p7_list28",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 41,
+                "default_action": "underline",
+                "semantic_unit_id": "su_7_41"
+            },
+            {
+                "bbox": [
+                    1302.6,
+                    1965.3,
+                    1586.3,
+                    1990
+                ],
+                "text": "Inferior tibiofibular",
+                "type": "list_item",
+                "block_id": "p7_list29",
+                "parent_id": null,
+                "confidence": 0.85,
+                "reading_order": 42,
+                "default_action": "underline",
+                "semantic_unit_id": "su_7_42"
+            }
+        ],
+        "created_at": "2026-04-16T02:17:59.107777+05:30"
+    }
+]

@@ -86,7 +86,7 @@ describe('directStoryboard', () => {
     vi.spyOn(globalThis, 'fetch').mockResolvedValue(mockSseResponse(payload));
 
     const result = await directStoryboard(
-      { endpointUrl: 'https://x/y', model: 'test-model', useJsonSchema: false },
+      { endpointUrl: 'https://x/y', model: 'test-model', useJsonSchema: false, stream: true },
       {
         chunk: 'hi',
         pageNumber: 1,
@@ -108,7 +108,7 @@ describe('directStoryboard', () => {
       new Response('nope', { status: 500 }),
     );
     const result = await directStoryboard(
-      { endpointUrl: 'https://x/y', model: 'm', useJsonSchema: false },
+      { endpointUrl: 'https://x/y', model: 'm', useJsonSchema: false, stream: true },
       {
         chunk: '',
         pageNumber: 1,
@@ -130,7 +130,7 @@ describe('directStoryboard', () => {
       mockSseResponse('not { json'),
     );
     const result = await directStoryboard(
-      { endpointUrl: 'https://x/y', model: 'm', useJsonSchema: false },
+      { endpointUrl: 'https://x/y', model: 'm', useJsonSchema: false, stream: true },
       {
         chunk: '',
         pageNumber: 1,
@@ -168,7 +168,7 @@ describe('directStoryboard', () => {
     const fenced = '```json\n' + sb + '\n```';
     vi.spyOn(globalThis, 'fetch').mockResolvedValue(mockSseResponse(fenced));
     const result = await directStoryboard(
-      { endpointUrl: 'https://x/y', model: 'm', useJsonSchema: false },
+      { endpointUrl: 'https://x/y', model: 'm', useJsonSchema: false, stream: true },
       {
         chunk: '',
         pageNumber: 1,

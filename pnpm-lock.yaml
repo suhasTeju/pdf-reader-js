@@ -32,6 +32,9 @@ importers:
       react-dom:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
+      zustand:
+        specifier: ^5.0.2
+        version: 5.0.10(@types/react@18.3.27)(react@18.3.1)
     devDependencies:
       '@pdf-reader/eslint-config':
         specifier: workspace:*

@@ -15,6 +15,23 @@ export interface ChunkHistoryEntry {
 export type EngineStatus = 'idle' | 'transitioning' | 'executing';
 export type LlmStatus = 'idle' | 'in-flight' | 'failed';
 
+export interface DebugEvent {
+  id: string;
+  timestamp: number;
+  kind:
+    | 'chunk'
+    | 'llm-request'
+    | 'llm-response'
+    | 'llm-error'
+    | 'storyboard-execute'
+    | 'fallback-fired'
+    | 'note';
+  /** Short headline shown in the log */
+  summary: string;
+  /** Full payload (chunk text, raw LLM response, parsed storyboard, error, etc.) */
+  payload?: unknown;
+}
+
 export interface NarrationState {
   currentChunk: string | null;
   currentPage: number;
@@ -26,6 +43,7 @@ export interface NarrationState {
   lastStoryboard: Storyboard | null;
   lastError: string | null;
   isPaused: boolean;
+  debugEvents: DebugEvent[];
 }
 
 export interface NarrationActions {
@@ -40,6 +58,8 @@ export interface NarrationActions {
   setLlmStatus: (s: LlmStatus, error?: string | null) => void;
   setLastStoryboard: (sb: Storyboard | null) => void;
   setPaused: (paused: boolean) => void;
+  appendDebugEvent: (event: Omit<DebugEvent, 'id' | 'timestamp'>) => void;
+  clearDebugEvents: () => void;
   reset: () => void;
 }
 
@@ -58,7 +78,11 @@ const initialState: NarrationState = {
   lastStoryboard: null,
   lastError: null,
   isPaused: false,
+  debugEvents: [],
 };
+
+const MAX_DEBUG_EVENTS = 50;
+let debugEventCounter = 0;
 
 export function createNarrationStore(overrides: Partial<NarrationState> = {}) {
   return createStore<NarrationStore>()((set) => ({
@@ -102,6 +126,24 @@ export function createNarrationStore(overrides: Partial<NarrationState> = {}) {
     setLastStoryboard: (sb) => set({ lastStoryboard: sb }),
 
     setPaused: (paused) => set({ isPaused: paused }),
+
+    appendDebugEvent: (event) =>
+      set((state) => {
+        debugEventCounter += 1;
+        const next: DebugEvent = {
+          ...event,
+          id: `dbg-${debugEventCounter}`,
+          timestamp: Date.now(),
+        };
+        return {
+          debugEvents: [
+            ...state.debugEvents.slice(-(MAX_DEBUG_EVENTS - 1)),
+            next,
+          ],
+        };
+      }),
+
+    clearDebugEvents: () => set({ debugEvents: [] }),
 
     reset: () => set(initialState),
   }));

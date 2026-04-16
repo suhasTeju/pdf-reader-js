@@ -355,6 +355,7 @@ export type {
   EngineStatus,
   LlmStatus,
   ChunkHistoryEntry,
+  DebugEvent,
 } from './store';
 
 // Hook types

@@ -43,4 +43,5 @@ export {
   type EngineStatus,
   type LlmStatus,
   type ChunkHistoryEntry,
+  type DebugEvent,
 } from './narration-store';

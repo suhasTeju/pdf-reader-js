@@ -51,6 +51,13 @@ export function CinemaLayer({
         width: page.page_dimensions.width,
         height: page.page_dimensions.height,
         pointerEvents: 'none',
+        // PDFPage renders internal layers at z-index 10/20/40/45/50
+        // (canvas / text / highlight / focus / annotation). Without an
+        // explicit z-index here, every tutor overlay stacks UNDER the
+        // AnnotationLayer and becomes invisible. 100 puts us above all of
+        // them while still letting the Exit button (z-index 60) remain
+        // reachable because it sits OUTSIDE this stacking context.
+        zIndex: 100,
       }}
     >
       <AnimatePresence>

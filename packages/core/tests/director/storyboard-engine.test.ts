@@ -185,8 +185,10 @@ describe('StoryboardEngine', () => {
     vi.advanceTimersByTime(500);
     engine.resetVisuals();
     expect(store.getState().activeOverlays).toHaveLength(0);
+    // Fit-page scale for 1000×1400 page in 800×1000 viewport, × 0.95 padding.
+    const expectedFit = Math.min(800 / 1000, 1000 / 1400) * 0.95;
     expect(store.getState().camera).toEqual({
-      scale: 1,
+      scale: expectedFit,
       x: 0,
       y: 0,
       easing: 'ease-in-out',

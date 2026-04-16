@@ -71,15 +71,60 @@ describe('embedding-fallback', () => {
     expect(match!.block.block_id).toBe('b1');
   });
 
-  it('storyboardFromMatch uses the block default_action', () => {
-    const match = {
-      block: page.blocks[1],
-      score: 0.9,
-    };
+  it('storyboardFromMatch keys on block.type, not default_action — list_item → highlight only', () => {
+    // b2 is a list_item with default_action:"underline" — new behavior ignores
+    // default_action and keys on block.type, so list_item fallback is a single
+    // highlight step (no camera, no underline).
+    const match = { block: page.blocks[1], score: 0.9 };
+    const sb = storyboardFromMatch(match);
+    expect(sb.steps).toHaveLength(1);
+    expect(sb.steps[0].action.type).toBe('highlight');
+  });
+
+  it('storyboardFromMatch renders paragraph as camera + underline', () => {
+    // b1 is a paragraph — new fallback pairs a gentle re-centre camera with
+    // an underline draw-in.
+    const match = { block: page.blocks[0], score: 0.9 };
     const sb = storyboardFromMatch(match);
     expect(sb.steps).toHaveLength(2);
     expect(sb.steps[0].action.type).toBe('camera');
     expect(sb.steps[1].action.type).toBe('underline');
+  });
+
+  it('storyboardFromMatch routes caption → callout when a figure is on the page', () => {
+    const pageWithFigure: PageBBoxData = {
+      ...page,
+      blocks: [
+        ...page.blocks,
+        {
+          block_id: 'fig1',
+          bbox: [0, 400, 100, 500],
+          text: 'Fig 1',
+          type: 'figure',
+          parent_id: null,
+          confidence: 1,
+          reading_order: 2,
+          default_action: 'pulse',
+          semantic_unit_id: 's',
+        },
+        {
+          block_id: 'cap1',
+          bbox: [0, 520, 100, 560],
+          text: 'Fig. 1 : example caption',
+          type: 'caption',
+          parent_id: null,
+          confidence: 1,
+          reading_order: 3,
+          default_action: 'spotlight',
+          semantic_unit_id: 's',
+        },
+      ],
+    };
+    const caption = pageWithFigure.blocks[pageWithFigure.blocks.length - 1];
+    const sb = storyboardFromMatch({ block: caption, score: 0.9 }, pageWithFigure);
+    const types = sb.steps.map((s) => s.action.type);
+    expect(types).toContain('callout');
+    expect(types).toContain('pulse');
   });
 
   it('storyboardFromMatch returns clear-only when no match', () => {

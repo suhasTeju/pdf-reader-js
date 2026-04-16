@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "demo",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "demo", "exec", "next", "dev", "-p", "3001"],
+      "port": 3001
+    },
+    {
+      "name": "core-watch",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "@pdf-reader/core", "dev"],
+      "port": 0
+    }
+  ]
+}
