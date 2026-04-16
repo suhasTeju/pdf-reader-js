@@ -39,9 +39,18 @@ export interface TutorModeContainerProps {
   embeddingProvider?: EmbeddingProvider;
   /** Show subtitle bar with the current chunk text (default: true) */
   showSubtitles?: boolean;
-  /** Show the "Exit tutor" button (default: true, only rendered if onExitTutorMode is provided) */
+  /**
+   * Show the "Reset view" button (default: true). Clicking it clears all
+   * overlays and returns the camera to fit-page. If `onExitTutorMode` is
+   * also provided, it runs after the reset — useful when the host app
+   * wants the same button to also leave tutor mode entirely.
+   */
   showExitButton?: boolean;
-  /** Called when the exit button is clicked; engine's resetVisuals runs first */
+  /**
+   * Optional callback fired AFTER the engine's resetVisuals. Provide this
+   * only if the host wants the reset button to also leave tutor mode /
+   * navigate away. Omit it for a pure "reset the visuals" behaviour.
+   */
   onExitTutorMode?: () => void;
   /**
    * Minimum hold time (ms) for every overlay, regardless of the
@@ -325,11 +334,11 @@ export function TutorModeContainer({
       data-role="tutor-mode-container"
       data-page-loaded={page ? 'true' : 'false'}
     >
-      {showExitButton && onExitTutorMode ? (
+      {showExitButton ? (
         <button
           onClick={() => {
             engineRef.current?.resetVisuals();
-            onExitTutorMode();
+            onExitTutorMode?.();
           }}
           style={{
             position: 'absolute',
@@ -348,9 +357,10 @@ export function TutorModeContainer({
             fontSize: 14,
             touchAction: 'manipulation',
           }}
+          aria-label="Reset view — clear overlays and fit the page"
           data-role="exit-tutor"
         >
-          Exit
+          Reset view
         </button>
       ) : null}
       {page ? (

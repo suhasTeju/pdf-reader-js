@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import type { LlmConfig } from '@pdf-reader/core';
+import type { LlmConfig } from 'pdfjs-reader-core';
 
 export interface LLMConfigPanelProps {
   llm: LlmConfig;

@@ -97,17 +97,39 @@ describe('StoryboardEngine', () => {
     expect(store.getState().activeOverlays[0].kind).toBe('spotlight');
   });
 
-  it('auto-removes overlay after its duration_ms', () => {
+  it('auto-removes overlay after its visible duration (clamped to min hold)', () => {
     const store = createNarrationStore();
+    // Override the 3500ms production default so the test stays fast.
     const engine = new StoryboardEngine({
       narrationStore: store,
       bboxIndex: makeIndex(),
       getViewport: () => ({ width: 800, height: 1000 }),
+      minOverlayDurationMs: 500,
     });
     engine.execute(storyboard());
     vi.advanceTimersByTime(200);
     expect(store.getState().activeOverlays).toHaveLength(1);
     vi.advanceTimersByTime(1000);
+    expect(store.getState().activeOverlays).toHaveLength(0);
+  });
+
+  it('floors overlay visible duration by minOverlayDurationMs', () => {
+    const store = createNarrationStore();
+    // Storyboard specifies duration_ms: 800 but min hold is 3000ms — the
+    // overlay must stay past 2000ms (where it would have expired unclamped)
+    // and be gone by 3500ms (past the floor).
+    const engine = new StoryboardEngine({
+      narrationStore: store,
+      bboxIndex: makeIndex(),
+      getViewport: () => ({ width: 800, height: 1000 }),
+      minOverlayDurationMs: 3000,
+    });
+    engine.execute(storyboard());
+    vi.advanceTimersByTime(200);
+    expect(store.getState().activeOverlays).toHaveLength(1);
+    vi.advanceTimersByTime(1800); // t=2000ms — would have expired without floor
+    expect(store.getState().activeOverlays).toHaveLength(1);
+    vi.advanceTimersByTime(1500); // t=3500ms — past the 3000ms floor
     expect(store.getState().activeOverlays).toHaveLength(0);
   });
 

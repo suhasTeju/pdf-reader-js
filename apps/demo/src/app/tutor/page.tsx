@@ -9,7 +9,7 @@ import {
   useViewerStore,
   type NarrationStoreApi,
   type LlmConfig,
-} from '@pdf-reader/core';
+} from 'pdfjs-reader-core';
 import { JOINTS_BBOX } from './fixtures/joints-bbox';
 import { ChunkComposer } from './ChunkComposer';
 import { LLMConfigPanel } from './LLMConfigPanel';

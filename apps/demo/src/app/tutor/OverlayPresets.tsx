@@ -7,7 +7,7 @@ import {
   type NarrationStoreApi,
   type PageBBoxData,
   type Storyboard,
-} from '@pdf-reader/core';
+} from 'pdfjs-reader-core';
 
 export interface OverlayPresetsProps {
   bbox: PageBBoxData[];

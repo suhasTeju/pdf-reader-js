@@ -16,8 +16,8 @@ import {
   loadDocumentWithCallbacks,
   PDFLoadingScreen,
   BookModeContainer,
-} from '@pdf-reader/core';
-import type { PDFDocumentLoadedEvent, ViewMode, HighlightColor, ShapeType } from '@pdf-reader/core';
+} from 'pdfjs-reader-core';
+import type { PDFDocumentLoadedEvent, ViewMode, HighlightColor, ShapeType } from 'pdfjs-reader-core';
 
 // Demo API Panel - This component has access to the PDF viewer context
 function DemoAPIPanel() {

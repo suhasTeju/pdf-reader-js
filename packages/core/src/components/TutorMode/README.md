@@ -9,7 +9,7 @@ import {
   PDFViewerProvider,
   TutorModeContainer,
   createNarrationStore,
-} from '@pdf-reader/core';
+} from 'pdfjs-reader-core';
 
 const narrationStore = createNarrationStore();
 
@@ -40,7 +40,10 @@ const narrationStore = createNarrationStore();
 - `currentChunk` — reactive; update as the tutor speaks. Debounced 200ms.
 - `llm` — consumer-provided endpoint config. **Never** bake a URL into the package; provide via env var at the call site.
 - `embeddingProvider` — optional fallback (see `getLocalMiniLM()` for a bundled-lazy MiniLM).
-- `showSubtitles`, `showExitButton`, `onExitTutorMode` — UX opt-outs and callbacks.
+- `showSubtitles` — render a subtitle bar with the current chunk text (default `false`).
+- `showExitButton` — render the top-right "Reset view" button (default `true`). Clicking it clears every overlay and returns the camera to fit-page.
+- `onExitTutorMode` — optional callback fired AFTER the reset. Provide this only when the host app wants that same click to also leave tutor mode / navigate away. Omit for a pure reset-visuals button.
+- `minOverlayDurationMs` — floor for how long each overlay stays on screen regardless of what `duration_ms` the LLM emits (default 3500ms). Bump for longer narration beats.
 
 ## Storyboard grammar
 

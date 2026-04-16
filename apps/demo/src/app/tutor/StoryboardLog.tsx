@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useStore } from 'zustand';
-import type { NarrationStoreApi } from '@pdf-reader/core';
+import type { NarrationStoreApi } from 'pdfjs-reader-core';
 
 export interface StoryboardLogProps {
   narrationStore: NarrationStoreApi;

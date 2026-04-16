@@ -20,12 +20,12 @@ importers:
 
   apps/demo:
     dependencies:
-      '@pdf-reader/core':
-        specifier: workspace:*
-        version: link:../../packages/core
       next:
         specifier: ^15.1.0
         version: 15.5.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      pdfjs-reader-core:
+        specifier: workspace:*
+        version: link:../../packages/core
       react:
         specifier: ^18.3.1
         version: 18.3.1

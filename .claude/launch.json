@@ -10,7 +10,7 @@
     {
       "name": "core-watch",
       "runtimeExecutable": "pnpm",
-      "runtimeArgs": ["--filter", "@pdf-reader/core", "dev"],
+      "runtimeArgs": ["--filter", "pdfjs-reader-core", "dev"],
       "port": 0
     }
   ]

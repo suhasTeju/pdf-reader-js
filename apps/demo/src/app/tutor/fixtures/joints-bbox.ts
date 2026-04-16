@@ -1,4 +1,4 @@
-import type { PageBBoxData } from '@pdf-reader/core';
+import type { PageBBoxData } from 'pdfjs-reader-core';
 import rawBbox from '../../../../bbox.json';
 
 /**

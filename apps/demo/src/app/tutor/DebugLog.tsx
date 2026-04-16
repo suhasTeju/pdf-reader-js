@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useStore } from 'zustand';
-import type { NarrationStoreApi, DebugEvent } from '@pdf-reader/core';
+import type { NarrationStoreApi, DebugEvent } from 'pdfjs-reader-core';
 
 export interface DebugLogProps {
   narrationStore: NarrationStoreApi;

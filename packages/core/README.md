@@ -1060,6 +1060,269 @@ Customize loading and error UI components.
 
 ---
 
+## 14. Cinematic Tutor Mode (v0.4.0+)
+
+Pair a voice/LLM narration agent with the PDF: as the agent speaks, the viewer
+synchronises on-page visuals — spotlights, underlines, highlights, pulses,
+callouts, boxes, labels, ghost references, and camera zooms — so the reader
+sees the page react like a produced teaching video.
+
+The feature is packaged as a single component, `TutorModeContainer`, that fills
+its parent 100 % width and height and shows **only** the PDF plus overlays.
+No sidebars, no dev toolbar, no inspector UI ships in the production bundle.
+
+### Quick start
+
+```tsx
+import {
+  PDFViewerProvider,
+  TutorModeContainer,
+  createNarrationStore,
+  loadDocumentWithCallbacks,
+  useViewerStore,
+  type NarrationStoreApi,
+  type LlmConfig,
+  type PageBBoxData,
+} from 'pdfjs-reader-core';
+import 'pdfjs-reader-core/styles.css';
+import { useEffect, useRef } from 'react';
+
+function DocumentLoader({ url }: { url: string }) {
+  const setDocument = useViewerStore((s) => s.setDocument);
+  useEffect(() => {
+    const { promise, cancel } = loadDocumentWithCallbacks({
+      src: url,
+      onDocumentReady: (doc) => setDocument(doc),
+      onFirstPageReady: () => {},
+    });
+    promise.catch(() => {});
+    return () => cancel();
+  }, [url, setDocument]);
+  return null;
+}
+
+export function TutorScene({
+  pdfUrl,
+  bboxData,
+  currentPage,
+  currentChunk,
+  llm,
+}: {
+  pdfUrl: string;
+  bboxData: PageBBoxData[];
+  currentPage: number;
+  /** The text the voice agent is currently speaking. Update reactively. */
+  currentChunk: string | null;
+  llm: LlmConfig;
+}) {
+  const storeRef = useRef<NarrationStoreApi | null>(null);
+  if (!storeRef.current) storeRef.current = createNarrationStore();
+
+  return (
+    <div style={{ width: '100%', height: '100vh' }}>
+      <PDFViewerProvider>
+        <DocumentLoader url={pdfUrl} />
+        <TutorModeContainer
+          pageNumber={currentPage}
+          bboxData={bboxData}
+          narrationStore={storeRef.current}
+          scale={1}
+          currentChunk={currentChunk}
+          llm={llm}
+          minOverlayDurationMs={4000}
+        />
+      </PDFViewerProvider>
+    </div>
+  );
+}
+```
+
+That's it. Whenever `currentChunk` changes, the LLM director picks the
+matching block(s) on the current page and the engine plays a storyboard over
+the PDF. Typical end-to-end latency is <500 ms on a fast model (sentence-level
+sync is the design target; word-level TTS alignment is out of scope).
+
+### What the visuals look like
+
+The director can emit any combination of these effects per narration chunk:
+
+| Effect | Typical trigger from narration |
+|---|---|
+| `camera` | Focus shifts to a new region (gentle re-centre + optional zoom) |
+| `spotlight` | "The key idea here is …" — dim everything except one block |
+| `underline` | Quoted phrase or word-by-word reading |
+| `highlight` | "Notice this keyword …" — amber marker sweep |
+| `pulse` | "Look at the diagram" — block scales in/out to catch the eye |
+| `callout` | Captions to figures / label to region — curved arrow + label |
+| `box` | "Under this section …" — blue frame around a structural region |
+| `label` | "This is the definition" — sticky-note pill tag |
+| `ghost_reference` | "As we saw on page 2 …" — floating card with the remote block |
+
+Four opinionated **intent recipes** are baked into the prompt and the LLM
+composes from them or mixes freely: `define`, `point_out`, `compare`,
+`emphasize`.
+
+### The bbox data contract
+
+`bboxData: PageBBoxData[]` is a per-page list of typed blocks:
+
+```ts
+interface PageBBoxData {
+  id: string;
+  page_number: number;
+  page_text: string;
+  page_dimensions: { width: number; height: number; dpi: number };
+  blocks: Block[];
+  created_at: string;
+}
+
+interface Block {
+  block_id: string;               // stable id — referenced by storyboards
+  bbox: [x1, y1, x2, y2];         // coords in the page's native DPI space
+  text: string | null;
+  type:
+    | 'heading' | 'paragraph' | 'list_item'
+    | 'figure'  | 'figure_region' | 'caption'
+    | 'table'   | 'mcq_option';
+  parent_id: string | null;
+  confidence: number;
+  reading_order: number;
+  default_action: 'zoom_pan' | 'spotlight' | 'underline' | 'pulse';
+  semantic_unit_id: string;
+}
+```
+
+The LLM receives this inventory per call and MUST anchor every action to a
+real `block_id` — hallucinated targets are rejected by both the JSON schema
+and the runtime validator.
+
+### Salvage guarantees
+
+Small models occasionally emit malformed JSON, out-of-range numbers, or
+camera-only storyboards. The director pipeline defends against all three so
+the visuals never silently stall:
+
+- **Whitespace collapse** — runs of ≥8 whitespace characters outside string
+  literals are collapsed before `JSON.parse` (fixes tab-spam in `gpt-4.1-nano`).
+- **Range clamp** — `camera.scale`, `padding`, `dim_opacity`, `feather_px`,
+  `draw_duration_ms`, `count`, `at_ms`, step `duration_ms` are clamped to
+  their schema-legal range before zod validation.
+- **Overlay-presence enforcement** — if the validated storyboard is a single
+  camera step, a `pulse` on the same target is auto-appended. A lone camera
+  is physically impossible to emit.
+
+Plus an optional **embedding fallback**: if the LLM request fails entirely,
+pass `embeddingProvider={getLocalMiniLM()}` and the package will match the
+chunk to the closest block via local text embeddings and emit a
+`block.type`-appropriate storyboard (heading → spotlight + label, paragraph →
+underline, caption → callout to nearest figure, etc.).
+
+### Overlay hold time
+
+Per-overlay `duration_ms` can be as low as 100 ms in the schema, and recipes
+often specify 600–1200 ms. For voice-narration UX that is too quick to
+register. The engine applies a **minimum hold time** floor:
+
+```tsx
+<TutorModeContainer
+  ...
+  minOverlayDurationMs={4000}  // default 3500 ms
+/>
+```
+
+A good heuristic: set it to the average spoken-chunk duration so each overlay
+lives as long as the narration it accompanies.
+
+### The Reset view button
+
+Top-right of the PDF area, the package renders a **Reset view** button by
+default. Clicking it clears every overlay and returns the camera to fit-page.
+
+```tsx
+// Pure student-facing reset (recommended)
+<TutorModeContainer ... showExitButton />
+
+// Reset + also leave tutor mode
+<TutorModeContainer
+  ...
+  showExitButton
+  onExitTutorMode={() => router.push('/library')}
+/>
+
+// No button at all
+<TutorModeContainer ... showExitButton={false} />
+```
+
+### Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `pageNumber` | `number` | required | 1-indexed page to render |
+| `bboxData` | `PageBBoxData[]` | required | Per-page block inventory from your ingestion backend |
+| `narrationStore` | `NarrationStoreApi` | required | Store created via `createNarrationStore()` — one per tutor session |
+| `scale` | `number` | `1` | Raster scale multiplier on top of the native DPI |
+| `rotation` | `number` | `0` | Page rotation in degrees |
+| `currentChunk` | `string \| null` | `null` | The reactive text the tutor agent is currently speaking |
+| `llm` | `LlmConfig` | — | OpenAI-compatible endpoint config (URL, model, auth token, extra body) |
+| `embeddingProvider` | `EmbeddingProvider` | — | Optional local fallback when the LLM fails |
+| `idleTimeoutMs` | `number` | `5000` | How long with no new chunks before the camera returns to fit-page |
+| `llmTimeoutMs` | `number` | `30000` | Hard timeout for the LLM call |
+| `minOverlayDurationMs` | `number` | `3500` | Minimum visible hold for every overlay, regardless of the LLM's `duration_ms` |
+| `showSubtitles` | `boolean` | `false` | Render a subtitle bar with the current chunk text |
+| `showExitButton` | `boolean` | `true` | Render the top-right "Reset view" button |
+| `onExitTutorMode` | `() => void` | — | Optional callback fired AFTER the reset — use it to also leave tutor mode |
+| `className` | `string` | — | Passes through to the root container for custom theming |
+
+### LlmConfig
+
+```ts
+interface LlmConfig {
+  endpointUrl: string;              // OpenAI-compatible /v1/chat/completions
+  model: string;
+  authToken?: string;
+  extraBody?: Record<string, unknown>;
+  maxTokens?: number;               // default 1024
+  temperature?: number;             // default 0.3
+  useJsonSchema?: boolean;          // default true — request structured output
+  stream?: boolean;                 // default false
+}
+```
+
+**Never hardcode the endpoint URL into the bundle** — this package ships to
+multiple consumers and each owns its own inference endpoint. Pass the URL as
+a prop at the call site, sourced from an env var or runtime config.
+
+### The integration contract in one picture
+
+```
+Aria voice agent
+       │  (emits sentence text as it speaks)
+       ▼
+<TutorModeContainer currentChunk={utterance} … />
+       │
+       │  debounce 200 ms
+       ▼
+directStoryboard(llm, chunk, bbox blocks)
+       │  ← JSON-schema-constrained response
+       │  ← salvage: whitespace collapse, range clamp
+       ▼
+StoryboardSchema.safeParse  →  enforceOverlayPresence
+       │
+       ▼
+StoryboardEngine.execute
+       │  ← scheduled via setTimeout per step.at_ms
+       ▼
+narrationStore {camera, activeOverlays}
+       │  ← reactive
+       ▼
+<CameraView><PDFPage /><CinemaLayer /></CameraView>
+       │
+       ▼
+Student sees the PDF react in real time
+```
+
+---
+
 ## API Reference
 
 ### PDFViewerClient Props

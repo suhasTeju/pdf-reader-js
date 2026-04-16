@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useStore } from 'zustand';
-import type { PageBBoxData, NarrationStoreApi } from '@pdf-reader/core';
+import type { PageBBoxData, NarrationStoreApi } from 'pdfjs-reader-core';
 
 export interface PageBlocksPanelProps {
   bbox: PageBBoxData[];

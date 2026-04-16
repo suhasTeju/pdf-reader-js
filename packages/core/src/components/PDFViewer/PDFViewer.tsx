@@ -42,7 +42,7 @@ const PDFViewerLoading = memo(function PDFViewerLoading({
  *
  * @example
  * ```tsx
- * import { PDFViewer } from '@pdf-reader/core';
+ * import { PDFViewer } from 'pdfjs-reader-core';
  *
  * function App() {
  *   return (

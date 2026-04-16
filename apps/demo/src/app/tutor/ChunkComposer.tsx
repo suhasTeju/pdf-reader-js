@@ -2,7 +2,7 @@
 
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useStore } from 'zustand';
-import type { PageBBoxData, NarrationStoreApi } from '@pdf-reader/core';
+import type { PageBBoxData, NarrationStoreApi } from 'pdfjs-reader-core';
 
 interface ScriptedChunk {
   page: number;

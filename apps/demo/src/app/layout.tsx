@@ -3,7 +3,7 @@ import './globals.css';
 
 export const metadata: Metadata = {
   title: 'PDF Reader Demo',
-  description: 'Demo application for @pdf-reader/core package',
+  description: 'Demo application for pdfjs-reader-core package',
 };
 
 export default function RootLayout({
