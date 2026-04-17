@@ -2,6 +2,7 @@ import React, { useId } from 'react';
 import { motion } from 'framer-motion';
 import type { ActionSpotlight } from '../../types/storyboard';
 import type { BBoxCoords, PageDimensionsDpi } from '../../types/bbox';
+import { getDeviceCapabilities } from '../../utils';
 import { ACCENT, ACCENT_GLOW, EASE_OUT_EXPO, INK } from './tokens';
 
 export interface SpotlightMaskProps {
@@ -52,7 +53,14 @@ export function SpotlightMask({
     action.shape === 'rounded' ? 14 : action.shape === 'ellipse' ? w / 2 : 0;
   const ry =
     action.shape === 'rounded' ? 14 : action.shape === 'ellipse' ? h / 2 : 0;
-  const feather = Math.max(16, action.feather_px);
+  // SVG feGaussianBlur with a large stdDeviation over a full-page mask is
+  // a known iOS Safari memory hog; the filter allocates a rasterized
+  // intermediate buffer sized by the filter region. Clamp the blur hard
+  // on mobile so the spotlight still reads as soft-edged without burning
+  // through the tab's compositor budget.
+  const isMobile = getDeviceCapabilities().isMobile;
+  const requestedFeather = Math.max(16, action.feather_px);
+  const feather = isMobile ? Math.min(12, requestedFeather) : requestedFeather;
   const cx = (x1 + x2) / 2;
   const cy = (y1 + y2) / 2;
 

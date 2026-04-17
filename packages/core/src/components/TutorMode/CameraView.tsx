@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import type { CameraState } from '../../types/storyboard';
+import { getDeviceCapabilities } from '../../utils';
 
 export interface CameraViewProps {
   camera: CameraState;
@@ -20,12 +21,17 @@ export function CameraView({
   durationMs = 700,
   className,
 }: CameraViewProps) {
+  // will-change: transform pre-allocates a compositor backing store sized
+  // by the transformed output. On iOS Safari, combined with a high-DPR
+  // PDF canvas inside, this eats the per-tab memory budget and the tab
+  // is reaped. On desktop the backing store is free-ish. Gate on mobile.
+  const isMobile = getDeviceCapabilities().isMobile;
   return (
     <motion.div
       className={className}
       style={{
         transformOrigin: '50% 50%',
-        willChange: 'transform',
+        ...(isMobile ? {} : { willChange: 'transform' }),
         width: '100%',
         height: '100%',
         position: 'relative',

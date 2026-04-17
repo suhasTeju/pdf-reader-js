@@ -665,6 +665,10 @@ const PDFViewerInner = memo(function PDFViewerInner({
   // Retry handler
   const handleRetry = useCallback(() => {
     srcIdRef.current = null;
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      abortControllerRef.current = null;
+    }
     viewerStore.getState().setError(null);
     setLoadState('idle');
   }, [viewerStore]);
@@ -675,38 +679,45 @@ const PDFViewerInner = memo(function PDFViewerInner({
   // Track the current src for cleanup
   const currentSrcRef = useRef<string | ArrayBuffer | Uint8Array | null>(null);
 
+  // Gate teardown behind a deferred timer so React 18 StrictMode's synthetic
+  // unmount+remount pair does not trigger a cache clear + document destroy.
+  const teardownTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   // Mount tracking
   useEffect(() => {
     mountedRef.current = true;
+    if (teardownTimerRef.current !== null) {
+      clearTimeout(teardownTimerRef.current);
+      teardownTimerRef.current = null;
+    }
     return () => {
-      mountedRef.current = false;
-      // Cancel any in-progress loading
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-        abortControllerRef.current = null;
-      }
-
-      // Clear the document from cache if it's a URL (so next load gets fresh copy)
-      if (currentSrcRef.current && typeof currentSrcRef.current === 'string') {
-        clearDocumentCache(currentSrcRef.current);
-      }
-
-      // Reset srcIdRef so reopening the modal will reload
-      srcIdRef.current = null;
-      currentSrcRef.current = null;
-
-      // Destroy the document and reset loading state to allow clean reload
-      const currentDoc = viewerStore.getState().document;
-      if (currentDoc) {
-        try {
-          currentDoc.destroy();
-        } catch {
-          // Ignore errors if already destroyed
+      teardownTimerRef.current = setTimeout(() => {
+        teardownTimerRef.current = null;
+        mountedRef.current = false;
+        if (abortControllerRef.current) {
+          abortControllerRef.current.abort();
+          abortControllerRef.current = null;
         }
-      }
-      viewerStore.getState().setDocument(null);
-      viewerStore.getState().setLoading(false);
-      viewerStore.getState().setError(null);
+
+        if (currentSrcRef.current && typeof currentSrcRef.current === 'string') {
+          clearDocumentCache(currentSrcRef.current);
+        }
+
+        srcIdRef.current = null;
+        currentSrcRef.current = null;
+
+        const currentDoc = viewerStore.getState().document;
+        if (currentDoc) {
+          try {
+            currentDoc.destroy();
+          } catch {
+            // Ignore errors if already destroyed
+          }
+        }
+        viewerStore.getState().setDocument(null);
+        viewerStore.getState().setLoading(false);
+        viewerStore.getState().setError(null);
+      }, 0);
     };
   }, [viewerStore]);
 
@@ -715,7 +726,18 @@ const PDFViewerInner = memo(function PDFViewerInner({
 
   // Load document with progressive/streaming approach
   useEffect(() => {
-    if (srcIdRef.current === srcId && viewerStore.getState().document) {
+    // Short-circuit if a load for this srcId is already complete or still
+    // in-flight. The in-flight check matters under React 18 StrictMode:
+    // the synthetic unmount+remount pair preserves abortControllerRef
+    // (because the mount effect's teardown is deferred and cancelled by
+    // the remount), so the first mount's load is still alive when the
+    // second mount's effect body runs.
+    const existingAC = abortControllerRef.current;
+    const loadInFlight = existingAC !== null && !existingAC.signal.aborted;
+    if (
+      srcIdRef.current === srcId &&
+      (viewerStore.getState().document || loadInFlight)
+    ) {
       return;
     }
 
@@ -723,7 +745,7 @@ const PDFViewerInner = memo(function PDFViewerInner({
     srcIdRef.current = srcId;
     currentSrcRef.current = src;
 
-    // Cancel any previous loading task
+    // Cancel any previous loading task (e.g., src changed mid-load)
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
     }
@@ -877,14 +899,20 @@ const PDFViewerInner = memo(function PDFViewerInner({
         }
       });
 
-    return () => {
-      abortController.abort();
-      if (cancelLoaderRef.current) {
-        cancelLoaderRef.current();
-        cancelLoaderRef.current = null;
-      }
-    };
-  }, [srcId, src, workerSrc, initialPage, initialScale, viewerStore]);
+    // Intentionally no cleanup returned: aborting here would fire on
+    // StrictMode's synthetic unmount, orphaning the first load and
+    // causing the synthetic remount to start a duplicate fetch. Abort
+    // is owned by two other sites: (a) the top of this effect when deps
+    // change — `abortControllerRef.current.abort()` above cancels the
+    // previous load before starting a new one — and (b) the mount
+    // effect's deferred teardown, which aborts on real unmount after
+    // setTimeout(0) (a real unmount does not remount to cancel it).
+    // Note: `src` is intentionally excluded from deps — `srcId` is derived
+    // from `src` and is stable across re-renders when the underlying content
+    // is unchanged, including ArrayBuffer/Uint8Array inputs whose identity
+    // may change on each parent render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [srcId, workerSrc, initialPage, initialScale, viewerStore]);
 
   // Page change notifications
   const prevPageRef = useRef(currentPage);

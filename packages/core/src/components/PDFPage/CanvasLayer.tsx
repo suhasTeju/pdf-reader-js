@@ -1,6 +1,11 @@
 import { useEffect, useRef, useCallback, useState, memo } from 'react';
 import type { PDFPageProxy, RenderTask } from 'pdfjs-dist';
-import { cn } from '../../utils';
+import {
+  calculateOptimalCanvasDimensions,
+  cn,
+  getDeviceCapabilities,
+  getRenderConfig,
+} from '../../utils';
 
 export interface CanvasLayerProps {
   page: PDFPageProxy;
@@ -73,16 +78,34 @@ export const CanvasLayer = memo(function CanvasLayer({
       return;
     }
 
-    // Use full device pixel ratio for crisp rendering
-    const outputScale = window.devicePixelRatio || 1;
+    // Pick an outputScale that balances clarity vs. the per-tab canvas
+    // memory budget. On iOS Safari a single canvas larger than ~64 MP
+    // (≈256 MB) is enough to get the tab reaped; full devicePixelRatio on
+    // a 200-DPI bbox at DPR=3 blows past that for one US Letter page.
+    // getRenderConfig('auto', ...) returns:
+    //   desktop → DPR itself (unchanged behaviour);
+    //   mobile  → clamp(1.5, DPR*0.75); low-end mobile → clamp(1.0, DPR*0.5).
+    // calculateOptimalCanvasDimensions applies the maxCanvasDimension
+    // clamp on top, so an oversize viewport cannot break through.
+    const capabilities = getDeviceCapabilities();
+    const renderConfig = getRenderConfig('auto', capabilities);
+    const optimal = calculateOptimalCanvasDimensions(
+      viewport.width,
+      viewport.height,
+      renderConfig.canvasScaleFactor,
+      renderConfig.maxCanvasDimension,
+    );
+    const outputScale = optimal.actualScale;
 
-    // Set canvas dimensions at full quality
-    canvas.width = Math.floor(viewport.width * outputScale);
-    canvas.height = Math.floor(viewport.height * outputScale);
+    canvas.width = optimal.width;
+    canvas.height = optimal.height;
+    // CSS size stays at viewport points so overlays align; only the
+    // backing-store resolution is reduced on mobile.
     canvas.style.width = `${Math.floor(viewport.width)}px`;
     canvas.style.height = `${Math.floor(viewport.height)}px`;
 
-    // Scale for high DPI displays
+    // Scale the drawing context so pdf.js rasterizes into the
+    // (possibly-reduced) backing store at the right density.
     context.scale(outputScale, outputScale);
 
     if (mountedRef.current) {

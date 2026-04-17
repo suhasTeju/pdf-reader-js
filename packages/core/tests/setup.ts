@@ -1,6 +1,22 @@
 import '@testing-library/react';
 import '@testing-library/jest-dom/vitest';
 
+// jsdom doesn't implement window.matchMedia, which mobile-config's
+// detectDeviceCapabilities() calls. Polyfill with a conservative default
+// (desktop: not-mobile).
+if (typeof window !== 'undefined' && typeof window.matchMedia !== 'function') {
+  window.matchMedia = (query: string) => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: () => {},
+    removeListener: () => {},
+    addEventListener: () => {},
+    removeEventListener: () => {},
+    dispatchEvent: () => false,
+  });
+}
+
 // Mock canvas context for pdf.js
 HTMLCanvasElement.prototype.getContext = function () {
   return {
