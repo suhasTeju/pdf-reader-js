@@ -424,6 +424,7 @@ export type {
   PDFErrorBoundaryProps,
   WithErrorBoundaryProps,
   TutorModeContainerProps,
+  StoryboardProviderInput,
   CinemaLayerProps,
   CameraViewProps,
   SpotlightMaskProps,

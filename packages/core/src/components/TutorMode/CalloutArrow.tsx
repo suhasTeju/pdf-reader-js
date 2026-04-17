@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useId } from 'react';
 import { motion } from 'framer-motion';
 import type { ActionCallout } from '../../types/storyboard';
 import type { BBoxCoords } from '../../types/bbox';
+import { ACCENT, EASE_OUT_EXPO } from './tokens';
 
 export interface CalloutArrowProps {
   fromBbox: BBoxCoords;
@@ -13,30 +14,72 @@ function centerOf(b: BBoxCoords) {
   return { x: (b[0] + b[2]) / 2, y: (b[1] + b[3]) / 2 };
 }
 
-function arrowPath(
+/**
+ * Offset the start/end points slightly away from each block's centre so
+ * the arrow emerges from the edge rather than plunging into the block.
+ */
+function edgePoints(
   fromBbox: BBoxCoords,
   toBbox: BBoxCoords,
-  curve: ActionCallout['curve'],
-): string {
+): { from: { x: number; y: number }; to: { x: number; y: number } } {
   const a = centerOf(fromBbox);
   const b = centerOf(toBbox);
-  if (curve === 'straight') return `M ${a.x} ${a.y} L ${b.x} ${b.y}`;
-  if (curve === 'zigzag') {
-    const mx = (a.x + b.x) / 2;
-    return `M ${a.x} ${a.y} L ${mx} ${a.y} L ${mx} ${b.y} L ${b.x} ${b.y}`;
-  }
-  // curved
   const dx = b.x - a.x;
   const dy = b.y - a.y;
-  const cx = (a.x + b.x) / 2 - dy * 0.25;
-  const cy = (a.y + b.y) / 2 + dx * 0.25;
-  return `M ${a.x} ${a.y} Q ${cx} ${cy} ${b.x} ${b.y}`;
+  const len = Math.hypot(dx, dy) || 1;
+  const ux = dx / len;
+  const uy = dy / len;
+
+  // Move start/end toward the edge of each block along the line between them.
+  const aHalfW = (fromBbox[2] - fromBbox[0]) / 2;
+  const aHalfH = (fromBbox[3] - fromBbox[1]) / 2;
+  const bHalfW = (toBbox[2] - toBbox[0]) / 2;
+  const bHalfH = (toBbox[3] - toBbox[1]) / 2;
+
+  // Clamp edge distance so tiny blocks don't produce zero-length offsets.
+  const aOff = Math.min(Math.max(aHalfW, aHalfH), 60);
+  const bOff = Math.min(Math.max(bHalfW, bHalfH), 60);
+
+  return {
+    from: { x: a.x + ux * aOff, y: a.y + uy * aOff },
+    to: { x: b.x - ux * bOff, y: b.y - uy * bOff },
+  };
 }
 
+function arrowPath(
+  from: { x: number; y: number },
+  to: { x: number; y: number },
+  curve: ActionCallout['curve'],
+): string {
+  if (curve === 'straight') return `M ${from.x} ${from.y} L ${to.x} ${to.y}`;
+  if (curve === 'zigzag') {
+    const mx = (from.x + to.x) / 2;
+    return `M ${from.x} ${from.y} L ${mx} ${from.y} L ${mx} ${to.y} L ${to.x} ${to.y}`;
+  }
+  // Curved: arc perpendicular-offset from the midpoint for a gentle sweep.
+  const dx = to.x - from.x;
+  const dy = to.y - from.y;
+  const cx = (from.x + to.x) / 2 - dy * 0.22;
+  const cy = (from.y + to.y) / 2 + dx * 0.22;
+  return `M ${from.x} ${from.y} Q ${cx} ${cy} ${to.x} ${to.y}`;
+}
+
+/**
+ * Design: **Editorial connector.** Hand-drawn feel via a refined stroke
+ * + a small origin dot at the "from" end (like a teacher's pen planted
+ * on the page before they draw the arrow). The arrowhead is a slender
+ * open caret rather than a heavy filled triangle — reads as annotation,
+ * not direction-signage.
+ *
+ * An optional label pill rides the arrow's trailing end using the same
+ * editorial pin language as StickyLabel (cream paper, terracotta rule,
+ * serif small-caps). Everything uses ACCENT for colour consistency.
+ */
 export function CalloutArrow({ fromBbox, toBbox, action }: CalloutArrowProps) {
-  const d = arrowPath(fromBbox, toBbox, action.curve);
-  const label = action.label;
-  const target = centerOf(toBbox);
+  const markerId = useId();
+  const glowId = `${markerId}-glow`;
+  const { from, to } = edgePoints(fromBbox, toBbox);
+  const d = arrowPath(from, to, action.curve);
 
   return (
     <svg
@@ -49,56 +92,97 @@ export function CalloutArrow({ fromBbox, toBbox, action }: CalloutArrowProps) {
       data-role="callout"
     >
       <defs>
+        {/* Slender open-caret arrowhead — editorial, not directional signage. */}
         <marker
-          id="arrowhead"
-          viewBox="0 0 10 10"
-          refX="8"
-          refY="5"
-          markerWidth="8"
-          markerHeight="8"
+          id={markerId}
+          viewBox="0 0 12 10"
+          refX={10}
+          refY={5}
+          markerWidth={10}
+          markerHeight={10}
           orient="auto"
         >
-          <path d="M 0 0 L 10 5 L 0 10 z" fill="#3B82F6" />
+          <path
+            d="M 1 1 L 10 5 L 1 9"
+            fill="none"
+            stroke={ACCENT}
+            strokeWidth={1.8}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
         </marker>
+        {/* Soft glow behind the stroke for depth on light pages. */}
+        <filter id={glowId} x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="2.5" />
+        </filter>
       </defs>
+
+      {/* Origin dot — pen planted on the "from" side. */}
+      <motion.circle
+        cx={from.x}
+        cy={from.y}
+        r={4}
+        fill={ACCENT}
+        initial={{ scale: 0, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ opacity: 0 }}
+        style={{
+          transformOrigin: `${from.x}px ${from.y}px`,
+          transformBox: 'fill-box',
+        }}
+        transition={{ duration: 0.3, ease: EASE_OUT_EXPO }}
+      />
+      <motion.circle
+        cx={from.x}
+        cy={from.y}
+        r={7}
+        fill="none"
+        stroke={ACCENT}
+        strokeWidth={1.2}
+        strokeOpacity={0.4}
+        initial={{ scale: 0, opacity: 0 }}
+        animate={{ scale: 1, opacity: 0.5 }}
+        exit={{ opacity: 0 }}
+        style={{
+          transformOrigin: `${from.x}px ${from.y}px`,
+          transformBox: 'fill-box',
+        }}
+        transition={{ duration: 0.4, delay: 0.08, ease: EASE_OUT_EXPO }}
+      />
+
+      {/* Soft glow trail behind the arrow for depth. */}
       <motion.path
         d={d}
         fill="none"
-        stroke="#3B82F6"
-        strokeWidth={3}
+        stroke={ACCENT}
+        strokeWidth={6}
+        strokeOpacity={0.18}
         strokeLinecap="round"
-        markerEnd="url(#arrowhead)"
+        filter={`url(#${glowId})`}
+        initial={{ pathLength: 0, opacity: 0 }}
+        animate={{ pathLength: 1, opacity: 0.8 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.7, delay: 0.12, ease: EASE_OUT_EXPO }}
+      />
+
+      {/* Primary stroke — the inked arrow. */}
+      <motion.path
+        d={d}
+        fill="none"
+        stroke={ACCENT}
+        strokeWidth={2.4}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        markerEnd={`url(#${markerId})`}
         initial={{ pathLength: 0, opacity: 0 }}
         animate={{ pathLength: 1, opacity: 1 }}
         exit={{ opacity: 0 }}
-        transition={{ duration: 0.6, ease: 'easeOut' }}
+        transition={{ duration: 0.7, delay: 0.15, ease: EASE_OUT_EXPO }}
       />
-      {label ? (
-        <motion.g
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ delay: 0.3, duration: 0.3 }}
-        >
-          <rect
-            x={target.x - 4}
-            y={target.y - 28}
-            width={label.length * 9 + 12}
-            height={22}
-            rx={4}
-            fill="#1F2937"
-          />
-          <text
-            x={target.x + 2}
-            y={target.y - 12}
-            fill="white"
-            fontSize={14}
-            fontFamily="system-ui, sans-serif"
-          >
-            {label}
-          </text>
-        </motion.g>
-      ) : null}
+
+      {/* Label is rendered by CalloutLabelOverlay at viewport space —
+         the SVG here sits inside the CameraView scale transform, which
+         would crush label typography at fit-scale. */}
     </svg>
   );
 }

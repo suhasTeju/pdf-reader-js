@@ -287,9 +287,10 @@ function enforceOverlayPresence(sb: Storyboard): Storyboard {
   const target = cameraStep.action.target_block;
   if (!target) return sb;
 
+  const prefix = sb.reasoning ? `${sb.reasoning} ` : '';
   return {
     ...sb,
-    reasoning: `${sb.reasoning} [auto-appended pulse: camera-only storyboards are forbidden]`,
+    reasoning: `${prefix}[auto-appended pulse: camera-only storyboards are forbidden]`,
     steps: [
       ...sb.steps,
       {

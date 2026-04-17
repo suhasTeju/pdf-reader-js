@@ -1105,12 +1105,15 @@ export function TutorScene({
   pdfUrl,
   bboxData,
   currentPage,
+  onPageChange,
   currentChunk,
   llm,
 }: {
   pdfUrl: string;
   bboxData: PageBBoxData[];
   currentPage: number;
+  /** Called when the viewer (or agent) changes the page — keep state in sync. */
+  onPageChange: (page: number) => void;
   /** The text the voice agent is currently speaking. Update reactively. */
   currentChunk: string | null;
   llm: LlmConfig;
@@ -1124,6 +1127,7 @@ export function TutorScene({
         <DocumentLoader url={pdfUrl} />
         <TutorModeContainer
           pageNumber={currentPage}
+          onPageChange={onPageChange}   // ← bidirectional sync for agent nav
           bboxData={bboxData}
           narrationStore={storeRef.current}
           scale={1}
@@ -1271,6 +1275,10 @@ default. Clicking it clears every overlay and returns the camera to fit-page.
 | `showSubtitles` | `boolean` | `false` | Render a subtitle bar with the current chunk text |
 | `showExitButton` | `boolean` | `true` | Render the top-right "Reset view" button |
 | `onExitTutorMode` | `() => void` | — | Optional callback fired AFTER the reset — use it to also leave tutor mode |
+| `backgroundColor` | `string` | `'#ffffff'` | Surround colour visible around the PDF when the viewport is larger than the page fit. v0.4.1+ |
+| `loadingComponent` | `ReactNode` | default spinner | Custom loading state shown while the PDF document/page is still fetching. v0.4.1+ |
+| `onPageChange` | `(page: number) => void` | — | Called when the viewer's page changes from any source (agent API, sidebar, programmatic). Pair with the `pageNumber` prop for bidirectional sync. **Required** when agents call `goToPage`/`nextPage`/`previousPage`. v0.4.2+ |
+| `storyboardProvider` | `(input) => Promise<Storyboard \| null>` | — | Consumer-owned director — when provided, called per chunk INSTEAD of the built-in LLM director. Your backend owns the system prompt + bbox context and returns the storyboard JSON. v0.5.0+ |
 | `className` | `string` | — | Passes through to the root container for custom theming |
 
 ### LlmConfig
@@ -1291,6 +1299,56 @@ interface LlmConfig {
 **Never hardcode the endpoint URL into the bundle** — this package ships to
 multiple consumers and each owns its own inference endpoint. Pass the URL as
 a prop at the call site, sourced from an env var or runtime config.
+
+### Alternative: `storyboardProvider` (v0.5.0+)
+
+When your backend owns the system prompt and bbox context, use
+`storyboardProvider` instead of `llm`. The library will call your provider per
+chunk, validate its return value against `StoryboardSchema`, and execute the
+result.
+
+```tsx
+<TutorModeContainer
+  pageNumber={currentPage}
+  bboxData={bboxData}
+  narrationStore={storeRef.current}
+  currentChunk={currentChunk}
+  storyboardProvider={async ({ chunk, pageNumber, signal }) => {
+    // Your director endpoint already has bbox server-side. Send just
+    // the chunk + page number and get the storyboard back.
+    const res = await fetch('/director', {
+      method: 'POST',
+      body: JSON.stringify({ chunk, pageNumber }),
+      signal,
+    });
+    if (!res.ok) return null;   // library skips this chunk gracefully
+    return res.json();           // must match StoryboardSchema
+  }}
+/>
+```
+
+**Why use this instead of `llm`?**
+- You iterate on the system prompt without a library upgrade.
+- You choose the model (fine-tuned, OSS, hosted, local) without vendor lock.
+- You cache bbox server-side; the browser sends only the chunk + page number.
+- Works great with KV-cache / prefix caching on the director model.
+
+**What the library still handles regardless of path:**
+- `StoryboardSchema` validation of the returned JSON
+- Range clamping of out-of-bounds numeric fields
+- `enforceOverlayPresence` auto-pulse if the storyboard is camera-only
+- Engine scheduling (per-step `setTimeout` at `at_ms`)
+- All overlay rendering (spotlight / underline / highlight / pulse / callout /
+  ghost reference / box / label), plus viewport-space overlays and camera math
+- Debug events (`llm-request` / `llm-response` / `storyboard-execute`) so the
+  DebugLog telemetry works identically to the built-in path
+
+**Priority:** if both `storyboardProvider` and `llm` are set, the provider
+wins and `llm` is ignored.
+
+**Return `null` to skip:** the provider may decide a given chunk shouldn't
+trigger visuals (e.g. filler words, acknowledgements). Returning `null`
+emits a `note` debug event and no storyboard fires.
 
 ### The integration contract in one picture
 

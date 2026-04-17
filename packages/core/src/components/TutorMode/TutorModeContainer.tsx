@@ -9,6 +9,9 @@ import type { NarrationStoreApi } from '../../store/narration-store';
 import { usePDFViewer } from '../../hooks';
 import { CameraView } from './CameraView';
 import { CinemaLayer } from './CinemaLayer';
+import { GhostReferenceOverlay } from './GhostReferenceOverlay';
+import { LabelOverlay } from './LabelOverlay';
+import { CalloutLabelOverlay } from './CalloutLabelOverlay';
 import { SubtitleBar } from './SubtitleBar';
 import { StoryboardEngine } from '../../director/storyboard-engine';
 import {
@@ -20,6 +23,33 @@ import {
   storyboardFromMatch,
   type EmbeddingProvider,
 } from '../../director/embedding-fallback';
+import { StoryboardSchema } from '../../director/storyboard-schema';
+import type { Storyboard } from '../../types/storyboard';
+
+/**
+ * Input passed to a consumer-supplied `storyboardProvider`. Gives the
+ * provider everything the built-in director already has access to, so
+ * the consumer can decide how much context to forward to their own
+ * endpoint (typically: just `chunk` + `pageNumber`, since bbox is
+ * usually cached server-side).
+ */
+export interface StoryboardProviderInput {
+  chunk: string;
+  pageNumber: number;
+  /** The current page's bbox data — included in case the provider wants
+   *  to forward it, though usually the provider's backend already has
+   *  this cached. */
+  page: PageBBoxData;
+  /** Last few chunks the tutor has spoken, for conversational context. */
+  history: ReadonlyArray<{
+    text: string;
+    pageNumber: number;
+    timestamp: number;
+  }>;
+  /** AbortSignal — if the consumer's fetch supports it, wire it up so
+   *  a newer chunk cancels a stale in-flight request. */
+  signal: AbortSignal;
+}
 
 export interface TutorModeContainerProps {
   pageNumber: number;
@@ -29,8 +59,28 @@ export interface TutorModeContainerProps {
   rotation?: number;
   /** Reactive chunk from the tutor (updates as she speaks) */
   currentChunk?: string | null;
-  /** LLM endpoint configuration provided by the consumer */
+  /** LLM endpoint configuration used by the built-in director. */
   llm?: LlmConfig;
+  /**
+   * Consumer-owned director. When provided, this is called per chunk
+   * INSTEAD OF `directStoryboard(llm, …)`. Return a storyboard matching
+   * `StoryboardSchema` (or `null` to skip the chunk). The library still
+   * validates the return value, runs salvage (range clamp, overlay-
+   * presence), and emits debug events, so DebugLog telemetry is
+   * identical to the built-in path.
+   *
+   * Use this when your backend owns the system prompt + bbox context
+   * (e.g. a fine-tuned director endpoint) and you want to iterate on
+   * prompt/model choices without a library upgrade.
+   *
+   * Priority: if BOTH `storyboardProvider` and `llm` are set, the
+   * provider wins and `llm` is ignored.
+   *
+   * Added in v0.5.0.
+   */
+  storyboardProvider?: (input: StoryboardProviderInput) => Promise<
+    Storyboard | null
+  >;
   /** Milliseconds of no new chunks before the camera returns to fit-page */
   idleTimeoutMs?: number;
   /** LLM call timeout in ms. Default 30000 (Qwen3-32B and similar can take 5-15s). */
@@ -59,6 +109,40 @@ export interface TutorModeContainerProps {
    * Default: 3500ms.
    */
   minOverlayDurationMs?: number;
+  /**
+   * Background colour of the container surround (visible around the PDF when
+   * the viewport is larger than the page fit). Default: `#ffffff`. Pass a
+   * dark value for dark-themed hosts.
+   */
+  backgroundColor?: string;
+  /**
+   * Optional content to render while the PDF document/page is still loading.
+   * Receives the loading stage so the host can show a spinner, a skeleton,
+   * or a custom brand. If omitted, a minimal default spinner is rendered on
+   * the `backgroundColor` surround.
+   */
+  loadingComponent?: React.ReactNode;
+  /**
+   * Fired when the underlying viewer's page changes from any source — the
+   * agent API (`agentTools.goToPage / nextPage / previousPage`), the sidebar
+   * (bookmarks, thumbnails, search), or a programmatic
+   * `useViewerStore().goToPage` call. Use this to keep your own
+   * `pageNumber` state (the controlled prop you pass in) in lockstep with
+   * the viewer, so agent-driven navigation actually moves the rendered
+   * page and downstream concerns (progress save, recap, etc.) see the
+   * right value.
+   *
+   * ```tsx
+   * const [currentPage, setCurrentPage] = useState(1);
+   * <TutorModeContainer
+   *   pageNumber={currentPage}
+   *   onPageChange={setCurrentPage}   // ← bidirectional sync
+   * />
+   * ```
+   *
+   * Added in v0.4.2.
+   */
+  onPageChange?: (page: number) => void;
   className?: string;
 }
 
@@ -109,18 +193,52 @@ export function TutorModeContainer({
   showExitButton = true,
   onExitTutorMode,
   minOverlayDurationMs,
+  backgroundColor = '#ffffff',
+  loadingComponent,
+  onPageChange,
+  storyboardProvider,
   className,
 }: TutorModeContainerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const index = useMemo(() => buildBBoxIndex(bboxData), [bboxData]);
 
-  const { document } = usePDFViewer();
+  const {
+    document,
+    currentPage: viewerCurrentPage,
+    numPages,
+    goToPage: viewerGoToPage,
+  } = usePDFViewer();
   const [pageProxy, setPageProxy] = useState<PDFPageProxy | null>(null);
   const [viewport, setViewport] = useState({ width: 800, height: 1000 });
 
   // Subscribe to store state for re-renders
   const camera = useStore(narrationStore, (s) => s.camera);
   const activeOverlays = useStore(narrationStore, (s) => s.activeOverlays);
+
+  // Bidirectional sync between the controlled `pageNumber` prop and the
+  // internal viewer store's currentPage. Without this, the agent API's
+  // `goToPage` / `nextPage` / `previousPage` calls write to viewerStore
+  // but never reach the consumer's controlled state — the rendered page
+  // stays stuck while the agent thinks it moved.
+
+  // prop → viewerStore: whenever the consumer updates pageNumber, mirror
+  // it into the viewer store so agent-api reads the correct current page.
+  useEffect(() => {
+    if (numPages <= 0) return;                     // doc not yet loaded
+    if (pageNumber < 1 || pageNumber > numPages) return;
+    if (viewerCurrentPage === pageNumber) return;  // already in sync
+    viewerGoToPage(pageNumber);
+  }, [pageNumber, numPages, viewerCurrentPage, viewerGoToPage]);
+
+  // viewerStore → prop: when something else (agent nav, thumbnail click,
+  // programmatic store update) moves the viewer's page, bubble it up so
+  // the consumer can update its own state and re-pass pageNumber.
+  useEffect(() => {
+    if (!onPageChange) return;
+    if (viewerCurrentPage === pageNumber) return;
+    if (viewerCurrentPage < 1) return;
+    onPageChange(viewerCurrentPage);
+  }, [viewerCurrentPage, pageNumber, onPageChange]);
 
   // Track viewport size for camera math
   useEffect(() => {
@@ -194,7 +312,9 @@ export function TutorModeContainer({
   const lastChunkRef = useRef<string | null>(null);
 
   useEffect(() => {
-    if (!llm) return;
+    // Need either a consumer-supplied provider OR an LLM config —
+    // otherwise there's no director to turn chunks into storyboards.
+    if (!storyboardProvider && !llm) return;
     if (!currentChunk || currentChunk === lastChunkRef.current) return;
 
     if (debounceRef.current) clearTimeout(debounceRef.current);
@@ -220,6 +340,92 @@ export function TutorModeContainer({
       abortRef.current?.abort();
       abortRef.current = new AbortController();
 
+      // Path A — consumer-owned director (priority).
+      if (storyboardProvider) {
+        narrationStore.getState().setLlmStatus('in-flight');
+        narrationStore.getState().appendDebugEvent({
+          kind: 'llm-request',
+          summary: `provider (page ${pageNumber}, ${page.blocks.length} blocks)`,
+          payload: {
+            via: 'storyboardProvider',
+            pageNumber,
+            blockCount: page.blocks.length,
+          },
+        });
+
+        try {
+          const raw = await storyboardProvider({
+            chunk,
+            pageNumber,
+            page,
+            history: narrationStore.getState().chunkHistory,
+            signal: abortRef.current.signal,
+          });
+
+          if (!raw) {
+            narrationStore.getState().setLlmStatus('idle');
+            narrationStore.getState().appendDebugEvent({
+              kind: 'note',
+              summary: 'provider returned null — no storyboard for this chunk',
+            });
+            return;
+          }
+
+          // Validate with the same schema the built-in director uses, so
+          // the consumer can't slip through a malformed storyboard that
+          // would crash the engine.
+          const parsed = StoryboardSchema.safeParse(raw);
+          if (!parsed.success) {
+            narrationStore.getState().setLlmStatus(
+              'failed',
+              parsed.error.message,
+            );
+            narrationStore.getState().appendDebugEvent({
+              kind: 'llm-error',
+              summary: `provider storyboard rejected by schema: ${parsed.error.issues[0]?.message ?? 'unknown'}`,
+              payload: { raw, error: parsed.error.message },
+            });
+            return;
+          }
+
+          const storyboard = parsed.data as Storyboard;
+          narrationStore.getState().setLlmStatus('idle');
+          narrationStore.getState().appendDebugEvent({
+            kind: 'llm-response',
+            summary: summariseStoryboard(storyboard),
+            payload: { via: 'storyboardProvider', storyboard },
+          });
+          engineRef.current?.execute(storyboard);
+          narrationStore.getState().appendDebugEvent({
+            kind: 'storyboard-execute',
+            summary: `engine executing ${storyboard.steps.length} steps`,
+            payload: storyboard.steps.map((s) => ({
+              at_ms: s.at_ms,
+              type: s.action.type,
+              target:
+                'target_block' in s.action
+                  ? s.action.target_block
+                  : undefined,
+            })),
+          });
+        } catch (e) {
+          if ((e as Error).name === 'AbortError') return;
+          narrationStore
+            .getState()
+            .setLlmStatus('failed', (e as Error).message);
+          narrationStore.getState().appendDebugEvent({
+            kind: 'llm-error',
+            summary: `provider threw: ${(e as Error).message.slice(0, 80)}`,
+            payload: e,
+          });
+        }
+        return;
+      }
+
+      // Path B — built-in director using the LLM config (legacy path,
+      // still fully supported).
+      if (!llm) return;
+
       narrationStore.getState().setLlmStatus('in-flight');
       narrationStore.getState().appendDebugEvent({
         kind: 'llm-request',
@@ -243,7 +449,7 @@ export function TutorModeContainer({
         narrationStore.getState().setLlmStatus('idle');
         narrationStore.getState().appendDebugEvent({
           kind: 'llm-response',
-          summary: `storyboard ✓ ${result.storyboard.steps.length} steps — ${result.storyboard.reasoning.slice(0, 60)}`,
+          summary: summariseStoryboard(result.storyboard),
           payload: { raw: result.raw, storyboard: result.storyboard },
         });
         engineRef.current?.execute(result.storyboard);
@@ -294,7 +500,16 @@ export function TutorModeContainer({
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
     };
-  }, [currentChunk, llm, index, pageNumber, narrationStore, embeddingProvider, llmTimeoutMs]);
+  }, [
+    currentChunk,
+    llm,
+    storyboardProvider,
+    index,
+    pageNumber,
+    narrationStore,
+    embeddingProvider,
+    llmTimeoutMs,
+  ]);
 
   // Idle recovery
   useEffect(() => {
@@ -320,6 +535,8 @@ export function TutorModeContainer({
   const baseW = page ? page.page_dimensions.width * (scale || 1) : 0;
   const baseH = page ? page.page_dimensions.height * (scale || 1) : 0;
 
+  const isReady = !!page && !!pageProxy;
+
   return (
     <div
       ref={containerRef}
@@ -329,12 +546,12 @@ export function TutorModeContainer({
         width: '100%',
         height: '100%',
         overflow: 'hidden',
-        background: '#111',
+        background: backgroundColor,
       }}
       data-role="tutor-mode-container"
-      data-page-loaded={page ? 'true' : 'false'}
+      data-page-loaded={isReady ? 'true' : 'false'}
     >
-      {showExitButton ? (
+      {showExitButton && isReady ? (
         <button
           onClick={() => {
             engineRef.current?.resetVisuals();
@@ -350,7 +567,9 @@ export function TutorModeContainer({
             padding: '8px 14px',
             border: 'none',
             borderRadius: 8,
-            background: 'rgba(255,255,255,0.12)',
+            // Dark translucent pill with white text reads cleanly on both
+            // light and dark container backgrounds.
+            background: 'rgba(17,24,39,0.72)',
             color: 'white',
             cursor: 'pointer',
             fontFamily: 'system-ui, sans-serif',
@@ -363,37 +582,140 @@ export function TutorModeContainer({
           Reset view
         </button>
       ) : null}
-      {page ? (
-        <CameraView camera={camera}>
-          <div
-            style={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              width: baseW,
-              height: baseH,
-              transform: 'translate(-50%, -50%)',
-            }}
-          >
-            <PDFPage
-              pageNumber={pageNumber}
-              page={pageProxy}
-              scale={rasterScale}
-              rotation={rotation}
-              showTextLayer={false}
-              showHighlightLayer={false}
-              showAnnotationLayer={false}
-            />
-            <CinemaLayer
-              page={page}
-              index={index}
-              overlays={activeOverlays}
-              scale={scale || 1}
-            />
-          </div>
-        </CameraView>
-      ) : null}
+      {isReady ? (
+        <>
+          <CameraView camera={camera}>
+            <div
+              style={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                width: baseW,
+                height: baseH,
+                transform: 'translate(-50%, -50%)',
+              }}
+            >
+              <PDFPage
+                pageNumber={pageNumber}
+                page={pageProxy}
+                scale={rasterScale}
+                rotation={rotation}
+                showTextLayer={false}
+                showHighlightLayer={false}
+                showAnnotationLayer={false}
+              />
+              <CinemaLayer
+                page={page}
+                index={index}
+                overlays={activeOverlays}
+                scale={scale || 1}
+              />
+            </div>
+          </CameraView>
+          {/* Viewport-space UI (outside the camera scale transform). */}
+          <LabelOverlay
+            overlays={activeOverlays}
+            index={index}
+            currentPage={pageNumber}
+            camera={camera}
+            viewport={viewport}
+          />
+          <CalloutLabelOverlay
+            overlays={activeOverlays}
+            index={index}
+            currentPage={pageNumber}
+            camera={camera}
+            viewport={viewport}
+          />
+          <GhostReferenceOverlay overlays={activeOverlays} index={index} />
+        </>
+      ) : (
+        <TutorLoadingState custom={loadingComponent} />
+      )}
       {showSubtitles ? <SubtitleBar text={currentChunk ?? null} /> : null}
     </div>
   );
+}
+
+/**
+ * Default loading state shown while the PDF document / page proxy is still
+ * being fetched. Intentionally minimal — hosts with branding should pass
+ * `loadingComponent` instead.
+ */
+function TutorLoadingState({
+  custom,
+}: {
+  custom?: React.ReactNode;
+}): React.ReactElement {
+  if (custom) {
+    return (
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+        data-role="tutor-loading"
+      >
+        {custom}
+      </div>
+    );
+  }
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        inset: 0,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 12,
+        color: 'rgba(0,0,0,0.55)',
+        fontFamily: 'system-ui, sans-serif',
+        fontSize: 13,
+      }}
+      data-role="tutor-loading"
+    >
+      <div
+        aria-hidden
+        style={{
+          width: 36,
+          height: 36,
+          borderRadius: '50%',
+          border: '3px solid rgba(0,0,0,0.1)',
+          borderTopColor: 'rgba(0,0,0,0.45)',
+          animation: 'pdf-tutor-spin 0.9s linear infinite',
+        }}
+      />
+      <span>Loading document…</span>
+      <style>{`
+        @keyframes pdf-tutor-spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+      `}</style>
+    </div>
+  );
+}
+
+/**
+ * Compact one-liner for the DebugLog "storyboard ✓" summary. Uses the
+ * model's `reasoning` if the director emitted one; otherwise falls
+ * back to the list of step types so the log entry still communicates
+ * what the engine is about to execute. Since v0.5.1 reasoning is
+ * optional to save output tokens.
+ */
+function summariseStoryboard(
+  sb: Storyboard & { reasoning?: string },
+): string {
+  const stepCount = sb.steps.length;
+  const trimmedReasoning = (sb.reasoning ?? '').trim();
+  if (trimmedReasoning) {
+    return `storyboard ✓ ${stepCount} steps — ${trimmedReasoning.slice(0, 60)}`;
+  }
+  const kinds = sb.steps.map((s) => s.action.type).join(' → ');
+  return `storyboard ✓ ${stepCount} steps — ${kinds}`;
 }

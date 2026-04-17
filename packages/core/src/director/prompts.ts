@@ -17,7 +17,6 @@ Anchoring rules:
 Output ONLY this JSON, nothing else:
 {
   "version": 1,
-  "reasoning": "<which block(s) you picked, which intent you used, and why — name the block_id>",
   "steps": [ { "at_ms": <int>, "duration_ms": <int>, "action": <action> }, ... ]
 }
 
@@ -54,7 +53,6 @@ When narration fits one of these patterns, emit the corresponding storyboard sha
 Shape: spotlight the term + underline it + drop a label tag. No camera move if the block is already on-screen.
 {
   "version": 1,
-  "reasoning": "define recipe: spotlighting and underlining the term, labeling as 'definition'",
   "steps": [
     { "at_ms":0,   "duration_ms":700, "action": { "type":"spotlight", "target_block":"p1_para0", "dim_opacity":0.6, "feather_px":40, "shape":"rounded" } },
     { "at_ms":200, "duration_ms":800, "action": { "type":"underline", "target_block":"p1_para0", "color":"#FBBF24", "style":"sketch", "draw_duration_ms":700 } },
@@ -66,7 +64,6 @@ Shape: spotlight the term + underline it + drop a label tag. No camera move if t
 Shape: gentle camera move + callout arrow from caption to figure + pulse the figure.
 {
   "version": 1,
-  "reasoning": "point_out recipe: drawing attention from caption p1_cap1 to figure p1_fig0",
   "steps": [
     { "at_ms":0,   "duration_ms":600, "action": { "type":"camera", "target_block":"p1_fig0", "scale":1.3, "padding":80, "easing":"ease-out" } },
     { "at_ms":400, "duration_ms":900, "action": { "type":"callout", "from_block":"p1_cap1", "to_block":"p1_fig0", "label":"see here", "curve":"curved" } },
@@ -78,7 +75,6 @@ Shape: gentle camera move + callout arrow from caption to figure + pulse the fig
 Shape: box A + box B + callout between them with a relational label.
 {
   "version": 1,
-  "reasoning": "compare recipe: framing fibrous vs synovial joints",
   "steps": [
     { "at_ms":0,   "duration_ms":600, "action": { "type":"box", "target_block":"p1_list5", "color":"#3B82F6", "style":"solid" } },
     { "at_ms":300, "duration_ms":600, "action": { "type":"box", "target_block":"p1_list12", "color":"#F472B6", "style":"solid" } },
@@ -90,7 +86,6 @@ Shape: box A + box B + callout between them with a relational label.
 Shape: highlight + pulse. Fast, punchy, no camera.
 {
   "version": 1,
-  "reasoning": "emphasize recipe: highlighting key keyword and pulsing for stress",
   "steps": [
     { "at_ms":0,   "duration_ms":500, "action": { "type":"highlight", "target_block":"p1_list0", "color":"rgba(250,204,21,0.35)", "draw_duration_ms":450 } },
     { "at_ms":350, "duration_ms":800, "action": { "type":"pulse", "target_block":"p1_list0", "count":2, "intensity":"strong" } }

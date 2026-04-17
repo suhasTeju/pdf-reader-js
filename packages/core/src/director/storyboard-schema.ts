@@ -109,7 +109,12 @@ export const StoryboardStepSchema = z.object({
 
 export const StoryboardSchema = z.object({
   version: z.literal(1),
-  reasoning: z.string().max(500).default(''),
+  // `reasoning` was required in 0.4.x as a model-generated explanation used
+  // by DebugLog. It carries no visual effect and costs 50–150 output tokens
+  // per call, so from 0.5.1 it's optional (default empty). Consumers who
+  // still send it (from cached prompts or older directors) keep working —
+  // the field is still accepted, just not required.
+  reasoning: z.string().max(500).optional().default(''),
   steps: z.array(StoryboardStepSchema).min(1).max(4),
 });
 
@@ -260,7 +265,10 @@ export function storyboardJsonSchema(
   return {
     type: 'object',
     additionalProperties: false,
-    required: ['version', 'reasoning', 'steps'],
+    // `reasoning` intentionally omitted from `required` — the field is still
+    // accepted when present but the model doesn't need to generate it,
+    // which saves 50–150 output tokens per call. See zod schema above.
+    required: ['version', 'steps'],
     properties: {
       version: { type: 'integer', enum: [1] },
       reasoning: { type: 'string' },

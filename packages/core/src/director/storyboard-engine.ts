@@ -11,6 +11,7 @@ import { makeOverlayId } from '../store/narration-store';
 import {
   computeCameraForBlock,
   fitPageScale,
+  clampCamera,
   type ViewportSize,
 } from '../utils/camera-math';
 
@@ -32,7 +33,23 @@ const DEFAULT_MIN_OVERLAY_MS = 3500;
 
 export class StoryboardEngine {
   private deps: EngineDeps;
-  private pendingTimers = new Set<ReturnType<typeof setTimeout>>();
+  /**
+   * Timers that schedule the START of a step (via `setTimeout(runStep, at_ms)`).
+   * These are storyboard-scoped: when a new storyboard arrives, anything still
+   * pending should be abandoned.
+   */
+  private pendingStepTimers = new Set<ReturnType<typeof setTimeout>>();
+  /**
+   * Timers that auto-REMOVE an already-placed overlay after its visible
+   * duration. Keyed by overlay id so we can cancel one specifically. These are
+   * NOT cancelled when a new storyboard starts — otherwise the still-visible
+   * overlay from the previous beat would get stranded in the store forever
+   * (the "stuck spotlight" bug).
+   */
+  private overlayRemovalTimers = new Map<
+    string,
+    ReturnType<typeof setTimeout>
+  >();
   private currentStoryboardId = 0;
 
   constructor(deps: EngineDeps) {
@@ -93,7 +110,7 @@ export class StoryboardEngine {
         if (storyboardId !== this.currentStoryboardId) return;
         this.runStep(step);
       }, step.at_ms);
-      this.pendingTimers.add(timer);
+      this.pendingStepTimers.add(timer);
     }
 
     // Mark executing once the first step is scheduled.
@@ -101,7 +118,7 @@ export class StoryboardEngine {
       if (storyboardId !== this.currentStoryboardId) return;
       narrationStore.getState().setEngineStatus('executing');
     }, 0);
-    this.pendingTimers.add(markExecuting);
+    this.pendingStepTimers.add(markExecuting);
 
     // Return to idle after the last step completes.
     const last = steps[steps.length - 1];
@@ -111,20 +128,32 @@ export class StoryboardEngine {
         if (storyboardId !== this.currentStoryboardId) return;
         narrationStore.getState().setEngineStatus('idle');
       }, totalMs + 50);
-      this.pendingTimers.add(markIdle);
+      this.pendingStepTimers.add(markIdle);
     }
   }
 
-  /** Abort all pending steps and set engine status to idle. */
+  /**
+   * Abort pending STEP dispatches from the current storyboard. Overlay
+   * removal timers are left alone so already-visible overlays still auto-
+   * expire on their own schedule. To force-clear every overlay, call
+   * `resetVisuals()` instead.
+   */
   cancelPending(): void {
-    for (const t of this.pendingTimers) clearTimeout(t);
-    this.pendingTimers.clear();
+    for (const t of this.pendingStepTimers) clearTimeout(t);
+    this.pendingStepTimers.clear();
     this.deps.narrationStore.getState().setEngineStatus('idle');
   }
 
-  /** Reset visuals: clear overlays, fit camera back to page. */
+  /** Cancel every removal timer (used by resetVisuals only). */
+  private cancelAllRemovalTimers(): void {
+    for (const t of this.overlayRemovalTimers.values()) clearTimeout(t);
+    this.overlayRemovalTimers.clear();
+  }
+
+  /** Reset visuals: clear overlays, cancel every removal timer, fit camera. */
   resetVisuals(): void {
     this.cancelPending();
+    this.cancelAllRemovalTimers();
     const { narrationStore, bboxIndex, getViewport } = this.deps;
     narrationStore.getState().clearOverlays();
 
@@ -215,11 +244,14 @@ export class StoryboardEngine {
     };
     narrationStore.getState().addOverlay(overlay);
 
-    // Auto-remove when expired
+    // Auto-remove when expired. This timer lives OUTSIDE pendingStepTimers so
+    // the next incoming storyboard (which cancels step dispatches) doesn't
+    // strand this overlay on screen forever.
     const timer = setTimeout(() => {
       narrationStore.getState().removeOverlay(overlay.id);
+      this.overlayRemovalTimers.delete(overlay.id);
     }, visibleMs);
-    this.pendingTimers.add(timer);
+    this.overlayRemovalTimers.set(overlay.id, timer);
     return true;
   }
 
@@ -257,13 +289,26 @@ export class StoryboardEngine {
     const blockCY = (y1 + y2) / 2;
     const pageCX = pageDims.page_dimensions.width / 2;
     const pageCY = pageDims.page_dimensions.height / 2;
-    const x = (pageCX - blockCX) * finalScale;
-    const y = (pageCY - blockCY) * finalScale;
+    const rawX = (pageCX - blockCX) * finalScale;
+    const rawY = (pageCY - blockCY) * finalScale;
+
+    // Clamp the pan so the rendered page never pulls past the viewport edge.
+    // Without this, a block near the top/bottom of the page translates the
+    // whole sheet so far that the camera ends up staring at empty surround
+    // on one side. clampCamera caps |x|/|y| at (pageSize*scale - viewport)/2,
+    // which — for a page that doesn't even fill the viewport (scale ≤ fit) —
+    // snaps the offset to 0 (keep centred, don't pan). At higher zooms the
+    // target block still lands as close to centre as geometrically possible.
+    const clamped = clampCamera(
+      { scale: finalScale, x: rawX, y: rawY },
+      pageDims.page_dimensions,
+      viewport,
+    );
 
     const camera: CameraState = {
-      scale: finalScale,
-      x,
-      y,
+      scale: clamped.scale,
+      x: clamped.x,
+      y: clamped.y,
       easing: action.easing,
     };
     narrationStore.getState().setCamera(camera);

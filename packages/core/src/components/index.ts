@@ -59,6 +59,7 @@ export type { PDFErrorBoundaryProps, WithErrorBoundaryProps } from './ErrorBound
 export type { PDFLoadingScreenProps } from './PDFLoadingScreen';
 export type {
   TutorModeContainerProps,
+  StoryboardProviderInput,
   CinemaLayerProps,
   CameraViewProps,
   SpotlightMaskProps,
