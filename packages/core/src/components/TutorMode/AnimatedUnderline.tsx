@@ -98,11 +98,28 @@ export function AnimatedUnderline({ bbox, action }: AnimatedUnderlineProps) {
   const blotY = y;
   const strokeWeight = action.style === 'wavy' ? 3 : 4;
 
+  // Tight CSS box around the stroke so iOS Safari's compositor doesn't
+  // allocate a full-page layer per underline. Covers stroke width (≤4),
+  // wavy amplitude (~±3.2), ghost stroke (+1.5 below), blot radius (~2.5),
+  // and the horizontal over-stroke (±4). Path coords stay absolute via
+  // viewBox; visuals unchanged.
+  const uxPad = 8;
+  const uAbove = 8;
+  const uBelow = 24;
+  const svgX = x1 - uxPad;
+  const svgY = y - uAbove;
+  const svgW = x2 - x1 + 2 * uxPad;
+  const svgH = uAbove + uBelow;
+
   return (
     <svg
+      width={svgW}
+      height={svgH}
+      viewBox={`${svgX} ${svgY} ${svgW} ${svgH}`}
       style={{
         position: 'absolute',
-        inset: 0,
+        left: svgX,
+        top: svgY,
         pointerEvents: 'none',
         overflow: 'visible',
       }}

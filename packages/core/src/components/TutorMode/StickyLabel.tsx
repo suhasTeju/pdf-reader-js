@@ -117,10 +117,14 @@ export function StickyLabel({ screenAnchor, action }: StickyLabelProps) {
           letterSpacing: 0.6,
           textTransform: 'uppercase',
           fontWeight: 500,
-          whiteSpace: 'nowrap',
+          // Wrap instead of truncating with an ellipsis. Short labels stay
+          // single-line naturally; longer ones grow in height rather than
+          // losing their tail. `overflowWrap: 'anywhere'` keeps a stray
+          // long word from pushing the pill past `maxWidth` (normal word
+          // breaking stops at whitespace and can't break inside words).
           maxWidth: PILL_MAX_W_BODY,
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
+          whiteSpace: 'normal',
+          overflowWrap: 'anywhere',
           // Warm two-layer shadow (matches GhostReference's palette).
           boxShadow:
             '0 1px 2px rgba(42, 36, 32, 0.12), 0 8px 18px -6px rgba(42, 36, 32, 0.22)',

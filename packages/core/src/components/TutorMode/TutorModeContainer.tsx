@@ -303,7 +303,12 @@ export function TutorModeContainer({
       getViewport: () => viewport,
       minOverlayDurationMs,
     });
-    return () => engineRef.current?.cancelPending();
+    // destroy() cancels BOTH pending step timers AND overlay removal
+    // timers. On iOS Safari `viewport` can change frequently (address-bar
+    // scroll animation), forcing this effect's cleanup. The old
+    // `cancelPending()` left overlay-removal timers alive, retaining
+    // closures holding `bboxIndex` across each recreation.
+    return () => engineRef.current?.destroy();
   }, [narrationStore, index, viewport, minOverlayDurationMs]);
 
   // React to currentChunk: debounce → call LLM → engine.execute

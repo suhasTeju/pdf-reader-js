@@ -47,6 +47,24 @@ export function PulseOverlay({ bbox, action }: PulseOverlayProps) {
   // blocks don't get brackets that exceed their own geometry.
   const L = Math.min(spec.bracketLen, Math.min(w, h) / 2.5);
   const PAD = 6;
+
+  // Tight CSS box so the compositor doesn't allocate a full-page layer
+  // per pulse. Three drawn extents matter, in roughly descending size:
+  //   - Emphasis ring scaled up to ringScale (1.22 at peak)
+  //   - Glow ellipse at rx = w/2 + 10, scaled up to ringScale, plus a
+  //     CSS `filter: blur(16px)` which spreads outside the ellipse bbox
+  //   - Brackets slide in from PAD + L + 8 px outside the block corners
+  const ringExtentX = (w / 2 + PAD) * spec.ringScale - w / 2;
+  const ringExtentY = (h / 2 + PAD) * spec.ringScale - h / 2;
+  const glowExtentX = (w / 2 + 10) * spec.ringScale - w / 2 + 24; // +24 covers blur(16) spread
+  const glowExtentY = (h / 2 + 10) * spec.ringScale - h / 2 + 24;
+  const bracketExtent = PAD + L + 8;
+  const svgPadX = Math.ceil(Math.max(40, ringExtentX, glowExtentX, bracketExtent));
+  const svgPadY = Math.ceil(Math.max(40, ringExtentY, glowExtentY, bracketExtent));
+  const svgX = x1 - svgPadX;
+  const svgY = y1 - svgPadY;
+  const svgW = w + 2 * svgPadX;
+  const svgH = h + 2 * svgPadY;
   // Both the outer glow and the emphasis ring play ONCE. The schema
   // still accepts an `action.count`, but playing it as a repeated loop
   // reads as "ambient warning" rather than "look here" and becomes
@@ -56,9 +74,13 @@ export function PulseOverlay({ bbox, action }: PulseOverlayProps) {
 
   return (
     <svg
+      width={svgW}
+      height={svgH}
+      viewBox={`${svgX} ${svgY} ${svgW} ${svgH}`}
       style={{
         position: 'absolute',
-        inset: 0,
+        left: svgX,
+        top: svgY,
         pointerEvents: 'none',
         overflow: 'visible',
       }}

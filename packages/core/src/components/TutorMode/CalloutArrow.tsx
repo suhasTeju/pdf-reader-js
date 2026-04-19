@@ -81,11 +81,33 @@ export function CalloutArrow({ fromBbox, toBbox, action }: CalloutArrowProps) {
   const { from, to } = edgePoints(fromBbox, toBbox);
   const d = arrowPath(from, to, action.curve);
 
+  // Tight CSS box around both endpoints + arc deviation for curved
+  // arrows. A curved arrow perpendicular-offsets its midpoint by
+  // ~0.22 × distance, so the arc can bulge that far from the straight
+  // line; zigzag stays within the endpoint box. Includes origin circle
+  // (r=7 + stroke), arrow stroke (2.4), and glow stroke with
+  // feGaussianBlur spread (~8 px).
+  const rawMinX = Math.min(from.x, to.x);
+  const rawMinY = Math.min(from.y, to.y);
+  const rawMaxX = Math.max(from.x, to.x);
+  const rawMaxY = Math.max(from.y, to.y);
+  const dist = Math.hypot(to.x - from.x, to.y - from.y);
+  const arcDev = action.curve === 'curved' ? dist * 0.12 : 0;
+  const basePad = 16;
+  const svgX = rawMinX - basePad - arcDev;
+  const svgY = rawMinY - basePad - arcDev;
+  const svgW = rawMaxX - rawMinX + 2 * (basePad + arcDev);
+  const svgH = rawMaxY - rawMinY + 2 * (basePad + arcDev);
+
   return (
     <svg
+      width={svgW}
+      height={svgH}
+      viewBox={`${svgX} ${svgY} ${svgW} ${svgH}`}
       style={{
         position: 'absolute',
-        inset: 0,
+        left: svgX,
+        top: svgY,
         pointerEvents: 'none',
         overflow: 'visible',
       }}

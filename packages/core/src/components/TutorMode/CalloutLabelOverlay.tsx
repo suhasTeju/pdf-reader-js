@@ -224,10 +224,13 @@ function CalloutLabelPill({
         letterSpacing: 0.6,
         textTransform: 'uppercase',
         fontWeight: 500,
-        whiteSpace: 'nowrap',
+        // Wrap instead of truncating. Short labels stay single-line;
+        // longer ones grow taller rather than losing their tail to an
+        // ellipsis. `overflowWrap: 'anywhere'` guards against a stray
+        // long word pushing the pill past `maxWidth`.
         maxWidth: PILL_MAX_W_CAPS,
-        overflow: 'hidden',
-        textOverflow: 'ellipsis',
+        whiteSpace: 'normal',
+        overflowWrap: 'anywhere',
         boxShadow:
           '0 1px 2px rgba(42, 36, 32, 0.12), 0 8px 18px -6px rgba(42, 36, 32, 0.22)',
         // Accent rule on the "inward" edge (the one closest to the arrow).

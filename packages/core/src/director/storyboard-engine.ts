@@ -144,10 +144,37 @@ export class StoryboardEngine {
     this.deps.narrationStore.getState().setEngineStatus('idle');
   }
 
-  /** Cancel every removal timer (used by resetVisuals only). */
+  /** Cancel every removal timer (used by resetVisuals and destroy). */
   private cancelAllRemovalTimers(): void {
     for (const t of this.overlayRemovalTimers.values()) clearTimeout(t);
     this.overlayRemovalTimers.clear();
+  }
+
+  /**
+   * Full destructor — cancels BOTH pending step timers AND overlay
+   * removal timers. Use this in component unmount / cleanup.
+   *
+   * The per-storyboard `cancelPending()` deliberately leaves overlay
+   * removal timers alone so a mid-flight overlay doesn't get stranded
+   * when a new storyboard arrives (see `overlayRemovalTimers` doc).
+   * That invariant is correct inside a session, but at teardown we
+   * must release every timer — otherwise their setTimeout closures
+   * keep `deps` (narrationStore, the full bboxIndex) alive beyond the
+   * lifetime of this engine. Over many component recreations on iOS
+   * Safari (viewport state churns during address-bar scroll
+   * animation), that cumulative retention contributes to tab reloads.
+   */
+  destroy(): void {
+    this.cancelPending();
+    this.cancelAllRemovalTimers();
+  }
+
+  /** Test-only — exposes internal queue sizes for regression tests. */
+  _queueSizesForTest(): { pending: number; removals: number } {
+    return {
+      pending: this.pendingStepTimers.size,
+      removals: this.overlayRemovalTimers.size,
+    };
   }
 
   /** Reset visuals: clear overlays, cancel every removal timer, fit camera. */
