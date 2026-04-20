@@ -1,6 +1,6 @@
 {
   "name": "pdfjs-reader-core",
-  "version": "0.5.9",
+  "version": "0.5.10",
   "description": "A Next.js-compatible PDF renderer with canvas rendering, annotations, and search",
   "author": "suhas <suhasrdev@gmail.com>",
   "license": "MIT",

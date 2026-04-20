@@ -46,10 +46,13 @@ export const EASE_OUT_EXPO = [0.22, 1, 0.36, 1] as const;
  * typography on extreme viewports.
  */
 
-/** All-caps callout annotation — tight, editorial marginalia vocabulary. */
-export const PILL_FONT_CAPS = 'clamp(10.5px, 0.55vw + 8.5px, 14.5px)';
-/** Sentence-case pin body — slightly larger, the standard overlay label. */
-export const PILL_FONT_BODY = 'clamp(12px, 0.6vw + 10px, 16.5px)';
+/** All-caps callout annotation — tight, editorial marginalia vocabulary.
+ *  Clamp curve shifted down 1.5px across the board in v0.5.x follow-up so
+ *  wrapped labels fit more comfortably in narrow pill widths on mobile. */
+export const PILL_FONT_CAPS = 'clamp(9px, 0.55vw + 7px, 13px)';
+/** Sentence-case pin body — slightly larger, the standard overlay label.
+ *  Also shifted down 1.5px to match PILL_FONT_CAPS. */
+export const PILL_FONT_BODY = 'clamp(10.5px, 0.6vw + 8.5px, 15px)';
 /** Display/marginalia card body — the ghost-reference text block. */
 export const PILL_FONT_DISPLAY = 'clamp(14px, 0.75vw + 12px, 19px)';
 
@@ -74,10 +77,10 @@ export function resolveMaxPillW(viewportWidthPx: number): number {
   return clamp(0.26 * viewportWidthPx, 180, 380);
 }
 export function resolveMaxPillH(viewportWidthPx: number): number {
-  // Pill height is mostly font-driven; ~2.4× the font size accounts for
-  // line-height + padding. Tracks PILL_FONT_CAPS.
-  const font = clamp(0.0055 * viewportWidthPx + 8.5, 10.5, 14.5);
-  return clamp(font * 2.6, 28, 42);
+  // Pill height is mostly font-driven; ~2.6× the font size accounts for
+  // line-height + padding. Tracks PILL_FONT_CAPS (shifted down 1.5px).
+  const font = clamp(0.0055 * viewportWidthPx + 7, 9, 13);
+  return clamp(font * 2.6, 24, 36);
 }
 
 function clamp(v: number, lo: number, hi: number): number {
